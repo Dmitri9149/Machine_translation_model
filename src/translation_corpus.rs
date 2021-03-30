@@ -14,7 +14,6 @@ pub struct CorpusAsString {
 
 
 impl CorpusAsString {
-
 // build by reading a file
     pub fn corpus_from_file(path: &str) -> CorpusAsString {
         let mut f = File::open(path).unwrap();
@@ -25,4 +24,12 @@ impl CorpusAsString {
             processed:contents
         }
     }
+
+    pub fn replace_some_chars(&self, aa:&str, b:char) -> Self {
+        let res = replace_some_chars(self,aa,b);
+        CorpusAsString {
+            processed:res, self
+        }
+    }
 }
+ 
