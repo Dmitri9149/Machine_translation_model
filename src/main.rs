@@ -1,3 +1,8 @@
+use translationlib::*;
+
 fn main() {
-    println!("Hello, world!");
+    let txt = CorpusAsString::corpus_from_file("data/fra_eng/fra.txt");
+
+    println!("The first part of the text {:?}\n", &txt.original[0..1000]);
+
 }

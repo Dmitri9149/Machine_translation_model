@@ -2,13 +2,18 @@
 // as one big string, some preprocessing at the level of the 
 // whole string is possible (like add spaces between ? mark and end of sentences)
 //
+use std::fs::File;
+use std::io::prelude::*;
+
+
 pub struct CorpusAsString {
-    corpus:String,
+    pub original:String,
+    pub processed:String
 
 }
 
 
-impl CorpusAsAsting {
+impl CorpusAsString {
 
 // build by reading a file
     pub fn corpus_from_file(path: &str) -> CorpusAsString {
@@ -16,7 +21,8 @@ impl CorpusAsAsting {
         let mut contents = String::new();
         f.read_to_string(&mut contents).unwrap();
         CorpusAsString {
-            corpus: contents.clone()
+            original: contents.clone(),
+            processed:contents
         }
     }
 }
