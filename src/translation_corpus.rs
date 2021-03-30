@@ -5,6 +5,7 @@
 use std::fs::File;
 use std::io::prelude::*;
 
+use super::*;
 
 pub struct CorpusAsString {
     pub original:String,
@@ -26,9 +27,9 @@ impl CorpusAsString {
     }
 
     pub fn replace_some_chars(&self, aa:&str, b:char) -> Self {
-        let res = replace_some_chars(self,aa,b);
+        let res = replace_chars_to_char(&self.original,aa,b);
         CorpusAsString {
-            processed:res, self
+            processed:res, original:self.original.to_owned()
         }
     }
 }
