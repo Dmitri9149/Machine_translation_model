@@ -20,7 +20,7 @@ pub fn separate_punctuation(strng:&str, st:&str) -> String{
     let mut res=strng.to_owned();
     for ch in st.chars() {
         res = res
-            .replace(&ch.to_string(), &[" ", &ch.to_string(), " "].join(""))
+            .replace(&ch.to_string(), &[" ", &ch.to_string()].join(""))
             .to_owned();
     }
     res

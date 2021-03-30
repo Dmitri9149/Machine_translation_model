@@ -13,7 +13,6 @@ pub struct CorpusAsString {
 
 }
 
-
 impl CorpusAsString {
 // build by reading a file
     pub fn corpus_from_file(path: &str) -> CorpusAsString {
