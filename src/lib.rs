@@ -15,4 +15,35 @@ pub fn replace_chars_to_char(input:&str, aa:&str, b:char) -> String {
     output
 }
 
+// separate a punctuation symbol from the list 'st' by " " from both sides 
+pub fn separate_punctuation(strng:&str, st:&str) -> String{
+    let mut res=strng.to_owned();
+    for ch in st.chars() {
+        res = res
+            .replace(&ch.to_string(), &[" ", &ch.to_string(), " "].join(""))
+            .to_owned();
+    }
+    res
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

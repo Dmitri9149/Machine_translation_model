@@ -32,5 +32,11 @@ impl CorpusAsString {
             processed:res, original:self.original.to_owned()
         }
     }
+// separate punctuation
+    pub fn separate_punctuation(&mut self, st:&str) {
+        self.processed = separate_punctuation(&self.processed, st);
+    }
+
+
 }
  
