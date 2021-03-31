@@ -2,7 +2,8 @@ mod translation_corpus;
 mod sentence_pairs;
 
 pub use crate::translation_corpus::{CorpusAsString};
-pub use crate::sentence_pairs::{SentencesForTranslation};
+pub use crate::sentence_pairs::{SentencesForTranslation,TranslationPair,
+TranslationPairs};
 
 
 pub fn replace_chars_to_char(input:&str, aa:&str, b:char) -> String {

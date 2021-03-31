@@ -1,7 +1,9 @@
+use std::fmt::{self,Debug,Formatter};
+use super::*;
+
 // the struct is keeping 2 Vectors with sentences : one for englich 
 // and another for the french pairs
 
-use super::*;
 pub struct SentencesForTranslation {
     pub eng:Vec<String>,
     pub fra:Vec<String>
@@ -9,8 +11,8 @@ pub struct SentencesForTranslation {
 
 impl SentencesForTranslation {
     pub fn from_corpus(corpus:&CorpusAsString) -> SentencesForTranslation{
-        let mut eng:Vec<String>=vec!["".to_owned()];
-        let mut fra:Vec<String>=vec!["".to_owned()];
+        let mut eng:Vec<String>=vec![];
+        let mut fra:Vec<String>=vec![];
         for sub in corpus.processed.lines() {
             let mut it = sub.split("\t");
             eng.push(it.next().unwrap().to_owned());
@@ -25,3 +27,43 @@ impl SentencesForTranslation {
     }
 
 }
+
+// eng and fra sentences as a pair in one struct 
+pub struct TranslationPair {
+    pub eng:String,
+    pub fra:String
+}
+
+impl TranslationPair {
+    pub fn from_sentences(eng:&str,fra:&str) -> TranslationPair{
+        TranslationPair {eng:eng.to_owned(), fra:fra.to_owned()}
+    }
+}
+
+// Vector of TranslationPairs 
+pub struct TranslationPairs {
+    pub pairs:Vec<TranslationPair>
+
+}
+
+impl Debug for TranslationPair {
+    fn fmt(&self, f: &mut Formatter ) -> fmt::Result {
+        write!(f, "Pair:\neng:  {} \nfra:  {}", self.eng, self.fra)
+    }
+}
+
+
+impl TranslationPairs {
+// construct it from SentencesForTranslation
+    pub fn from_sentences(sentences:&SentencesForTranslation) -> TranslationPairs{
+        let size = sentences.eng.len();
+        let mut pairs:Vec<TranslationPair>= vec![];
+        for i in 0..size {
+            pairs.push(TranslationPair::from_sentences(&sentences.eng[i], &sentences.fra[i]));
+        }
+
+        TranslationPairs {pairs:pairs}
+
+    }
+}
+
