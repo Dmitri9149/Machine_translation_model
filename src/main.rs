@@ -6,7 +6,12 @@ fn main() {
     txt = txt.replace_some_chars("\u{202f}\u{00a0}", ' ');
     txt.separate_punctuation("?!.");
 
-    println!("The first part of the text {:?}\n", &txt.processed[0..1000]);
+    let sentences = SentencesForTranslation::from_corpus(&txt);
 
+//    println!("The first part of the text {:?}\n", &txt.processed[0..1000]);
+//    println!("The first pairs for translation {:?}\n", &sentences.eng[0..10]);
+    for i in 0..100 {
+        println!("{:?}         {:?}", sentences.eng[i], sentences.fra[i]); 
+    }
 }
 

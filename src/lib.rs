@@ -1,6 +1,9 @@
 mod translation_corpus;
+mod sentence_pairs;
 
 pub use crate::translation_corpus::{CorpusAsString};
+pub use crate::sentence_pairs::{SentencesForTranslation};
+
 
 pub fn replace_chars_to_char(input:&str, aa:&str, b:char) -> String {
     let mut output = String::with_capacity(input.len());
