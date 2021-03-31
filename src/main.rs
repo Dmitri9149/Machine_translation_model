@@ -17,5 +17,9 @@ fn main() {
     let translation_pairs = TranslationPairs::from_sentences(&sentences);
 
     println!("{:?}", &translation_pairs.pairs[0..200]);
+
+    let mut vocab = Vocab::new();
+    vocab.vector_words(&sentences);
+    println!("The words: \n{:?}",&vocab.eng_set[0..50]);
 }
 

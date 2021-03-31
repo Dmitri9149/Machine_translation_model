@@ -28,6 +28,26 @@ impl Vocab {
         eng_numbers:HashMap::new(),
         fra_numbers:HashMap::new(), }
     }
+
+    pub fn vector_words(&mut self, vector_sentences:&SentencesForTranslation) {
+        let size = vector_sentences.eng.len();
+        let mut res_eng:Vec<String>=Vec::with_capacity(size);
+        let mut res_fra:Vec<String>=Vec::with_capacity(size);
+        for sentence in &vector_sentences.eng {
+            for word in sentence.trim().split_whitespace(){
+                res_eng.push(word.to_owned());
+            }
+        }
+
+        for sentence in &vector_sentences.fra {
+            for word in sentence.trim().split_whitespace(){
+                res_fra.push(word.to_owned());
+            }
+        }
+
+        self.eng_set=res_eng;
+        self.fra_set=res_fra;   
+    }
 }
 
 impl FromTo {
