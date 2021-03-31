@@ -48,7 +48,7 @@ pub struct TranslationPairs {
 
 impl Debug for TranslationPair {
     fn fmt(&self, f: &mut Formatter ) -> fmt::Result {
-        write!(f, "Pair:\neng:  {} \nfra:  {}", self.eng, self.fra)
+        write!(f, "\nPair:\neng:  {} \nfra:  {}\n", self.eng, self.fra)
     }
 }
 
