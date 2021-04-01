@@ -25,8 +25,18 @@ fn main() {
     vocab.words_and_quantity();
     println!("The hash: \n{:?}", &vocab.eng_words);
 
-    println!("The number of eng words: {:?}", vocab.eng_words_total);
-    println!("The number of fra words: {:?}", vocab.fra_words_total);
+    println!("The number of eng words: {:?}", &vocab.eng_words_total);
+    println!("The number of fra words: {:?}", &vocab.fra_words_total);
+    
+    vocab.word_to_index();
+    vocab.index_to_word();
+
+    println!("The eng words indexation: {:?}\n", &vocab.eng_word_index);
+    println!("The eng index to words:  {:?}\n", &vocab.eng_index_word);
+
+    let mut tokens = VocabOfTokens::new();
+    tokens.from_word_vocab(&vocab);
+    println!("Tokens ! {:?}", &tokens.eng_token_quantity);
+
     
 }
-
