@@ -48,6 +48,24 @@ impl Vocab {
         self.eng_set=res_eng;
         self.fra_set=res_fra;   
     }
+
+    pub fn words_to_vocab(& mut self) {
+        for word in self.eng_set.iter() {
+            let count = self
+                .eng_words
+                .entry(word.to_owned())
+                .or_insert(0);
+            *count+=1;
+        }
+        for word in self.fra_set.iter() {
+            let count = self
+                .fra_words
+                .entry(word.to_owned())
+                .or_insert(0);
+            *count+=1;
+        }
+
+    }
 }
 
 impl FromTo {
