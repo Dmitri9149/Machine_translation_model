@@ -19,7 +19,7 @@ fn main() {
     println!("{:?}", &translation_pairs.pairs[0..200]);
 
     let mut vocab = Vocab::new();
-    vocab.vector_words(&sentences);
+    vocab.list_of_words(&sentences);
     println!("The words: \n{:?}",&vocab.eng_set[0..50]);
 }
 

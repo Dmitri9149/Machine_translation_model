@@ -3,21 +3,25 @@ use std::collections::HashMap;
 use super::*;
 
 pub struct Vocab {
+// the list of all words (may repeat) which we can get by splitting all 
+// sentences (usually we split on white space)
     pub eng_set:Vec<String>,
     pub fra_set:Vec<String>,
+// (word, quantity of the words) in our corpus
     pub eng_words:HashMap<String,u32>,
     pub fra_words:HashMap<String,u32>,
+// (number, quantity of the number) number here in the number equivalent of a word
     pub eng_numbers:HashMap<u32,u32>,
-    pub fra_numbers:HashMap<u32,u32>
-}
-
-// from words to numbers and back
-pub struct FromTo {
+    pub fra_numbers:HashMap<u32,u32>,
+// from number equivalent to word representation
     pub eng_num_words:HashMap<u32,String>,
     pub fra_num_words:HashMap<u32,String>,
+// from word to its number representation
     pub eng_words_num:HashMap<String,u32>,
     pub fra_words_num:HashMap<String,u32>
+
 }
+
 
 impl Vocab {
     pub fn new() -> Self { Vocab {
@@ -26,10 +30,14 @@ impl Vocab {
         eng_words:HashMap::new(),
         fra_words:HashMap::new(),
         eng_numbers:HashMap::new(),
-        fra_numbers:HashMap::new(), }
+        fra_numbers:HashMap::new(),
+        eng_num_words:HashMap::new(),
+        fra_num_words:HashMap::new(),
+        eng_words_num:HashMap::new(),
+        fra_words_num:HashMap::new()}
     }
 
-    pub fn vector_words(&mut self, vector_sentences:&SentencesForTranslation) {
+    pub fn list_of_words(&mut self, vector_sentences:&SentencesForTranslation) {
         let size = vector_sentences.eng.len();
         let mut res_eng:Vec<String>=Vec::with_capacity(size);
         let mut res_fra:Vec<String>=Vec::with_capacity(size);
@@ -49,7 +57,7 @@ impl Vocab {
         self.fra_set=res_fra;   
     }
 
-    pub fn words_to_vocab(& mut self) {
+    pub fn words_and_quantity(& mut self) {
         for word in self.eng_set.iter() {
             let count = self
                 .eng_words
@@ -66,13 +74,23 @@ impl Vocab {
         }
 
     }
-}
+// unique numbers are attached to every word in vocab and this is stored in hash structures
+// so we can go from word to its number representation and back
+    pub fn indexation_from_hash(&mut self) {
+        for word in &self.eng_words {
+            let count = self.eng_words_num
+                .entry(word.0.to_owned())
+                .or_insert(0);
+            *count+=1;
 
-impl FromTo {
-    pub fn new() -> Self { FromTo {
-        eng_num_words:HashMap::new(),
-        fra_num_words:HashMap::new(),
-        eng_words_num:HashMap::new(),
-        fra_words_num:HashMap::new() }
+        }
+
+        for word in &self.fra_words {
+            let count = self.fra_words_num
+                .entry(word.0.to_owned())
+                .or_insert(0);
+            *count+=1;
+        }
     }
 }
+
