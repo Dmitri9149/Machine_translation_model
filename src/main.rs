@@ -21,5 +21,12 @@ fn main() {
     let mut vocab = Vocab::new();
     vocab.list_of_words(&sentences);
     println!("The words: \n{:?}",&vocab.eng_set[0..50]);
+
+    vocab.words_and_quantity();
+    println!("The hash: \n{:?}", &vocab.eng_words);
+
+    println!("The number of eng words: {:?}", vocab.eng_words_total);
+    println!("The number of fra words: {:?}", vocab.fra_words_total);
+    
 }
 

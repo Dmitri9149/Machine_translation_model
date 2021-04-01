@@ -2,23 +2,31 @@
 use std::collections::HashMap;
 use super::*;
 
+// is used for calculating quantity of words
+type Qxx = u32;
+// is used for the indexing (numbering) of words
+type Ixx = u16;
+
 pub struct Vocab {
 // the list of all words (may repeat) which we can get by splitting all 
 // sentences (usually we split on white space)
     pub eng_set:Vec<String>,
     pub fra_set:Vec<String>,
 // (word, quantity of the words) in our corpus
-    pub eng_words:HashMap<String,u32>,
-    pub fra_words:HashMap<String,u32>,
+    pub eng_words:HashMap<String,Qxx>,
+    pub fra_words:HashMap<String,Qxx>,
 // (number, quantity of the number) number here in the number equivalent of a word
-    pub eng_numbers:HashMap<u32,u32>,
-    pub fra_numbers:HashMap<u32,u32>,
+    pub eng_numbers:HashMap<Ixx,Qxx>,
+    pub fra_numbers:HashMap<Ixx,Qxx>,
 // from number equivalent to word representation
-    pub eng_num_words:HashMap<u32,String>,
-    pub fra_num_words:HashMap<u32,String>,
+    pub eng_num_words:HashMap<Ixx,String>,
+    pub fra_num_words:HashMap<Ixx,String>,
 // from word to its number representation
-    pub eng_words_num:HashMap<String,u32>,
-    pub fra_words_num:HashMap<String,u32>
+    pub eng_words_num:HashMap<String,Ixx>,
+    pub fra_words_num:HashMap<String,Ixx>,
+// number of words in fra or eng 
+    pub eng_words_total:Ixx,
+    pub fra_words_total:Ixx,
 
 }
 
@@ -34,7 +42,10 @@ impl Vocab {
         eng_num_words:HashMap::new(),
         fra_num_words:HashMap::new(),
         eng_words_num:HashMap::new(),
-        fra_words_num:HashMap::new()}
+        fra_words_num:HashMap::new(),
+        eng_words_total:0,
+        fra_words_total:0,
+    }
     }
 
     pub fn list_of_words(&mut self, vector_sentences:&SentencesForTranslation) {
@@ -57,7 +68,7 @@ impl Vocab {
         self.fra_set=res_fra;   
     }
 
-    pub fn words_and_quantity(& mut self) {
+    pub fn words_and_quantity(&mut self) {
         for word in self.eng_set.iter() {
             let count = self
                 .eng_words
@@ -72,6 +83,9 @@ impl Vocab {
                 .or_insert(0);
             *count+=1;
         }
+
+        self.eng_words_total = self.eng_words.keys().len() as Ixx;
+        self.fra_words_total = self.fra_words.keys().len() as Ixx;
 
     }
 // unique numbers are attached to every word in vocab and this is stored in hash structures
