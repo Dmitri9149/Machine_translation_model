@@ -91,7 +91,7 @@ impl Vocab {
 // unique numbers are attached to every word in vocab and this is stored in hash structures
 // so we can go from word to its number representation and back
     pub fn word_to_index(&mut self) {
-        let mut index:Ixx = 1;
+        let mut index:Ixx = 0;
         for word in &self.eng_words {
             self.eng_word_index
                 .insert(word.0.to_owned(), index);
