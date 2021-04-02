@@ -18,7 +18,8 @@ pub struct Token {
     token:String,
 }
 
-#[derive (Copy,Clone)]
+//#[derive (Eq,Copy,Clone)]
+#[derive(PartialEq, Eq, Hash, PartialOrd, Ord)]
 pub struct Index {
     index:Ind
 }
@@ -57,6 +58,13 @@ impl Debug for Token {
     )
     }
 }
+/*
+impl PartialEq for Index {
+    fn eq(&self, other: &Self) -> bool {
+        self.index == other.index
+    }
+}
+*/
 
 
 impl Token {
@@ -143,7 +151,7 @@ impl VocabOfTokens {
 
     }
 
-    pub fn indexation(&mut self) {
+    pub fn token_to_index(&mut self) {
         let mut count:usize = 0;
         let mut index:Index;
         let mut insert:Token;
@@ -153,6 +161,36 @@ impl VocabOfTokens {
             self.eng_token_index.insert(insert,index);
             count+=1;
         }
+
+        let mut count:usize = 0;
+        let mut index:Index;
+        let mut insert:Token;
+        for (token, _) in &self.fra_token_quantity {
+            index = Index::from_number(&count);
+            insert = Token::from_data(&token.token);
+            self.fra_token_index.insert(insert,index);
+            count+=1;
+        }
+
+    }
+
+    pub fn index_to_token(&mut self) {
+        let mut insert:Token;
+        let mut indx:Index;
+        for (token, ind) in &self.eng_token_index {
+            insert= Token::from_data(&token.token);
+            indx = Index::from_number(&ind.index);
+            self.eng_index_token.insert(indx,insert);
+        }
+
+        let mut insert:Token;
+        let mut indx:Index;
+        for (token, ind) in &self.fra_token_index {
+            insert= Token::from_data(&token.token);
+            indx = Index::from_number(&ind.index);
+            self.fra_index_token.insert(indx,insert);
+        }
+
     }
 
 }
