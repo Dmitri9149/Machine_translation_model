@@ -8,8 +8,8 @@ fn main() {
 
     let sentences = SentencesForTranslation::from_corpus(&txt);
 
-//    println!("The first part of the text {:?}\n", &txt.processed[0..1000]);
-//    println!("The first pairs for translation {:?}\n", &sentences.eng[0..10]);
+    println!("The first part of the text {:?}\n", &txt.processed[0..1000]);
+    println!("The first pairs for translation {:?}\n", &sentences.eng[0..10]);
     for i in 0..1000 {
         println!("{:?}         {:?}", sentences.eng[i], sentences.fra[i]); 
     }
