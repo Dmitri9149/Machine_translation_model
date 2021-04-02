@@ -36,7 +36,12 @@ fn main() {
 
     let mut tokens = VocabOfTokens::new();
     tokens.from_word_vocab(&vocab);
-    println!("Tokens ! {:?}", &tokens.eng_token_quantity);
+//    tokens.quantity_of_tokens();
+    println!("Tokens ! {:?}", &tokens.eng_token_quantity);      
+    println!("Number of initial tokens eng: {}",
+             &tokens.eng_token_total);
+    println!("Number of initial tokens fra: {}",
+             &tokens.fra_token_total);
 
     
 }
