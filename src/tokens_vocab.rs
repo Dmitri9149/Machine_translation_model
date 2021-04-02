@@ -2,6 +2,9 @@
 
 use super::*;
 use std::collections::BTreeMap;
+use std::collections::HashMap;
+use std::hash::Hash;
+use std::hash::Hasher;
 use std::cmp::Ordering;
 use std::fmt::{self,Debug,Formatter};
 
@@ -13,16 +16,17 @@ type Quant = u32;
 // #[derive (Eq)]
 pub struct Token {
     token:String,
-    length:usize,
 }
 
+#[derive (Copy,Clone)]
 pub struct Index {
     index:Ind
 }
 
+
 impl Ord for Token {
     fn cmp(&self, other: &Self) -> Ordering {
-        (self.length, &self.token).cmp(&(other.length, &other.token))
+        self.token.cmp(&other.token)
     }
 }
 
@@ -41,11 +45,15 @@ impl PartialEq for Token {
 
 impl Eq for Token {}
 
+impl Hash for Token {
+    fn hash<H: Hasher>(&self, hasher: &mut H) {
+        self.token.hash(hasher);
+    }
+}
 impl Debug for Token {
     fn fmt(&self, f: &mut Formatter ) -> fmt::Result {
-        write!(f, "Token: {:?} with length: {:?}",
+        write!(f, "Token: {:?}",
         &self.token,
-        &self.length,
     )
     }
 }
@@ -55,21 +63,32 @@ impl Token {
     pub fn from_data(st:&str) -> Token {
         Token {
         token:st.to_string(),
-        length:st.chars().count()
         }
     }
 
     pub fn new() -> Token {
         Token {
         token:"".to_owned(),
-        length:0
+        }
+    }
+}
+
+impl Index {
+    pub fn from_number(count:&Ind) -> Index {
+        Index {
+            index:*count
+        
         }
     }
 }
 
 pub struct VocabOfTokens {
-    pub eng_token_quantity:BTreeMap<Token,Quant>,
-    pub fra_token_quantity:BTreeMap<Token,Quant>,
+    pub eng_token_quantity:HashMap<Token,Quant>,
+    pub fra_token_quantity:HashMap<Token,Quant>,
+    pub eng_token_index:HashMap<Token,Index>,
+    pub fra_token_index:HashMap<Token,Index>,
+    pub eng_index_token:HashMap<Index,Token>,
+    pub fra_index_token:HashMap<Index,Token>,
     pub eng_token_total:usize,
     pub fra_token_total:usize,
 
@@ -78,8 +97,12 @@ pub struct VocabOfTokens {
 impl VocabOfTokens {
     pub fn new() -> VocabOfTokens {
         VocabOfTokens {
-    eng_token_quantity:BTreeMap::new(),
-    fra_token_quantity:BTreeMap::new(),
+    eng_token_quantity:HashMap::new(),
+    fra_token_quantity:HashMap::new(),
+    eng_token_index:HashMap::new(),
+    fra_token_index:HashMap::new(),
+    eng_index_token:HashMap::new(),
+    fra_index_token:HashMap::new(),
     eng_token_total:0,
     fra_token_total:0,
 
@@ -119,16 +142,17 @@ impl VocabOfTokens {
 
 
     }
-/*
+
     pub fn indexation(&mut self) {
         let mut count:usize = 0;
-        for (&mut token, _quant) in self.eng_token_quantity.iter_mut() {
-            match token.index {
-                None => token.index = Some(count),
-                Some(x) => panic!("Tokens are already indexed!"),
-            }
+        let mut index:Index;
+        let mut insert:Token;
+        for (token, _) in &self.eng_token_quantity {
+            index = Index::from_number(&count);
+            insert = Token::from_data(&token.token);
+            self.eng_token_index.insert(insert,index);
             count+=1;
         }
     }
-*/
+
 }
