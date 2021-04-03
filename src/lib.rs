@@ -6,8 +6,8 @@ mod tokens_vocab;
 pub use crate::translation_corpus::{CorpusAsString};
 pub use crate::sentence_pairs::{SentencesForTranslation,TranslationPair,
 TranslationPairs};
-pub use crate::word_vocabs::{Vocab};
-pub use tokens_vocab::{Token, VocabOfTokens};
+pub use crate::word_vocabs::{Vocab,Qxx,Ixx};
+pub use tokens_vocab::{VocabOfTokens};
 
 
 pub fn replace_chars_to_char(input:&str, aa:&str, b:char) -> String {

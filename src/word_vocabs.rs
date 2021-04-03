@@ -3,9 +3,9 @@ use std::collections::HashMap;
 use super::*;
 
 // is used for calculating quantity of words
-type Qxx = u32;
+pub type Qxx = u32;
 // is used for the indexing (numbering) of words
-type Ixx = u32;
+pub type Ixx = u32;
 
 pub struct Vocab {
 // the list of all words (may repeat) which we can get by splitting all 

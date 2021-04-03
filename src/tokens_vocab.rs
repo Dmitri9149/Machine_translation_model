@@ -1,5 +1,5 @@
 // vocabulary of tokens at the level of words
-
+#![cfg_attr(debug_assertions, allow(dead_code, unused_imports))]
 use super::*;
 use std::collections::BTreeMap;
 use std::collections::HashMap;
@@ -13,90 +13,14 @@ type Ind = usize;
 // quantity of tokens in vocabulary (token, quantity)
 type Quant = u32;
 
-// #[derive (Eq)]
-pub struct Token {
-    token:String,
-}
-
-//#[derive (Eq,Copy,Clone)]
-#[derive(PartialEq, Eq, Hash, PartialOrd, Ord)]
-pub struct Index {
-    index:Ind
-}
-
-
-impl Ord for Token {
-    fn cmp(&self, other: &Self) -> Ordering {
-        self.token.cmp(&other.token)
-    }
-}
-
-impl PartialOrd for Token {
-    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        Some(self.cmp(other))
-    }
-}
-
-
-impl PartialEq for Token {
-    fn eq(&self, other: &Self) -> bool {
-        self.token == other.token
-    }
-}
-
-impl Eq for Token {}
-
-impl Hash for Token {
-    fn hash<H: Hasher>(&self, hasher: &mut H) {
-        self.token.hash(hasher);
-    }
-}
-impl Debug for Token {
-    fn fmt(&self, f: &mut Formatter ) -> fmt::Result {
-        write!(f, "Token: {:?}",
-        &self.token,
-    )
-    }
-}
-/*
-impl PartialEq for Index {
-    fn eq(&self, other: &Self) -> bool {
-        self.index == other.index
-    }
-}
-*/
-
-
-impl Token {
-    pub fn from_data(st:&str) -> Token {
-        Token {
-        token:st.to_string(),
-        }
-    }
-
-    pub fn new() -> Token {
-        Token {
-        token:"".to_owned(),
-        }
-    }
-}
-
-impl Index {
-    pub fn from_number(count:&Ind) -> Index {
-        Index {
-            index:*count
-        
-        }
-    }
-}
 
 pub struct VocabOfTokens {
-    pub eng_token_quantity:HashMap<Token,Quant>,
-    pub fra_token_quantity:HashMap<Token,Quant>,
-    pub eng_token_index:HashMap<Token,Index>,
-    pub fra_token_index:HashMap<Token,Index>,
-    pub eng_index_token:HashMap<Index,Token>,
-    pub fra_index_token:HashMap<Index,Token>,
+    pub eng_token_quantity:HashMap<String,Quant>,
+    pub fra_token_quantity:HashMap<String,Quant>,
+    pub eng_token_index:HashMap<String,Ind>,
+    pub fra_token_index:HashMap<String,Ind>,
+    pub eng_index_token:HashMap<Ind,String>,
+    pub fra_index_token:HashMap<Ind,String>,
     pub eng_token_total:usize,
     pub fra_token_total:usize,
 
@@ -118,77 +42,60 @@ impl VocabOfTokens {
     }
 
     pub fn from_word_vocab(&mut self, vocab:&Vocab) {
-        let mut token:Token;
-        for (word,quant) in &vocab.eng_words {
-
-            for ch in word.chars() {
-                token = Token::from_data(&ch.to_string());
-                *self.eng_token_quantity
-                    .entry(token)
-                    .or_insert(0)+=quant.to_owned();
-
+        let closure = |token_quantity:&mut HashMap<String,Quant>
+            ,words:&HashMap<String,Qxx>| {
+            for (word,quant) in words {
+                for ch in word.chars() {
+                    *token_quantity
+                        .entry(ch.to_string())
+                        .or_insert(0)+=quant.to_owned();
+                }
             }
-        }
-
-
-
-        let mut token:Token;
-        for (word,quant) in &vocab.fra_words {
-
-            for ch in word.chars() {
-                token = Token::from_data(&ch.to_string());
-                *self.fra_token_quantity
-                    .entry(token)
-                    .or_insert(0)+=quant.to_owned();
-
-            }
-        }
-
-
+        };
+        closure(&mut self.eng_token_quantity,&vocab.eng_words);
+        closure(&mut self.fra_token_quantity,&vocab.fra_words);
         self.eng_token_total = self.eng_token_quantity.keys().len();
         self.fra_token_total = self.fra_token_quantity.keys().len();
-
-
     }
 
+// same as token_to_index but  closure is used; map token to index
+    pub fn token_to_index_c(&mut self) {
+        let closure = |token_quantity:&mut HashMap<String,Quant>
+            ,token_index:&mut HashMap<String,Ind>| {
+            let mut count:Ind = 0;
+            for (token, _) in token_quantity {
+                token_index.insert(token.to_string(),count);
+                count+=1;
+            }
+        };
+        closure(&mut self.eng_token_quantity,&mut self.eng_token_index);
+        closure(&mut self.fra_token_quantity,&mut self.fra_token_index);
+    }
+   
+// map token to index
     pub fn token_to_index(&mut self) {
-        let mut count:usize = 0;
-        let mut index:Index;
-        let mut insert:Token;
+        let mut count:Ind = 0;
         for (token, _) in &self.eng_token_quantity {
-            index = Index::from_number(&count);
-            insert = Token::from_data(&token.token);
-            self.eng_token_index.insert(insert,index);
+            self.eng_token_index.insert(token.to_string(),count);
             count+=1;
         }
 
-        let mut count:usize = 0;
-        let mut index:Index;
-        let mut insert:Token;
+        let mut count:Ind = 0;
         for (token, _) in &self.fra_token_quantity {
-            index = Index::from_number(&count);
-            insert = Token::from_data(&token.token);
-            self.fra_token_index.insert(insert,index);
+            self.fra_token_index.insert(token.to_string(),count);
             count+=1;
         }
 
     }
 
+// map index to token
     pub fn index_to_token(&mut self) {
-        let mut insert:Token;
-        let mut indx:Index;
         for (token, ind) in &self.eng_token_index {
-            insert= Token::from_data(&token.token);
-            indx = Index::from_number(&ind.index);
-            self.eng_index_token.insert(indx,insert);
+            self.eng_index_token.insert(*ind,token.to_string());
         }
 
-        let mut insert:Token;
-        let mut indx:Index;
         for (token, ind) in &self.fra_token_index {
-            insert= Token::from_data(&token.token);
-            indx = Index::from_number(&ind.index);
-            self.fra_index_token.insert(indx,insert);
+            self.fra_index_token.insert(*ind,token.to_string());
         }
 
     }
