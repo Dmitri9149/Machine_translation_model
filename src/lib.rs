@@ -3,18 +3,24 @@ mod sentence_pairs;
 mod word_vocabs;
 mod tokens_vocab;
 mod token_merges;
+mod token;
 
 pub use crate::translation_corpus::{CorpusAsString};
 pub use crate::sentence_pairs::{SentencesForTranslation,TranslationPair,
 TranslationPairs};
-pub use crate::word_vocabs::{Vocab,Qxx,Ixx};
+pub use crate::word_vocabs::{Vocab,WordToIndexCollection};
 pub use tokens_vocab::{VocabOfTokens};
 pub use token_merges::{CandidatesForMerge};
+pub use token::{Token,WordAsTokensDynamic};
 
 // indexation of tokens 
 pub type Ind = usize;
 // for tokens quantity
 pub type Quant = u32;
+// indexation of words
+pub type Ixx= usize;
+// for words quantity
+pub type Qxx = u32;
 
 
 pub fn replace_chars_to_char(input:&str, aa:&str, b:char) -> String {

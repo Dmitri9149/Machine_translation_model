@@ -3,9 +3,9 @@ use std::collections::HashMap;
 use super::*;
 
 // is used for calculating quantity of words
-pub type Qxx = u32;
+//pub type Qxx = u32;
 // is used for the indexing (numbering) of words
-pub type Ixx = u32;
+// pub type Ixx = u32;
 
 pub struct Vocab {
 // the list of all words (may repeat) which we can get by splitting all 
@@ -139,25 +139,23 @@ pub struct WordToIndexCollection {
 // the pairs in the Vectors: 
 // word as string is paired with collection of token indixes 
 // word as number is paired with the collection of token indixes 
-    eng_words_s:HashMap<String,Vec<Vec<Ind>>>,
-    fra_words_s:HashMap<String,Vec<Vec<Ind>>>,
-    eng_words_n:HashMap<Ixx,Vec<Vec<Ind>>>,
-    fra_words_n:HashMap<Ixx,Vec<Vec<Ind>>>
+    pub eng_words_s:HashMap<String,Vec<Ind>>,
+    pub fra_words_s:HashMap<String,Vec<Ind>>,
+    pub eng_words_n:HashMap<Ixx,Vec<Ind>>,
+    pub fra_words_n:HashMap<Ixx,Vec<Ind>>
 
 }
 
 impl WordToIndexCollection {
     pub fn from_word_vocab(&mut self, word_vocab:&Vocab,token_vocab:&VocabOfTokens) {
-        let closure = |words_s:&mut HashMap<String,Vec<Vec<Ind>>>
+        let closure = |words_s:&mut HashMap<String,Vec<Ind>>
             ,words:&HashMap<String,Quant>
             ,token_index:&HashMap<String,Ind>| {
                 for (word,_) in words {
-                    let collection:&mut Vec<Vec<Ind>> = &mut Vec::new();
+                    let collection:&mut Vec<Ind> = &mut Vec::new();
 
                     for ch in word.chars() {
-                        let mut vec_char:Vec<Ind>= Vec::with_capacity(1);
-                        vec_char.push(*token_index.get(&ch.to_string()).unwrap());
-                        collection.push(vec_char);
+                        collection.push(*token_index.get(&ch.to_string()).unwrap());
                     }
                     words_s.insert(word.to_string(),collection.to_vec());
                 }
