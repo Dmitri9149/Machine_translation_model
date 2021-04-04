@@ -15,7 +15,7 @@ pub struct Vocab {
 // (word, quantity of the words) in our corpus
     pub eng_words:HashMap<String,Qxx>,
     pub fra_words:HashMap<String,Qxx>,
-// (number, quantity of the number) number here in the number equivalent of a word
+// (number, quantity of the number) number here is the number equivalent of a word  (it's index)
     pub eng_numbers:HashMap<Ixx,Qxx>,
     pub fra_numbers:HashMap<Ixx,Qxx>,
 // from number equivalent to word representation
@@ -119,6 +119,18 @@ impl Vocab {
                 .insert(*word.1, word.0.to_owned());
         }
 
+    }
+
+    pub fn index_quantity(&mut self) {
+        let closure = |words:&HashMap<String,Qxx>
+            ,word_index:&HashMap<String,Ixx>
+            ,numbers:&mut HashMap<Ixx,Qxx>| {
+                for (word,quant) in words {
+                    numbers.insert(word_index.get(word).unwrap().to_owned(),*quant);
+                }              
+            };
+        closure(&self.eng_words,&self.eng_word_index,&mut self.eng_numbers);
+        closure(&self.fra_words,&self.fra_word_index,&mut self.fra_numbers);
     }
 }
 
