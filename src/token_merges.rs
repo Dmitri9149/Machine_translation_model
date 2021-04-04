@@ -9,7 +9,9 @@ pub struct CandidatesForMerge {
 
 pub struct MostFrequentPair {
     eng:(Ind,Ind),
-    fra:(Ind,Ind)
+    fra:(Ind,Ind),
+//    eng_frequency:Quant,
+//    fra_frequency:Quant
 }
 
 impl CandidatesForMerge {
@@ -52,8 +54,8 @@ impl CandidatesForMerge {
 
     pub fn most_frequent_pair(&self) -> MostFrequentPair {
         let closure = |pairs:&HashMap<(Ind,Ind),Quant>| {
-            let eng_res = max_key(pairs).expect("The vocabulary is to be not empty");
-            (eng_res.0,eng_res.1) 
+            let res = max_key(pairs).expect("The vocabulary is to be not empty");
+            (res.0, res.1) 
         };
         MostFrequentPair {
         eng:closure(&self.eng_pairs),    
@@ -61,6 +63,8 @@ impl CandidatesForMerge {
         
         }
     }
+
+//    pub fn new_token()
 /*
 // calculate the most frequent pair of consequtive tokens in words of VocabStage
     pub fn key_max(&self) -> (String, String) {
