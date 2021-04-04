@@ -116,3 +116,12 @@ impl VocabOfTokens {
     }
 
 }
+
+// keep records of all new + initial ('letters') tokens and 
+// the indixes of the tokens
+pub struct SetOfTokensDynamic {
+    eng_index_token:HashMap<Ind,Token>,
+    fra_index_token:HashMap<Ind,Token>
+}
+
+
