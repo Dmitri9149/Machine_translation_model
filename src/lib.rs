@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 mod translation_corpus;
 mod sentence_pairs;
 mod word_vocabs;
