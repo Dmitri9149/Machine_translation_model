@@ -139,16 +139,16 @@ pub struct WordToIndexCollection {
 // the pairs in the Vectors: 
 // word as string is paired with collection of token indixes 
 // word as number is paired with the collection of token indixes 
-    eng_words_s:Vec<(String,Vec<Vec<Ind>>)>,
-    fra_words_s:Vec<(String,Vec<Vec<Ind>>)>,
-    eng_words_n:Vec<(Ixx,Vec<Vec<Ind>>)>,
-    fra_words_n:Vec<(Ixx,Vec<Vec<Ind>>)>
+    eng_words_s:HashMap<String,Vec<Vec<Ind>>>,
+    fra_words_s:HashMap<String,Vec<Vec<Ind>>>,
+    eng_words_n:HashMap<Ixx,Vec<Vec<Ind>>>,
+    fra_words_n:HashMap<Ixx,Vec<Vec<Ind>>>
 
 }
 
 impl WordToIndexCollection {
     pub fn from_word_vocab(&mut self, word_vocab:&Vocab,token_vocab:&VocabOfTokens) {
-        let closure = |words_s:&mut Vec<(String,Vec<Vec<Ind>>)>
+        let closure = |words_s:&mut HashMap<String,Vec<Vec<Ind>>>
             ,words:&HashMap<String,Quant>
             ,token_index:&HashMap<String,Ind>| {
                 for (word,_) in words {
@@ -159,7 +159,7 @@ impl WordToIndexCollection {
                         vec_char.push(*token_index.get(&ch.to_string()).unwrap());
                         collection.push(vec_char);
                     }
-                    words_s.push((word.to_string(),collection.to_vec()));
+                    words_s.insert(word.to_string(),collection.to_vec());
                 }
 
             };

@@ -7,8 +7,10 @@ pub struct CandidatesForMerge {
 
 /*
 impl CandidatesForMerge {
-    pub fn from_token_vocab(vocab:&Vocab) -> CandidatesForMerge {
-        for (index,quantity) in vocab.eng_numbers {
+    pub fn from_word_vocab(vocab:&Vocab,word_collection:&WordToIndexCollection) 
+        -> CandidatesForMerge {
+        for word in vocab.eng_words {
+            for 
 
         }
     }
