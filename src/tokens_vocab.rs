@@ -8,15 +8,18 @@ use std::hash::Hasher;
 use std::cmp::Ordering;
 use std::fmt::{self,Debug,Formatter};
 
+/*
 // for token indexation
 type Ind = usize;
 // quantity of tokens in vocabulary (token, quantity)
 type Quant = u32;
-
+*/
 
 pub struct VocabOfTokens {
     pub eng_token_quantity:HashMap<String,Quant>,
     pub fra_token_quantity:HashMap<String,Quant>,
+    pub eng_index_quantity:HashMap<Ind,Quant>,
+    pub fra_index_quantity:HashMap<Ind,Quant>,
     pub eng_token_index:HashMap<String,Ind>,
     pub fra_token_index:HashMap<String,Ind>,
     pub eng_index_token:HashMap<Ind,String>,
@@ -31,6 +34,8 @@ impl VocabOfTokens {
         VocabOfTokens {
     eng_token_quantity:HashMap::new(),
     fra_token_quantity:HashMap::new(),
+    eng_index_quantity:HashMap::new(),
+    fra_index_quantity:HashMap::new(),
     eng_token_index:HashMap::new(),
     fra_token_index:HashMap::new(),
     eng_index_token:HashMap::new(),
@@ -98,6 +103,16 @@ impl VocabOfTokens {
             self.fra_index_token.insert(*ind,token.to_string());
         }
 
+    }
+
+    pub fn index_to_quantity(&mut self) {
+        let closure = |tokens:&HashMap<String,Quant>
+            ,token_to_index:&HashMap<String,Ind>
+            ,index_to_quantity:&mut HashMap<Ind,Quant>| {
+                for (token,quantity) in tokens {
+                    index_to_quantity.insert(*token_to_index.get(token).unwrap(),*quantity);
+                }
+            };
     }
 
 }
