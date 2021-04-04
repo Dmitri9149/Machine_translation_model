@@ -10,8 +10,8 @@ pub struct CandidatesForMerge {
 pub struct MostFrequentPair {
     eng:(Ind,Ind),
     fra:(Ind,Ind),
-//    eng_frequency:Quant,
-//    fra_frequency:Quant
+    eng_frequency:Quant,
+    fra_frequency:Quant
 }
 
 impl CandidatesForMerge {
@@ -55,14 +55,31 @@ impl CandidatesForMerge {
     pub fn most_frequent_pair(&self) -> MostFrequentPair {
         let closure = |pairs:&HashMap<(Ind,Ind),Quant>| {
             let res = max_key(pairs).expect("The vocabulary is to be not empty");
-            (res.0, res.1) 
+            res
         };
+
+        let eng_max_pair = closure(&self.eng_pairs);
+        let fra_max_pair = closure(&self.fra_pairs);
         MostFrequentPair {
-        eng:closure(&self.eng_pairs),    
-        fra:closure(&self.fra_pairs)
-        
+        eng:*eng_max_pair.0,    
+        fra:*fra_max_pair.0,
+        eng_frequency:*eng_max_pair.1,
+        fra_frequency:*fra_max_pair.1
         }
     }
+
+/* the function return the key with biggest value
+fn max_key<K, V>(a_hash_map: &HashMap<K, V>) -> Option<(&K,&V)>
+where
+    V: Ord,
+{
+    a_hash_map
+        .iter()
+        .max_by(|a, b| a.1.cmp(&b.1))
+//        .map(|(k, v)| (k,v))
+}
+*/
+
 
 //    pub fn new_token()
 /*
