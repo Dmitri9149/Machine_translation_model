@@ -55,16 +55,16 @@ impl CandidatesForMerge {
     pub fn most_frequent_pair(&self) -> MostFrequentPair {
         let closure = |pairs:&HashMap<(Ind,Ind),Quant>| {
             let res = max_key(pairs).expect("The vocabulary is to be not empty");
-            res
+            (*res.0,*res.1)
         };
 
         let eng_max_pair = closure(&self.eng_pairs);
         let fra_max_pair = closure(&self.fra_pairs);
         MostFrequentPair {
-        eng:*eng_max_pair.0,    
-        fra:*fra_max_pair.0,
-        eng_frequency:*eng_max_pair.1,
-        fra_frequency:*fra_max_pair.1
+        eng:eng_max_pair.0,    
+        fra:fra_max_pair.0,
+        eng_frequency:eng_max_pair.1,
+        fra_frequency:fra_max_pair.1
         }
     }
 
