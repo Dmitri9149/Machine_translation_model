@@ -4,9 +4,12 @@ use super::*;
 use std::collections::HashMap;
 
 pub struct Token {
-    eng_token:HashMap<Ind,Vec<Ind>>,
-    fra_token:HashMap<Ind,Vec<Ind>>
-
+//    eng_token:HashMap<Ind,Vec<Ind>>,
+//    fra_token:HashMap<Ind,Vec<Ind>>,
+    eng_flattened_to_index:Vec<Ind>,
+    fra_flattened_to_index:Vec<Ind>,
+    eng_flattened_to_chars:Vec<String>,
+    fra_flattened_to_chars:Vec<String>,
 }
 // dynamically changing Vocab of Words which are represented 
 // as map from numbers (word indices) to collection of 
