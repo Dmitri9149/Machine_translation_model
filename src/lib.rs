@@ -4,7 +4,7 @@ mod translation_corpus;
 mod sentence_pairs;
 mod word_vocabs;
 mod tokens_vocab;
-mod system_dynamics;
+mod system_dynamic;
 mod token;
 
 pub use crate::translation_corpus::{CorpusAsString};
@@ -12,8 +12,8 @@ pub use crate::sentence_pairs::{SentencesForTranslation,TranslationPair,
 TranslationPairs};
 pub use crate::word_vocabs::{Vocab,WordToIndexCollection};
 pub use tokens_vocab::{VocabOfTokens};
-pub use system_dynamics::{CandidatesForMerge,MostFrequentPair,TokensDynamic};
-pub use token::{Token,WordAsTokensDynamic};
+pub use system_dynamic::{CandidatesForMerge,MostFrequentPair,TokensDynamic,Token};
+pub use token::{WordAsTokensDynamic};
 
 // indexation of tokens 
 pub type Ind = usize;
