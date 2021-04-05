@@ -6,6 +6,21 @@ use std::collections::HashMap;
 
 // keep the records of the flattened tokens as 
 // list of indices or as String
+pub struct Token {
+    flattened_to_index:Vec<Ind>,
+    flattened_to_string:String,
+}
+
+pub enum Lang {
+    Eng,
+    Fra
+}
+pub enum TokenLang {
+    Eng(Token),
+    Fra(Token)
+}
+
+/*
 pub struct FraToken {
 //    eng_token:HashMap<Ind,Vec<Ind>>,
 //    fra_token:HashMap<Ind,Vec<Ind>>,
@@ -19,22 +34,27 @@ pub struct EngToken {
     eng_flattened_to_index:Vec<Ind>,
     eng_flattened_to_string:String,
 }
-
-
-
+*/
 pub struct CandidatesForMerge {
-    pub eng_pairs:HashMap<(Ind,Ind),Quant>,
-    pub fra_pairs:HashMap<(Ind,Ind),Quant>
+    pub pairs:HashMap<(Ind,Ind),Quant>,
+}
 
+pub enum CandidatesForMergeLang {
+    Eng(CandidatesForMerge),
+    Fra(CandidatesForMerge)
 }
 
 pub struct MostFrequentPair {
-    eng:(Ind,Ind),
-    fra:(Ind,Ind),
-    eng_frequency:Quant,
-    fra_frequency:Quant
+    pair:(Ind,Ind),
+    pair_frequency:Quant,
 }
 
+pub enum MostFrequentPairLang {
+    Eng(MostFrequentPair),
+    Fra(MostFrequentPair)
+}
+
+/*
 impl MostFrequentPair {
     pub fn from_merge_candidates(candidates:&CandidatesForMerge) -> MostFrequentPair {
         let closure = |pairs:&HashMap<(Ind,Ind),Quant>| {
@@ -55,39 +75,37 @@ impl MostFrequentPair {
     pub fn new_token(pair:&MostFrequentPair,)
 */
 }
-
-
+*/
 impl CandidatesForMerge {
 
-    pub fn from_word_vocab(&mut self,vocab:&Vocab,word_collection:&WordToIndexCollection) {
-        let mut size = word_collection.eng_words_n.len();
-        let mut closure = |pairs:&mut HashMap<(Ind,Ind),Quant>
-            ,vocab:&Vocab
-            ,word_collection:&WordToIndexCollection| {
-            let mut quant:Quant;
-            let mut collection:Vec<Ind> = vec![];
-            let mut pair:(Ind,Ind);
-            for word in vocab.eng_index_word.keys() {
-                collection = word_collection.eng_words_n.get(&word).unwrap().to_vec();
-                size = collection.len();
-                    if size == 0 {
-                        panic!("from CandidatesForMerge: collection has 0 length, breack");
-                    } else if size ==1 {
-                        continue
-                    }
-                for i in 0..size-1 {
-                    pair = (collection[i],collection[i+1]);
-                    quant = *vocab.eng_numbers.get(&word).unwrap();
-                    *pairs.entry(pair).or_insert(quant)+=quant;
+    pub fn from_word_vocab(index_word:&HashMap<Ixx,String>
+                           ,words_n:&HashMap<Ixx,Vec<Ind>>
+                           ,numbers:&HashMap<Ixx,Qxx>)  -> CandidatesForMerge {
+        let mut pairs:HashMap<(Ind,Ind),Quant> = HashMap::new();
+        let mut quant:Quant;
+        let mut collection:Vec<Ind> = vec![];
+        let mut pair:(Ind,Ind);
+        let mut size;
+        for word in index_word.keys() {
+            collection = words_n.get(&word).unwrap().to_vec();
+            size = collection.len();
+                if size == 0 {
+                    panic!("from CandidatesForMerge: collection has 0 length, breack");
+                } else if size ==1 {
+                    continue
                 }
-            } 
-        };
+            for i in 0..size-1 {
+                pair = (collection[i],collection[i+1]);
+                quant = *numbers.get(&word).unwrap();
+                *pairs.entry(pair).or_insert(quant)+=quant;
+            }
+        }
 
-        closure(&mut self.eng_pairs,&vocab,&word_collection);
-        closure(&mut self.fra_pairs,&vocab,&word_collection);
-
+        CandidatesForMerge {
+            pairs:pairs
+        }
     }
-
+/*
     pub fn most_frequent_pair(&self) -> MostFrequentPair {
         let closure = |pairs:&HashMap<(Ind,Ind),Quant>| {
             let res = max_key(pairs).expect("The vocabulary is to be not empty");
@@ -103,7 +121,7 @@ impl CandidatesForMerge {
         fra_frequency:fra_max_pair.1
         }
     }
-
+*/
 /* the function return the key with biggest value
 fn max_key<K, V>(a_hash_map: &HashMap<K, V>) -> Option<(&K,&V)>
 where
@@ -127,17 +145,40 @@ where
 */
 }
 
+impl CandidatesForMergeLang {
+    pub fn from_word_vocab(vocab:&Vocab, collection:&WordToIndexCollection,lang:Lang) 
+        -> CandidatesForMergeLang {
+            match lang {
+                Eng => 
+                    CandidatesForMergeLang::Eng(CandidatesForMerge::from_word_vocab(
+                            &vocab.eng_index_word
+                            ,&collection.eng_words_n
+                            ,&vocab.eng_numbers
+                                                           )),
+
+                Fra => 
+                    CandidatesForMergeLang::Eng(CandidatesForMerge::from_word_vocab(
+                            &vocab.fra_index_word
+                            ,&collection.fra_words_n
+                            ,&vocab.fra_numbers
+                                                           )),
+
+            }
+        }
+}
+
+
 pub struct NewToken {
     new_token:Token,
 }
-
+/*
 // keep records of all new + initial ('letters') tokens and 
 // the indices of the tokens
+*/
 pub struct TokensDynamic {
-    eng_index_token:HashMap<Ind,Token>,
-    fra_index_token:HashMap<Ind,Token>
+    index_token:HashMap<Ind,Token>,
 }
-
+/*
 impl TokensDynamic {
     pub fn new() -> TokensDynamic {
         TokensDynamic {
@@ -157,7 +198,7 @@ impl TokensDynamic {
             }
     }
 }
-
+*/
 
 
 
