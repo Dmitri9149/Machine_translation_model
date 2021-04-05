@@ -105,23 +105,20 @@ impl CandidatesForMerge {
             pairs:pairs
         }
     }
-/*
+
     pub fn most_frequent_pair(&self) -> MostFrequentPair {
         let closure = |pairs:&HashMap<(Ind,Ind),Quant>| {
             let res = max_key(pairs).expect("The vocabulary is to be not empty");
             (*res.0,*res.1)
         };
-
-        let eng_max_pair = closure(&self.eng_pairs);
-        let fra_max_pair = closure(&self.fra_pairs);
+        let max_pair = closure(&self.pairs);
         MostFrequentPair {
-        eng:eng_max_pair.0,    
-        fra:fra_max_pair.0,
-        eng_frequency:eng_max_pair.1,
-        fra_frequency:fra_max_pair.1
+        pair:max_pair.0,    
+        pair_frequency:max_pair.1,
         }
     }
-*/
+
+
 /* the function return the key with biggest value
 fn max_key<K, V>(a_hash_map: &HashMap<K, V>) -> Option<(&K,&V)>
 where
@@ -135,7 +132,6 @@ where
 */
 
 
-//    pub fn new_token()
 /*
 // calculate the most frequent pair of consequtive tokens in words of VocabStage
     pub fn key_max(&self) -> (String, String) {
@@ -165,6 +161,18 @@ impl CandidatesForMergeLang {
 
             }
         }
+}
+
+
+impl MostFrequentPairLang {
+    pub fn most_frequent_pair(candidates:&CandidatesForMergeLang) -> MostFrequentPairLang {
+        match candidates {
+            CandidatesForMergeLang::Eng(x) 
+                => MostFrequentPairLang::Eng(CandidatesForMerge::most_frequent_pair(&x)),
+            CandidatesForMergeLang::Fra(y) 
+                => MostFrequentPairLang::Fra(CandidatesForMerge::most_frequent_pair(&y))
+        }
+    }
 }
 
 
