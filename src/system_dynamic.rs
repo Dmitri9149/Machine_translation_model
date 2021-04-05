@@ -138,26 +138,34 @@ pub enum NewTokenLang {
 // keep records of all new + initial ('letters') tokens and 
 // the indices of the tokens
 */
+
 pub struct TokensDynamic {
-    index_token:HashMap<Ind,Token>,
+// TODO is it possible to use &str instead of String ? with reference to token.flattened_to_string?
+     index_token:HashMap<Ind,Token>,
+     token_index:HashMap<String,Ind>
 }
+
 
 impl TokensDynamic {
     pub fn new() -> TokensDynamic {
-        TokensDynamic {index_token:HashMap::new()}
+        TokensDynamic {index_token:HashMap::new(),token_index:HashMap::new()}
     }
 
     pub fn initial_set_from_vocab(index_token:&HashMap<Ind,String>) -> TokensDynamic {
-        let mut hsh:HashMap<Ind,Token> = HashMap::new();
+        let mut hsh_index:HashMap<Ind,Token> = HashMap::new();
+        let mut hsh_token:HashMap<String,Ind> = HashMap::new();
         for index in index_token {
+            let st = index.1.to_string();
             let token = Token {
                 flattened_to_index:vec![*index.0],
-                flattened_to_string:index.1.to_string()
+                flattened_to_string:st.to_owned()
             };
-            hsh.entry(*index.0).or_insert(token);
+// TODO check for containing of the index key -> generate corresp behaviour
+            hsh_index.entry(*index.0).or_insert(token);
+            hsh_token.entry(st).or_insert(*index.0);
         }
 
-        TokensDynamic {index_token:hsh}
+        TokensDynamic {index_token:hsh_index, token_index:hsh_token}
     }
 
     pub fn from_most_frequent_pair(&mut self,pair:&MostFrequentPair) {
@@ -168,6 +176,7 @@ impl TokensDynamic {
         let mut to_string_left = self.index_token.get(&pair.pair.0).unwrap().flattened_to_string.to_owned();
         let to_string_right = self.index_token.get(&pair.pair.1).unwrap().flattened_to_string.to_owned();
         to_string_left.push_str(&to_string_right);
+        let st = &to_string_left.to_owned();
 
         let token = Token {flattened_to_index:to_index_left,flattened_to_string:to_string_left};
         
@@ -177,6 +186,8 @@ impl TokensDynamic {
             panic!("The new key already exist: {:?} ; panic!", new_index);
         }
         self.index_token.insert(new_index,token);
+// TODO what to do if "to_string_left" already exist ? 
+        self.token_index.entry(st.to_string()).or_insert(new_index);
     }
 }
 
