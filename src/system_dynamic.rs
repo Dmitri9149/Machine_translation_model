@@ -4,6 +4,18 @@
 use super::*;
 use std::collections::HashMap;
 
+// keep the records of the flattened tokens as 
+// list of indices or as String
+pub struct Token {
+//    eng_token:HashMap<Ind,Vec<Ind>>,
+//    fra_token:HashMap<Ind,Vec<Ind>>,
+    eng_flattened_to_index:Vec<Ind>,
+    fra_flattened_to_index:Vec<Ind>,
+    eng_flattened_to_chars:String,
+    fra_flattened_to_chars:String,
+}
+
+
 pub struct CandidatesForMerge {
     pub eng_pairs:HashMap<(Ind,Ind),Quant>,
     pub fra_pairs:HashMap<(Ind,Ind),Quant>
@@ -33,8 +45,11 @@ impl MostFrequentPair {
         fra_frequency:fra_max_pair.1
         }
     }
-
+/*
+    pub fn new_token(pair:&MostFrequentPair,)
+*/
 }
+
 
 impl CandidatesForMerge {
 
@@ -106,11 +121,33 @@ where
 */
 }
 
+pub struct NewToken {
+    new_token:Token,
+}
+
 // keep records of all new + initial ('letters') tokens and 
-// the indixes of the tokens
+// the indices of the tokens
 pub struct TokensDynamic {
     eng_index_token:HashMap<Ind,Token>,
     fra_index_token:HashMap<Ind,Token>
+}
+
+impl TokensDynamic {
+    pub fn new() -> TokensDynamic {
+        TokensDynamic {
+            eng_index_token:HashMap::new(),
+            fra_index_token:HashMap::new()
+        }
+    }
+
+    pub fn initial_set(&mut self,vocab:&VocabOfTokens) -> TokensDynamic{
+            let mut token:Token;
+            for index in vocab.eng_index_token {
+                token.eng_flattened_to_index.push(index);
+                token.eng_flattened_to_string.push(vocab.eng_index_token);
+                self.eng_index_token.entry(index).or_insert(token);
+            }
+    }
 }
 
 
