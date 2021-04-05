@@ -20,21 +20,6 @@ pub enum TokenLang {
     Fra(Token)
 }
 
-/*
-pub struct FraToken {
-//    eng_token:HashMap<Ind,Vec<Ind>>,
-//    fra_token:HashMap<Ind,Vec<Ind>>,
-    fra_flattened_to_index:Vec<Ind>,
-    fra_flattened_to_string:String,
-}
-
-pub struct EngToken {
-//    eng_token:HashMap<Ind,Vec<Ind>>,
-//    fra_token:HashMap<Ind,Vec<Ind>>,
-    eng_flattened_to_index:Vec<Ind>,
-    eng_flattened_to_string:String,
-}
-*/
 pub struct CandidatesForMerge {
     pub pairs:HashMap<(Ind,Ind),Quant>,
 }
@@ -54,28 +39,6 @@ pub enum MostFrequentPairLang {
     Fra(MostFrequentPair)
 }
 
-/*
-impl MostFrequentPair {
-    pub fn from_merge_candidates(candidates:&CandidatesForMerge) -> MostFrequentPair {
-        let closure = |pairs:&HashMap<(Ind,Ind),Quant>| {
-            let res = max_key(pairs).expect("The vocabulary is to be not empty");
-            (*res.0,*res.1)
-        };
-
-        let eng_max_pair = closure(&candidates.eng_pairs);
-        let fra_max_pair = closure(&candidates.fra_pairs);
-        MostFrequentPair {
-        eng:eng_max_pair.0,    
-        fra:fra_max_pair.0,
-        eng_frequency:eng_max_pair.1,
-        fra_frequency:fra_max_pair.1
-        }
-    }
-/*
-    pub fn new_token(pair:&MostFrequentPair,)
-*/
-}
-*/
 impl CandidatesForMerge {
 
     pub fn from_word_vocab(index_word:&HashMap<Ixx,String>
@@ -118,41 +81,20 @@ impl CandidatesForMerge {
         }
     }
 
-
-/* the function return the key with biggest value
-fn max_key<K, V>(a_hash_map: &HashMap<K, V>) -> Option<(&K,&V)>
-where
-    V: Ord,
-{
-    a_hash_map
-        .iter()
-        .max_by(|a, b| a.1.cmp(&b.1))
-//        .map(|(k, v)| (k,v))
-}
-*/
-
-
-/*
-// calculate the most frequent pair of consequtive tokens in words of VocabStage
-    pub fn key_max(&self) -> (String, String) {
-        let res = max_key(&self.pairs).expect("The vocabulary is to be not empty");
-        (res.0.to_string(),res.1.to_string())
-    }
-*/
 }
 
 impl CandidatesForMergeLang {
     pub fn from_word_vocab(vocab:&Vocab, collection:&WordToIndexCollection,lang:Lang) 
         -> CandidatesForMergeLang {
             match lang {
-                Eng => 
+                Lang::Eng => 
                     CandidatesForMergeLang::Eng(CandidatesForMerge::from_word_vocab(
                             &vocab.eng_index_word
                             ,&collection.eng_words_n
                             ,&vocab.eng_numbers
                                                            )),
 
-                Fra => 
+                Lang::Fra => 
                     CandidatesForMergeLang::Eng(CandidatesForMerge::from_word_vocab(
                             &vocab.fra_index_word
                             ,&collection.fra_words_n
@@ -179,6 +121,13 @@ impl MostFrequentPairLang {
 pub struct NewToken {
     new_token:Token,
 }
+
+pub enum NewTokenLang {
+    Eng(NewToken),
+    Fra(NewToken)
+}
+
+
 /*
 // keep records of all new + initial ('letters') tokens and 
 // the indices of the tokens
@@ -186,15 +135,47 @@ pub struct NewToken {
 pub struct TokensDynamic {
     index_token:HashMap<Ind,Token>,
 }
-/*
+
 impl TokensDynamic {
     pub fn new() -> TokensDynamic {
-        TokensDynamic {
-            eng_index_token:HashMap::new(),
-            fra_index_token:HashMap::new()
+        TokensDynamic {index_token:HashMap::new()}
+    }
+
+    pub fn initial_set_from_vocab(index_token:&HashMap<Ind,String>) -> TokensDynamic {
+        let mut hsh:HashMap<Ind,Token> = HashMap::new();
+        for index in index_token {
+            let token = Token {
+                flattened_to_index:vec![*index.0],
+                flattened_to_string:index.1.to_string()
+            };
+            hsh.entry(*index.0).or_insert(token);
+        }
+
+        TokensDynamic {index_token:hsh}
+    }
+}
+
+pub enum TokensDynamicLang {
+    Eng(TokensDynamic),
+    Fra(TokensDynamic)
+}
+
+impl TokensDynamicLang {
+    pub fn new(lang:Lang) -> TokensDynamicLang {
+        match lang {
+            Lang::Eng => TokensDynamicLang::Eng(TokensDynamic::new()),
+            Lang::Fra => TokensDynamicLang::Fra(TokensDynamic::new()),
         }
     }
 
+    pub fn initial_set_from_vocab(lang:Lang,vocab:&VocabOfTokens) -> TokensDynamicLang{
+        match lang {
+            Lang::Eng  => TokensDynamicLang::Eng(TokensDynamic::initial_set_from_vocab(&vocab.eng_index_token)),
+            Lang::Fra  => TokensDynamicLang::Fra(TokensDynamic::initial_set_from_vocab(&vocab.fra_index_token)),
+        }
+    }
+
+/*
     pub fn initial_set(&mut self,vocab:&VocabOfTokens) {
             for index_eng,index_fra in (vocab.eng_index_token, vocab.fra_index_token) {
                 let token = 
@@ -205,8 +186,8 @@ impl TokensDynamic {
                 self.eng_index_token.entry(index.0).or_insert(token);
             }
     }
-}
 */
+}
 
 
 
