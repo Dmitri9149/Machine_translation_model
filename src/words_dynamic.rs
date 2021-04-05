@@ -4,21 +4,26 @@ use super::*;
 use std::collections::HashMap;
 
 // dynamically changing Vocab of Words which are represented 
-// as map from numbers (word indices) to collection of 
+// as map from numbers (word indices) to collection of token indices
 // the dynamic is because new tokens (and new indixes) are generated 
 // while the tokenizer is runnind
+
 pub struct WordAsTokensDynamic {
-    eng_words:HashMap<Ixx,Vec<Ind>>,
-    fra_words:HashMap<Ixx,Vec<Ind>>,
+    words_as_indices:HashMap<Ixx,Vec<Ind>>,
+    words_as_tokens:HashMap<Ixx,String>
+}
 
-
+pub enum WordAsTokensDynamicLang {
+    Eng(WordAsTokensDynamic),
+    Fra(WordAsTokensDynamic)
 }
 
 impl WordAsTokensDynamic {
-    pub fn at_the_beginning(words:WordToIndexCollection) -> WordAsTokensDynamic{
+    pub fn at_the_beginning(words_n:&HashMap<Ixx,Vec<Ind>>
+                            ,index_word:&HashMap<Ixx,String>) -> WordAsTokensDynamic{
         WordAsTokensDynamic {
-            eng_words:words.eng_words_n,
-            fra_words:words.fra_words_n,
+            words_as_indices:words,
+            words_as_tokens:index_word
         }
     }
 }
