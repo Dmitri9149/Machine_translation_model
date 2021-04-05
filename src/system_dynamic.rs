@@ -6,14 +6,20 @@ use std::collections::HashMap;
 
 // keep the records of the flattened tokens as 
 // list of indices or as String
-pub struct Token {
+pub struct FraToken {
+//    eng_token:HashMap<Ind,Vec<Ind>>,
+//    fra_token:HashMap<Ind,Vec<Ind>>,
+    fra_flattened_to_index:Vec<Ind>,
+    fra_flattened_to_string:String,
+}
+
+pub struct EngToken {
 //    eng_token:HashMap<Ind,Vec<Ind>>,
 //    fra_token:HashMap<Ind,Vec<Ind>>,
     eng_flattened_to_index:Vec<Ind>,
-    fra_flattened_to_index:Vec<Ind>,
-    eng_flattened_to_chars:String,
-    fra_flattened_to_chars:String,
+    eng_flattened_to_string:String,
 }
+
 
 
 pub struct CandidatesForMerge {
@@ -140,12 +146,14 @@ impl TokensDynamic {
         }
     }
 
-    pub fn initial_set(&mut self,vocab:&VocabOfTokens) -> TokensDynamic{
-            let mut token:Token;
-            for index in vocab.eng_index_token {
-                token.eng_flattened_to_index.push(index);
-                token.eng_flattened_to_string.push(vocab.eng_index_token);
-                self.eng_index_token.entry(index).or_insert(token);
+    pub fn initial_set(&mut self,vocab:&VocabOfTokens) {
+            for index_eng,index_fra in (vocab.eng_index_token, vocab.fra_index_token) {
+                let token = 
+                    Token {
+                        eng_flattened_to_index_eng:vec![index.0],
+                        eng_flattened_to_string:index_eng.1,
+                    }
+                self.eng_index_token.entry(index.0).or_insert(token);
             }
     }
 }
