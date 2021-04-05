@@ -1,3 +1,6 @@
+// system in dynamics, merge of most frequent tokens, 
+// dynamic changes in vocabulary because of new tokens,
+// bookkeeping of new tokens 
 use super::*;
 use std::collections::HashMap;
 
@@ -14,14 +17,26 @@ pub struct MostFrequentPair {
     fra_frequency:Quant
 }
 
-impl CandidatesForMerge {
+impl MostFrequentPair {
+    pub fn from_merge_candidates(candidates:&CandidatesForMerge) -> MostFrequentPair {
+        let closure = |pairs:&HashMap<(Ind,Ind),Quant>| {
+            let res = max_key(pairs).expect("The vocabulary is to be not empty");
+            (*res.0,*res.1)
+        };
 
-    pub fn new() -> CandidatesForMerge {
-        CandidatesForMerge {
-            eng_pairs:HashMap::new(),
-            fra_pairs:HashMap::new(),
+        let eng_max_pair = closure(&candidates.eng_pairs);
+        let fra_max_pair = closure(&candidates.fra_pairs);
+        MostFrequentPair {
+        eng:eng_max_pair.0,    
+        fra:fra_max_pair.0,
+        eng_frequency:eng_max_pair.1,
+        fra_frequency:fra_max_pair.1
         }
     }
+
+}
+
+impl CandidatesForMerge {
 
     pub fn from_word_vocab(&mut self,vocab:&Vocab,word_collection:&WordToIndexCollection) {
         let mut size = word_collection.eng_words_n.len();
@@ -91,6 +106,12 @@ where
 */
 }
 
+// keep records of all new + initial ('letters') tokens and 
+// the indixes of the tokens
+pub struct TokensDynamic {
+    eng_index_token:HashMap<Ind,Token>,
+    fra_index_token:HashMap<Ind,Token>
+}
 
 
 
