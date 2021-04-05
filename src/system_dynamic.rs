@@ -11,6 +11,7 @@ pub struct Token {
     flattened_to_string:String,
 }
 
+
 pub enum Lang {
     Eng,
     Fra
@@ -80,7 +81,6 @@ impl CandidatesForMerge {
         pair_frequency:max_pair.1,
         }
     }
-
 }
 
 impl CandidatesForMergeLang {
@@ -117,16 +117,22 @@ impl MostFrequentPairLang {
     }
 }
 
-
+/*
 pub struct NewToken {
     new_token:Token,
+}
+
+impl NewToken {
+    pub fn from_most_frequent_pair (pair:&MostFrequentPair,dynamic:&TokensDynamic) -> NewToken{
+        
+    }
 }
 
 pub enum NewTokenLang {
     Eng(NewToken),
     Fra(NewToken)
 }
-
+*/
 
 /*
 // keep records of all new + initial ('letters') tokens and 
@@ -153,6 +159,25 @@ impl TokensDynamic {
 
         TokensDynamic {index_token:hsh}
     }
+
+    pub fn from_most_frequent_pair(&mut self,pair:&MostFrequentPair) {
+        let mut to_index_left = self.index_token.get(&pair.pair.0).unwrap().flattened_to_index.to_vec();
+        let mut to_index_right = self.index_token.get(&pair.pair.1).unwrap().flattened_to_index.to_vec();
+        to_index_left.append(&mut to_index_right);
+
+        let mut to_string_left = self.index_token.get(&pair.pair.0).unwrap().flattened_to_string.to_owned();
+        let to_string_right = self.index_token.get(&pair.pair.1).unwrap().flattened_to_string.to_owned();
+        to_string_left.push_str(&to_string_right);
+
+        let token = Token {flattened_to_index:to_index_left,flattened_to_string:to_string_left};
+        
+        let size = self.index_token.keys().len();
+        let new_index = size +1;
+        if self.index_token.contains_key(&new_index) {
+            panic!("The new key already exist: {:?} ; panic!", new_index);
+        }
+        self.index_token.insert(new_index,token);
+    }
 }
 
 pub enum TokensDynamicLang {
@@ -175,18 +200,20 @@ impl TokensDynamicLang {
         }
     }
 
-/*
-    pub fn initial_set(&mut self,vocab:&VocabOfTokens) {
-            for index_eng,index_fra in (vocab.eng_index_token, vocab.fra_index_token) {
-                let token = 
-                    Token {
-                        eng_flattened_to_index_eng:vec![index.0],
-                        eng_flattened_to_string:index_eng.1,
-                    }
-                self.eng_index_token.entry(index.0).or_insert(token);
-            }
+    pub fn from_most_frequent_pair(&mut self,pair:&MostFrequentPairLang) {
+        match self {
+            TokensDynamicLang::Eng(x) => 
+                match pair {
+                    MostFrequentPairLang::Eng(y) => x.from_most_frequent_pair(y),
+                    _ => panic!("TokensDynamicLang error: Source...Target language data inconsistency"),
+                }
+            TokensDynamicLang::Fra(x) => 
+                match pair {
+                    MostFrequentPairLang::Fra(y) => x.from_most_frequent_pair(y),
+                    _ => panic!("TokensDynamicLang error: Source...Target language data inconsistency"),
+                }
+        }
     }
-*/
 }
 
 
