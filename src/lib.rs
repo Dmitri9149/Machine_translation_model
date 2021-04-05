@@ -13,7 +13,7 @@ TranslationPairs};
 pub use crate::word_vocabs::{Vocab,WordToIndexCollection};
 pub use tokens_vocab::{VocabOfTokens};
 pub use system_dynamic::{CandidatesForMerge,MostFrequentPair,TokensDynamic,Token};
-pub use words_dynamic::{WordAsTokensDynamic};
+pub use words_dynamic::{WordAsTokensDynamic,WordAsTokensDynamicLang};
 
 // indexation of tokens 
 pub type Ind = usize;
@@ -23,6 +23,11 @@ pub type Quant = u32;
 pub type Ixx= usize;
 // for words quantity
 pub type Qxx = u32;
+// Lang varints 
+pub enum Lang {
+    Eng,
+    Fra
+} 
 
 
 pub fn replace_chars_to_char(input:&str, aa:&str, b:char) -> String {
