@@ -89,22 +89,15 @@ pub fn find_change_pair(vec:&mut Vec<Ind>,pair(Ind,Ind),new:Ind) {
     let mut counter = 0;
     let mut pointer = 0;
     let mut flag = false;
-        let result = loop {
+        while counter < size  {
             if (vec[counter],vec[counter+1]) == (pair.0,pair.1) {
                 flag = true;
                 collector = collector.append(&vec[pointer..counter]);
                 collector.push(new);
-                pointer = counter;
                 counter+=2;
-            }
-
+                pointer = counter;
+            } 
             counter+=1;
-
-            if counter == size {
-                if flag == false {
-                    break 
-                }
-            }
         }
     }
 }
