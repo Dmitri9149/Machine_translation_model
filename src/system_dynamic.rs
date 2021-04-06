@@ -222,26 +222,33 @@ impl TokensDynamic {
 // TODO what to do if "to_string_left" already exist ? 
         self.token_index.entry(st.to_string()).or_insert(new_index);
 // TODO find needed pair in vector of numbers and change the pair to a new number
+//
+//        find_and_change_in_place_pair(&mut self,&pair,new:&Ind) 
+        
+        self.word_indices
+        .iter_mut()
+        .map(|(index,mut vector)| find_and_change_in_place_pair(vector,&pair.pair,&new_index))
+        .collect()
+
 /*
-        let mut size;
         for (index, vec_of_indices) in self.word_as_indices {
+            let mut size;
             size = vec_of_indices.len();
             if size == 0 {
                 panic!("Empty vector of indices !");
             } else if size == 1 {
                 continue;
             }
-
+            
 
             for i in 0..size-1 {
                 if (i,i+1) == (pair.0,pair.1) {
 
                 }
-
-
-
-        }
+            }    
+        } 
 */
+    
     }
 }
 
