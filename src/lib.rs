@@ -67,7 +67,7 @@ where
 */
 
 // the function return the key with biggest value
-fn max_key<K, V>(a_hash_map: &HashMap<K, V>) -> Option<(&K,&V)>
+pub fn max_key<K, V>(a_hash_map: &HashMap<K, V>) -> Option<(&K,&V)>
 where
     V: Ord,
 {
@@ -75,6 +75,38 @@ where
         .iter()
         .max_by(|a, b| a.1.cmp(&b.1))
 //        .map(|(k, v)| (k,v))
+}
+
+pub fn find_change_pair(vec:&mut Vec<Ind>,pair(Ind,Ind),new:Ind) {
+    let size = vec.len();
+    if size == 0 {
+        panic!("The vector of Ind is empty !! Panic!!");
+    } else if size == 1 {
+        return ()
+    }
+
+    let mut collector:Vec<Ind> = Vec::new();
+    let mut counter = 0;
+    let mut pointer = 0;
+    let mut flag = false;
+        let result = loop {
+            if (vec[counter],vec[counter+1]) == (pair.0,pair.1) {
+                flag = true;
+                collector = collector.append(&vec[pointer..counter]);
+                collector.push(new);
+                pointer = counter;
+                counter+=2;
+            }
+
+            counter+=1;
+
+            if counter == size {
+                if flag == false {
+                    break 
+                }
+            }
+        }
+    }
 }
 
 

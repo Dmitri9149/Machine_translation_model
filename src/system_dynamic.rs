@@ -137,18 +137,28 @@ pub enum NewTokenLang {
 pub struct TokensDynamic {
 // TODO is it possible to use &str instead of String ? with reference to token.flattened_to_string?
      index_token:HashMap<Ind,Token>,
-     token_index:HashMap<String,Ind>
+     token_index:HashMap<String,Ind>,
+     word_tokens:HashMap<Ixx,Vec<Token>>,
+     word_indices:HashMap<Ixx,Vec<Ind>>
 }
 
 
 impl TokensDynamic {
     pub fn new() -> TokensDynamic {
-        TokensDynamic {index_token:HashMap::new(),token_index:HashMap::new()}
+        TokensDynamic {
+            index_token:HashMap::new()
+                ,token_index:HashMap::new()
+                ,word_tokens:HashMap::new()
+                ,word_indices:HashMap::new()
+        }
     }
 
-    pub fn initial_set_from_vocab(index_token:&HashMap<Ind,String>) -> TokensDynamic {
+    pub fn initial_set_from_vocab(index_word:&HashMap<Ixx,String>
+                                  ,index_token:&HashMap<Ind,String>
+                                  ,token_index:&HashMap<String,Ind>) -> TokensDynamic {
         let mut hsh_index:HashMap<Ind,Token> = HashMap::new();
         let mut hsh_token:HashMap<String,Ind> = HashMap::new();
+// TODO rewrite to:  for (index,token) in index_token { .... }
         for index in index_token {
             let st = index.1.to_string();
             let token = Token {
@@ -160,7 +170,35 @@ impl TokensDynamic {
             hsh_token.entry(st).or_insert(*index.0);
         }
 
-        TokensDynamic {index_token:hsh_index, token_index:hsh_token}
+        let mut hsh_word:HashMap<Ixx,Vec<Token>> = HashMap::new();
+        let mut hsh_word_ics:HashMap<Ixx,Vec<Ind>> = HashMap::new();
+//        let mut vec_of_chars:Vec<Token> = Vec::new();
+        let mut char_index:Ind;
+        let mut char_as_string:String;
+        for (index,word) in index_word {
+            let mut vec_of_chars:Vec<Token> = Vec::new();
+            let mut vec_of_indices:Vec<Ind>=Vec::new();
+            for ch in word.chars() {
+                char_as_string = ch.to_string();
+                char_index = *token_index.get(&char_as_string).unwrap();
+                let token = Token {
+                    flattened_to_index:vec![char_index],
+                    flattened_to_string:char_as_string,
+                };
+
+                vec_of_chars.push(token);
+                vec_of_indices.push(char_index);
+            }
+            hsh_word.entry(*index).or_insert(vec_of_chars);
+            hsh_word_ics.entry(*index).or_insert(vec_of_indices);
+        }
+
+        TokensDynamic {
+            index_token:hsh_index
+            ,token_index:hsh_token
+            ,word_tokens:hsh_word
+            ,word_indices:hsh_word_ics
+        }
     }
 
     pub fn from_most_frequent_pair(&mut self,pair:&MostFrequentPair) {
@@ -183,6 +221,27 @@ impl TokensDynamic {
         self.index_token.insert(new_index,token);
 // TODO what to do if "to_string_left" already exist ? 
         self.token_index.entry(st.to_string()).or_insert(new_index);
+// TODO find needed pair in vector of numbers and change the pair to a new number
+/*
+        let mut size;
+        for (index, vec_of_indices) in self.word_as_indices {
+            size = vec_of_indices.len();
+            if size == 0 {
+                panic!("Empty vector of indices !");
+            } else if size == 1 {
+                continue;
+            }
+
+
+            for i in 0..size-1 {
+                if (i,i+1) == (pair.0,pair.1) {
+
+                }
+
+
+
+        }
+*/
     }
 }
 
@@ -199,10 +258,18 @@ impl TokensDynamicLang {
         }
     }
 
-    pub fn initial_set_from_vocab(lang:Lang,vocab:&VocabOfTokens) -> TokensDynamicLang{
+    pub fn initial_set_from_vocab(lang:Lang
+                                  ,vocab_t:&VocabOfTokens
+                                  ,vocab_w:&Vocab) -> TokensDynamicLang{
         match lang {
-            Lang::Eng  => TokensDynamicLang::Eng(TokensDynamic::initial_set_from_vocab(&vocab.eng_index_token)),
-            Lang::Fra  => TokensDynamicLang::Fra(TokensDynamic::initial_set_from_vocab(&vocab.fra_index_token)),
+            Lang::Eng  => TokensDynamicLang
+                ::Eng(TokensDynamic::initial_set_from_vocab(&vocab_w.eng_index_word
+                                                            ,&vocab_t.eng_index_token
+                                                            ,&vocab_t.eng_token_index)),
+            Lang::Fra  => TokensDynamicLang
+                ::Fra(TokensDynamic::initial_set_from_vocab(&vocab_w.fra_index_word
+                                                            ,&vocab_t.fra_index_token
+                                                            ,&vocab_t.fra_token_index)),
         }
     }
 
@@ -268,4 +335,8 @@ impl WordAsTokensDynamicLang {
     }
 }
 // the struct implements dynamic of tokens and words 
-
+pub struct Dynamics {
+    index_token:HashMap<Ind,Token>,
+    token_index:HashMap<String,Ind>,
+    word_as_tokens:HashMap<Ixx,Vec<Vec<Ind>>>,
+}
