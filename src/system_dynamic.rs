@@ -267,3 +267,5 @@ impl WordAsTokensDynamicLang {
             }
     }
 }
+// the struct implements dynamic of tokens and words 
+
