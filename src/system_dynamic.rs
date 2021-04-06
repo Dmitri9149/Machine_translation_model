@@ -11,11 +11,6 @@ pub struct Token {
     flattened_to_string:String,
 }
 
-
-pub enum Lang {
-    Eng,
-    Fra
-}
 pub enum TokenLang {
     Eng(Token),
     Fra(Token)
