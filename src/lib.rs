@@ -5,15 +5,14 @@ mod sentence_pairs;
 mod word_vocabs;
 mod tokens_vocab;
 mod system_dynamic;
-mod words_dynamic;
 
 pub use crate::translation_corpus::{CorpusAsString};
 pub use crate::sentence_pairs::{SentencesForTranslation,TranslationPair,
 TranslationPairs};
 pub use crate::word_vocabs::{Vocab,WordToIndexCollection};
 pub use tokens_vocab::{VocabOfTokens};
-pub use system_dynamic::{CandidatesForMerge,MostFrequentPair,TokensDynamic,Token};
-pub use words_dynamic::{WordAsTokensDynamic,WordAsTokensDynamicLang};
+pub use system_dynamic::{CandidatesForMerge
+    ,MostFrequentPair,TokensDynamic,Token,WordAsTokensDynamic,WordAsTokensDynamicLang};
 
 // indexation of tokens 
 pub type Ind = usize;
