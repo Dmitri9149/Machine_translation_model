@@ -48,7 +48,7 @@ impl VocabOfTokens {
 
     pub fn from_word_vocab(&mut self, vocab:&Vocab) {
         let closure = |token_quantity:&mut BTreeMap<String,Quant>
-            ,words:&HashMap<String,Qxx>| {
+            ,words:&BTreeMap<String,Qxx>| {
             for (word,quant) in words {
                 for ch in word.chars() {
                     *token_quantity

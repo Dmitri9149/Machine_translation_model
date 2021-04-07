@@ -38,9 +38,9 @@ pub enum MostFrequentPairLang {
 
 impl CandidatesForMerge {
 
-    pub fn from_word_vocab(index_word:&HashMap<Ixx,String>
-                           ,words_n:&HashMap<Ixx,Vec<Ind>>
-                           ,numbers:&HashMap<Ixx,Qxx>)  -> CandidatesForMerge {
+    pub fn from_word_vocab(index_word:&BTreeMap<Ixx,String>
+                           ,words_n:&BTreeMap<Ixx,Vec<Ind>>
+                           ,numbers:&BTreeMap<Ixx,Qxx>)  -> CandidatesForMerge {
         let mut pairs:HashMap<(Ind,Ind),Quant> = HashMap::new();
         let mut quant:Quant;
         let mut collection:Vec<Ind> = vec![];
@@ -133,26 +133,26 @@ pub enum NewTokenLang {
 
 pub struct TokensAndWordsDynamics {
 // TODO is it possible to use &str instead of String ? with reference to token.flattened_to_string?
-     index_token:HashMap<Ind,Token>,
-     token_index:HashMap<String,Ind>,
-     word_indices:HashMap<Ixx,Vec<Ind>>
+     index_token:BTreeMap<Ind,Token>,
+     token_index:BTreeMap<String,Ind>,
+     word_indices:BTreeMap<Ixx,Vec<Ind>>
 }
 
 
 impl TokensAndWordsDynamics {
     pub fn new() -> TokensAndWordsDynamics {
         TokensAndWordsDynamics {
-            index_token:HashMap::new()
-                ,token_index:HashMap::new()
-                ,word_indices:HashMap::new()
+            index_token:BTreeMap::new()
+                ,token_index:BTreeMap::new()
+                ,word_indices:BTreeMap::new()
         }
     }
 
-    pub fn initial_set_from_vocab(index_word:&HashMap<Ixx,String>
+    pub fn initial_set_from_vocab(index_word:&BTreeMap<Ixx,String>
                                   ,index_token:&BTreeMap<Ind,String>
                                   ,token_index:&BTreeMap<String,Ind>) -> TokensAndWordsDynamics {
-        let mut hsh_index:HashMap<Ind,Token> = HashMap::new();
-        let mut hsh_token:HashMap<String,Ind> = HashMap::new();
+        let mut hsh_index:BTreeMap<Ind,Token> = BTreeMap::new();
+        let mut hsh_token:BTreeMap<String,Ind> = BTreeMap::new();
 // TODO rewrite to:  for (index,token) in index_token { .... }
         for index in index_token {
             let st = index.1.to_string();
@@ -165,8 +165,8 @@ impl TokensAndWordsDynamics {
             hsh_token.entry(st).or_insert(*index.0);
         }
 
-        let mut hsh_word:HashMap<Ixx,Vec<Token>> = HashMap::new();
-        let mut hsh_word_ics:HashMap<Ixx,Vec<Ind>> = HashMap::new();
+        let mut hsh_word:BTreeMap<Ixx,Vec<Token>> = BTreeMap::new();
+        let mut hsh_word_ics:BTreeMap<Ixx,Vec<Ind>> = BTreeMap::new();
         let mut char_index:Ind;
         let mut char_as_string:String;
         for (index,word) in index_word {
@@ -185,9 +185,7 @@ impl TokensAndWordsDynamics {
             ,word_indices:hsh_word_ics
         }
     }
-
-// TODO TODO TODO TODO THE FIELD WORD_TOKENS IS NOT CALCLULATED !!!!! THE FUNCTION IS INCOMPLETE !
-// PRELIMINARY VERSION 
+ 
     pub fn from_most_frequent_pair(&mut self,pair:&MostFrequentPair) {
         let mut to_index_left = self.index_token.get(&pair.pair.0).unwrap().flattened_to_index.to_vec();
         let mut to_index_right = self.index_token.get(&pair.pair.1).unwrap().flattened_to_index.to_vec();
@@ -271,8 +269,8 @@ impl TokensAndWordsDynamicsLang {
 
 pub struct WordAsTokensDynamic {
 
-    word_as_indices:HashMap<Ixx,Vec<Ind>>,
-    word_as_collection:HashMap<Ixx,Vec<Vec<Ind>>>
+    word_as_indices:BTreeMap<Ixx,Vec<Ind>>,
+    word_as_collection:BTreeMap<Ixx,Vec<Vec<Ind>>>
 }
 
 pub enum WordAsTokensDynamicLang {
@@ -281,8 +279,8 @@ pub enum WordAsTokensDynamicLang {
 }
 
 impl WordAsTokensDynamic {
-    pub fn at_the_beginning(words_n:&HashMap<Ixx,Vec<Ind>>) -> WordAsTokensDynamic{
-        let mut hsh:HashMap<Ixx,Vec<Vec<Ind>>> = HashMap::new();
+    pub fn at_the_beginning(words_n:&BTreeMap<Ixx,Vec<Ind>>) -> WordAsTokensDynamic{
+        let mut hsh:BTreeMap<Ixx,Vec<Vec<Ind>>> = BTreeMap::new();
         for word in words_n {
 // TODO what if there is already an entry
             hsh.entry(*word.0).or_insert(vec![word.1.to_vec()]);

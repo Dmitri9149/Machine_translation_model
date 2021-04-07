@@ -14,17 +14,17 @@ pub struct Vocab {
     pub eng_set:Vec<String>,
     pub fra_set:Vec<String>,
 // (word, quantity of the words) in our corpus
-    pub eng_words:HashMap<String,Qxx>,
-    pub fra_words:HashMap<String,Qxx>,
+    pub eng_words:BTreeMap<String,Qxx>,
+    pub fra_words:BTreeMap<String,Qxx>,
 // (number, quantity of the number) number here is the number equivalent of a word  (it's index)
-    pub eng_numbers:HashMap<Ixx,Qxx>,
-    pub fra_numbers:HashMap<Ixx,Qxx>,
+    pub eng_numbers:BTreeMap<Ixx,Qxx>,
+    pub fra_numbers:BTreeMap<Ixx,Qxx>,
 // from number equivalent to word representation
-    pub eng_index_word:HashMap<Ixx,String>,
-    pub fra_index_word:HashMap<Ixx,String>,
+    pub eng_index_word:BTreeMap<Ixx,String>,
+    pub fra_index_word:BTreeMap<Ixx,String>,
 // from word to its number representation
-    pub eng_word_index:HashMap<String,Ixx>,
-    pub fra_word_index:HashMap<String,Ixx>,
+    pub eng_word_index:BTreeMap<String,Ixx>,
+    pub fra_word_index:BTreeMap<String,Ixx>,
 // number of words in fra or eng 
     pub eng_words_total:Ixx,
     pub fra_words_total:Ixx,
@@ -35,14 +35,14 @@ impl Vocab {
     pub fn new() -> Self { Vocab {
         eng_set:vec![],
         fra_set:vec![],
-        eng_words:HashMap::new(),
-        fra_words:HashMap::new(),
-        eng_numbers:HashMap::new(),
-        fra_numbers:HashMap::new(),
-        eng_index_word:HashMap::new(),
-        fra_index_word:HashMap::new(),
-        eng_word_index:HashMap::new(),
-        fra_word_index:HashMap::new(),
+        eng_words:BTreeMap::new(),
+        fra_words:BTreeMap::new(),
+        eng_numbers:BTreeMap::new(),
+        fra_numbers:BTreeMap::new(),
+        eng_index_word:BTreeMap::new(),
+        fra_index_word:BTreeMap::new(),
+        eng_word_index:BTreeMap::new(),
+        fra_word_index:BTreeMap::new(),
         eng_words_total:0,
         fra_words_total:0,
     }
@@ -122,9 +122,9 @@ impl Vocab {
     }
 
     pub fn index_quantity(&mut self) {
-        let closure = |words:&HashMap<String,Qxx>
-            ,word_index:&HashMap<String,Ixx>
-            ,numbers:&mut HashMap<Ixx,Qxx>| {
+        let closure = |words:&BTreeMap<String,Qxx>
+            ,word_index:&BTreeMap<String,Ixx>
+            ,numbers:&mut BTreeMap<Ixx,Qxx>| {
                 for (word,quant) in words {
                     numbers.insert(word_index.get(word).unwrap().to_owned(),*quant);
                 }              
@@ -140,17 +140,17 @@ pub struct WordToIndexCollection {
 // the pairs in the Vectors: 
 // word as string is paired with collection of token indixes 
 // word as number is paired with the collection of token indixes 
-    pub eng_words_s:HashMap<String,Vec<Ind>>,
-    pub fra_words_s:HashMap<String,Vec<Ind>>,
-    pub eng_words_n:HashMap<Ixx,Vec<Ind>>,
-    pub fra_words_n:HashMap<Ixx,Vec<Ind>>
+    pub eng_words_s:BTreeMap<String,Vec<Ind>>,
+    pub fra_words_s:BTreeMap<String,Vec<Ind>>,
+    pub eng_words_n:BTreeMap<Ixx,Vec<Ind>>,
+    pub fra_words_n:BTreeMap<Ixx,Vec<Ind>>
 
 }
 
 impl WordToIndexCollection {
     pub fn from_word_vocab(&mut self, word_vocab:&Vocab,token_vocab:&VocabOfTokens) {
-        let closure = |words_s:&mut HashMap<String,Vec<Ind>>
-            ,words:&HashMap<String,Quant>
+        let closure = |words_s:&mut BTreeMap<String,Vec<Ind>>
+            ,words:&BTreeMap<String,Quant>
             ,token_index:&BTreeMap<String,Ind>| {
                 for (word,_) in words {
                     let collection:&mut Vec<Ind> = &mut Vec::new();
