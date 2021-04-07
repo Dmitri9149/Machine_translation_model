@@ -42,6 +42,9 @@ fn main() {
              &tokens.eng_token_total);
     println!("Number of initial tokens fra: {}",
              &tokens.fra_token_total);
-
+// convert the initial tokens (which are (character as string)s ) to the number representation , 
+// we use Ind type for the numbers 
+    tokens.token_to_index_c();
+    println!("Initial eng_tokens as indices:\n{:?}",&tokens.eng_token_index);
     
 }
