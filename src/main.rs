@@ -45,6 +45,8 @@ fn main() {
 // convert the initial tokens (which are (character as string)s ) to the number representation , 
 // we use Ind type for the numbers 
     tokens.token_to_index_c();
+    tokens.index_to_token();
     println!("Initial eng_tokens as indices:\n{:?}",&tokens.eng_token_index);
+    println!("Initial eng_index_token representation;\n{:?}",&tokens.eng_index_token);
     
 }
