@@ -20,10 +20,10 @@ pub struct VocabOfTokens {
     pub fra_token_quantity:HashMap<String,Quant>,
     pub eng_index_quantity:HashMap<Ind,Quant>,
     pub fra_index_quantity:HashMap<Ind,Quant>,
-    pub eng_token_index:HashMap<String,Ind>,
-    pub fra_token_index:HashMap<String,Ind>,
-    pub eng_index_token:HashMap<Ind,String>,
-    pub fra_index_token:HashMap<Ind,String>,
+    pub eng_token_index:BTreeMap<String,Ind>,
+    pub fra_token_index:BTreeMap<String,Ind>,
+    pub eng_index_token:BTreeMap<Ind,String>,
+    pub fra_index_token:BTreeMap<Ind,String>,
     pub eng_token_total:usize,
     pub fra_token_total:usize,
 
@@ -36,10 +36,10 @@ impl VocabOfTokens {
     fra_token_quantity:HashMap::new(),
     eng_index_quantity:HashMap::new(),
     fra_index_quantity:HashMap::new(),
-    eng_token_index:HashMap::new(),
-    fra_token_index:HashMap::new(),
-    eng_index_token:HashMap::new(),
-    fra_index_token:HashMap::new(),
+    eng_token_index:BTreeMap::new(),
+    fra_token_index:BTreeMap::new(),
+    eng_index_token:BTreeMap::new(),
+    fra_index_token:BTreeMap::new(),
     eng_token_total:0,
     fra_token_total:0,
 
@@ -66,7 +66,7 @@ impl VocabOfTokens {
 // same as token_to_index but  closure is used; map token to index
     pub fn token_to_index_c(&mut self) {
         let closure = |token_quantity:&mut HashMap<String,Quant>
-            ,token_index:&mut HashMap<String,Ind>| {
+            ,token_index:&mut BTreeMap<String,Ind>| {
             let mut count:Ind = 0;
             for (token, _) in token_quantity {
                 token_index.insert(token.to_string(),count);

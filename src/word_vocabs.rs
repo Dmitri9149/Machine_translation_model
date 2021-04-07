@@ -1,5 +1,6 @@
 // vocabulary for eng and fra corpus , on the level of words
 use std::collections::HashMap;
+use std::collections::BTreeMap;
 use super::*;
 
 // is used for calculating quantity of words
@@ -150,7 +151,7 @@ impl WordToIndexCollection {
     pub fn from_word_vocab(&mut self, word_vocab:&Vocab,token_vocab:&VocabOfTokens) {
         let closure = |words_s:&mut HashMap<String,Vec<Ind>>
             ,words:&HashMap<String,Quant>
-            ,token_index:&HashMap<String,Ind>| {
+            ,token_index:&BTreeMap<String,Ind>| {
                 for (word,_) in words {
                     let collection:&mut Vec<Ind> = &mut Vec::new();
 

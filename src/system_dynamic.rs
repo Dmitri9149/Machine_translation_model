@@ -3,6 +3,7 @@
 // bookkeeping of new tokens 
 use super::*;
 use std::collections::HashMap;
+use std::collections::BTreeMap;
 
 // keep the records of the flattened tokens as 
 // list of indices or as String
@@ -148,8 +149,8 @@ impl TokensAndWordsDynamics {
     }
 
     pub fn initial_set_from_vocab(index_word:&HashMap<Ixx,String>
-                                  ,index_token:&HashMap<Ind,String>
-                                  ,token_index:&HashMap<String,Ind>) -> TokensAndWordsDynamics {
+                                  ,index_token:&BTreeMap<Ind,String>
+                                  ,token_index:&BTreeMap<String,Ind>) -> TokensAndWordsDynamics {
         let mut hsh_index:HashMap<Ind,Token> = HashMap::new();
         let mut hsh_token:HashMap<String,Ind> = HashMap::new();
 // TODO rewrite to:  for (index,token) in index_token { .... }
