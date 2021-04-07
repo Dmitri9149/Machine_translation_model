@@ -16,10 +16,10 @@ type Quant = u32;
 */
 
 pub struct VocabOfTokens {
-    pub eng_token_quantity:HashMap<String,Quant>,
-    pub fra_token_quantity:HashMap<String,Quant>,
-    pub eng_index_quantity:HashMap<Ind,Quant>,
-    pub fra_index_quantity:HashMap<Ind,Quant>,
+    pub eng_token_quantity:BTreeMap<String,Quant>,
+    pub fra_token_quantity:BTreeMap<String,Quant>,
+    pub eng_index_quantity:BTreeMap<Ind,Quant>,
+    pub fra_index_quantity:BTreeMap<Ind,Quant>,
     pub eng_token_index:BTreeMap<String,Ind>,
     pub fra_token_index:BTreeMap<String,Ind>,
     pub eng_index_token:BTreeMap<Ind,String>,
@@ -32,10 +32,10 @@ pub struct VocabOfTokens {
 impl VocabOfTokens {
     pub fn new() -> VocabOfTokens {
         VocabOfTokens {
-    eng_token_quantity:HashMap::new(),
-    fra_token_quantity:HashMap::new(),
-    eng_index_quantity:HashMap::new(),
-    fra_index_quantity:HashMap::new(),
+    eng_token_quantity:BTreeMap::new(),
+    fra_token_quantity:BTreeMap::new(),
+    eng_index_quantity:BTreeMap::new(),
+    fra_index_quantity:BTreeMap::new(),
     eng_token_index:BTreeMap::new(),
     fra_token_index:BTreeMap::new(),
     eng_index_token:BTreeMap::new(),
@@ -47,7 +47,7 @@ impl VocabOfTokens {
     }
 
     pub fn from_word_vocab(&mut self, vocab:&Vocab) {
-        let closure = |token_quantity:&mut HashMap<String,Quant>
+        let closure = |token_quantity:&mut BTreeMap<String,Quant>
             ,words:&HashMap<String,Qxx>| {
             for (word,quant) in words {
                 for ch in word.chars() {
@@ -65,7 +65,7 @@ impl VocabOfTokens {
 
 // same as token_to_index but  closure is used; map token to index
     pub fn token_to_index_c(&mut self) {
-        let closure = |token_quantity:&mut HashMap<String,Quant>
+        let closure = |token_quantity:&mut BTreeMap<String,Quant>
             ,token_index:&mut BTreeMap<String,Ind>| {
             let mut count:Ind = 0;
             for (token, _) in token_quantity {
