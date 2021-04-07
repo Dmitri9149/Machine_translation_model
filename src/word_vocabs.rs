@@ -147,7 +147,17 @@ pub struct WordToIndexCollection {
 
 }
 
+
 impl WordToIndexCollection {
+    pub fn new() -> WordToIndexCollection {
+        WordToIndexCollection {
+        eng_words_s:BTreeMap::new(),
+        fra_words_s:BTreeMap::new(),
+        eng_words_n:BTreeMap::new(),
+        fra_words_n:BTreeMap::new(),
+        }
+    }
+
     pub fn from_word_vocab(&mut self, word_vocab:&Vocab,token_vocab:&VocabOfTokens) {
         let closure = |words_s:&mut BTreeMap<String,Vec<Ind>>
             ,words:&BTreeMap<String,Quant>

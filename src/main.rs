@@ -48,5 +48,14 @@ fn main() {
     tokens.index_to_token();
     println!("Initial eng_tokens as indices:\n{:?}",&tokens.eng_token_index);
     println!("Initial eng_index_token representation;\n{:?}",&tokens.eng_index_token);
-    
+
+
+//TODO    
+/*
+    let num_merges = 10;
+    let mut prs; 
+    let mut max_pair;
+    for merge in 0..num_merges 
+    prs = CandidatesForMergeLang::from_word_vocab(&vocab,&collection,Eng);
+*/
 }
