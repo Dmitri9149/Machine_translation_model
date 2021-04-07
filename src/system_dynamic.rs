@@ -201,6 +201,8 @@ impl TokensDynamic {
         }
     }
 
+// TODO TODO TODO TODO THE FIELD WORD_TOKENS IS NOT CALCLULATED !!!!! THE FUNCTION IS INCOMPLETE !
+// PRELIMINARY VERSION 
     pub fn from_most_frequent_pair(&mut self,pair:&MostFrequentPair) {
         let mut to_index_left = self.index_token.get(&pair.pair.0).unwrap().flattened_to_index.to_vec();
         let mut to_index_right = self.index_token.get(&pair.pair.1).unwrap().flattened_to_index.to_vec();
