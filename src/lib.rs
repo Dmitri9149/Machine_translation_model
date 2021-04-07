@@ -12,7 +12,7 @@ TranslationPairs};
 pub use crate::word_vocabs::{Vocab,WordToIndexCollection};
 pub use tokens_vocab::{VocabOfTokens};
 pub use system_dynamic::{CandidatesForMerge
-    ,MostFrequentPair,TokensDynamic,Token,WordAsTokensDynamic,WordAsTokensDynamicLang};
+    ,MostFrequentPair,TokensAndWordsDynamics,Token,WordAsTokensDynamic,WordAsTokensDynamicLang};
 
 // indexation of tokens 
 pub type Ind = usize;
