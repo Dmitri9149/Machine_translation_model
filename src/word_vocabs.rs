@@ -160,7 +160,9 @@ impl WordToIndexCollection {
 
     pub fn from_word_vocab(&mut self, word_vocab:&Vocab,token_vocab:&VocabOfTokens) {
         let closure = |words_s:&mut BTreeMap<String,Vec<Ind>>
+            ,words_n:&mut BTreeMap<Ixx,Vec<Ind>>
             ,words:&BTreeMap<String,Quant>
+            ,word_index:&BTreeMap<String,Ixx>
             ,token_index:&BTreeMap<String,Ind>| {
                 for (word,_) in words {
                     let collection:&mut Vec<Ind> = &mut Vec::new();
@@ -169,12 +171,21 @@ impl WordToIndexCollection {
                         collection.push(*token_index.get(&ch.to_string()).unwrap());
                     }
                     words_s.insert(word.to_string(),collection.to_vec());
+                    words_n.insert(*word_index.get(word).unwrap(),collection.to_vec());
                 }
 
             };
 
-        closure(&mut self.eng_words_s,&word_vocab.eng_words,&token_vocab.eng_token_index);
-        closure(&mut self.fra_words_s,&word_vocab.fra_words,&token_vocab.fra_token_index);
+        closure(&mut self.eng_words_s
+                ,&mut self.eng_words_n
+                ,&word_vocab.eng_words
+                ,&word_vocab.eng_word_index
+                ,&token_vocab.eng_token_index);
+        closure(&mut self.fra_words_s
+                ,&mut self.fra_words_n
+                ,&word_vocab.fra_words
+                ,&word_vocab.fra_word_index
+                ,&token_vocab.fra_token_index);
 
 
 
