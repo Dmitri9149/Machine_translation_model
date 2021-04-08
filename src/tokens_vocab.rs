@@ -53,7 +53,7 @@ impl VocabOfTokens {
                 for ch in word.chars() {
                     *token_quantity
                         .entry(ch.to_string())
-                        .or_insert(0)+=quant.to_owned();
+                        .or_insert(quant.to_owned())+=quant.to_owned();
                 }
             }
         };
@@ -105,15 +105,24 @@ impl VocabOfTokens {
 
     }
 
+
+//TODO check the function ? is it used ? 
+
     pub fn index_to_quantity(&mut self) {
-        let closure = |tokens:&HashMap<String,Quant>
-            ,token_to_index:&HashMap<String,Ind>
-            ,index_to_quantity:&mut HashMap<Ind,Quant>| {
+        let closure = |tokens:&BTreeMap<String,Quant>
+            ,token_to_index:&BTreeMap<String,Ind>
+            ,index_to_quantity:&mut BTreeMap<Ind,Quant>
+            | {
                 for (token,quantity) in tokens {
                     index_to_quantity.insert(*token_to_index.get(token).unwrap(),*quantity);
                 }
             };
+
+        closure(&self.eng_token_quantity,&self.eng_token_index, &mut self.eng_index_quantity);
+        closure(&self.fra_token_quantity,&self.fra_token_index, &mut self.fra_index_quantity);
+
     }
+
 
 }
 

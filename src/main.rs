@@ -33,11 +33,12 @@ fn main() {
     vocab.index_to_word();
     vocab.index_quantity();
 
-    println!("The eng words indexation: {:?}\n", &vocab.eng_word_index);
-    println!("The eng index to words:  {:?}\n", &vocab.eng_index_word);
+//////    println!("The eng words indexation: {:?}\n", &vocab.eng_word_index);
+//////    println!("The eng index to words:  {:?}\n", &vocab.eng_index_word);
 
     let mut tokens = VocabOfTokens::new();
     tokens.from_word_vocab(&vocab);
+    tokens.token_to_index_c();
     tokens.index_to_token();
     tokens.index_to_quantity();
 //    tokens.quantity_of_tokens();
@@ -48,8 +49,8 @@ fn main() {
              &tokens.fra_token_total);
 // convert the initial tokens (which are (character as string)s ) to the number representation , 
 // we use Ind type for the numbers 
-    tokens.token_to_index_c();
-    tokens.index_to_token();
+//    tokens.token_to_index_c();
+//    tokens.index_to_token();
     println!("Initial eng_tokens as indices:\n{:?}",&tokens.eng_token_index);
     println!("Initial eng_index_token representation;\n{:?}",&tokens.eng_index_token);
     

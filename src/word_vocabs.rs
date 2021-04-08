@@ -49,9 +49,10 @@ impl Vocab {
     }
 
     pub fn list_of_words(&mut self, vector_sentences:&SentencesForTranslation) {
-        let size = vector_sentences.eng.len();
-        let mut res_eng:Vec<String>=Vec::with_capacity(size);
-        let mut res_fra:Vec<String>=Vec::with_capacity(size);
+        let size_eng = vector_sentences.eng.len();
+        let size_fra = vector_sentences.fra.len();
+        let mut res_eng:Vec<String>=Vec::with_capacity(size_eng);
+        let mut res_fra:Vec<String>=Vec::with_capacity(size_fra);
         for sentence in &vector_sentences.eng {
             for word in sentence.trim().split_whitespace(){
                 res_eng.push(word.to_owned());
