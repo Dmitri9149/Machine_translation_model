@@ -87,7 +87,7 @@ where
 pub fn find_and_change_pair(vect:&mut Vec<Ind>,pair:&(Ind,Ind),new:&Ind) -> Vec<Ind> {
     let size = vect.len();
     if size == 0 {
-        println!("The vector of Ind is empty !!");
+//        println!("The vector of Ind is empty !!");
         return vect.to_vec()
     } else if size == 1 {
         return vect.to_vec()
@@ -101,7 +101,7 @@ pub fn find_and_change_pair(vect:&mut Vec<Ind>,pair:&(Ind,Ind),new:&Ind) -> Vec<
             pointers.push((pointer,counter));
             counter+=2;
             pointer = counter;
-            println!("pointers {:?}",pointers);
+//            println!("pointers {:?}",pointers);
             continue;
         }
 
@@ -133,7 +133,7 @@ pub fn find_and_change_in_place_pair(vect:&mut Vec<Ind>,pair:&(Ind,Ind),new:&Ind
             pointers.push((pointer,counter));
             counter+=2;
             pointer = counter;
-            println!("pointers {:?}",pointers);
+//            println!("pointers {:?}",pointers);
             continue;
         }
 

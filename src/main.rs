@@ -62,24 +62,36 @@ fn main() {
     let mut tokens_words_dynamic = TokensAndWordsDynamicsLang::new(Lang::Eng);
     tokens_words_dynamic=TokensAndWordsDynamicsLang::initial_set_from_vocab(Lang::Eng,&tokens,&vocab);
      
-    let num_merges = 10;
+    let num_merges = 500;
     let mut condidate_pairs_for_merge; 
     let mut most_frequent_pair;
     for merge in 0..num_merges {
         println!("Iteration: {:?}",merge);
-        println!("Before candidate");
         condidate_pairs_for_merge = CandidatesForMergeLang::from_tokens_words_dynamic(&tokens_words_dynamic);
         println!("Before most frequent");
         most_frequent_pair=MostFrequentPairLang::most_frequent_pair(&condidate_pairs_for_merge);
         println!("Before tokens_words_dynamic");
+        match most_frequent_pair { 
+            MostFrequentPairLang::Eng(ref x) => println!("Most frequent pair eng: {:?}", x.pair),
+            _ => println!(" Something is wrong with printing most frequent pair")                                                
+        }
         tokens_words_dynamic.from_most_frequent_pair(&most_frequent_pair);
+        match tokens_words_dynamic {
+            TokensAndWordsDynamicsLang::Eng(ref x) => println!(" Eng word indices:\n{:?}",&x.word_indices.get(&17206).unwrap()),
+            _=> println!("Somethin is wrong with word_indices printing"),
+
+        }
+
+
+
+
     }
 
-/*
+
     match tokens_words_dynamic {
-        TokensAndWordsDynamicsLang::Eng(x) => println!(" Eng word indices:\n{:?}",&x.word_indices),
+        TokensAndWordsDynamicsLang::Eng(ref x) => println!(" Eng word indices:\n{:?}",&x.word_indices.get(&17206).unwrap()),
         _=> println!("Somethin is wrong with word_indices printing"),
 
     }
-*/
+
 }
