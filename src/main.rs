@@ -4,6 +4,7 @@ fn main() {
     let mut txt = CorpusAsString::corpus_from_file("data/fra_eng/fra.txt");
 // eliminate u{202f} non breaking space and '\xa0' which in unicode is u{00a0}
     txt = txt.replace_some_chars("\u{202f}\u{00a0}", ' ');
+    txt = txt.replace_some_chars("\"",' ');
     txt.separate_punctuation("?!.,");
 
     let sentences = SentencesForTranslation::from_corpus(&txt);
@@ -36,6 +37,8 @@ fn main() {
 
     let mut tokens = VocabOfTokens::new();
     tokens.from_word_vocab(&vocab);
+    tokens.index_to_token();
+    tokens.index_to_quantity();
 //    tokens.quantity_of_tokens();
     println!("Tokens ! {:?}", &tokens.eng_token_quantity);      
     println!("Number of initial tokens eng: {}",
