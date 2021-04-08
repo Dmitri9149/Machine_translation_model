@@ -130,7 +130,7 @@ pub fn find_and_change_in_place_pair(vect:&mut Vec<Ind>,pair:&(Ind,Ind),new:&Ind
     let mut collector:Vec<Ind> = Vec::new();
     let mut counter = 0;
     let mut pointers:Vec<(Ind,Ind)>=Vec::new();
-    while counter < size {
+    while counter < size-1 {
         if (vect[counter],vect[counter+1]) == (pair.0,pair.1) {
             pointers.push((pointer,counter));
             counter+=2;

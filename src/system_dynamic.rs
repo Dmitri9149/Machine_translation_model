@@ -8,8 +8,8 @@ use std::collections::BTreeMap;
 // keep the records of the flattened tokens as 
 // list of indices or as String
 pub struct Token {
-    flattened_to_index:Vec<Ind>,
-    flattened_to_string:String,
+    pub flattened_to_index:Vec<Ind>,
+    pub flattened_to_string:String,
 }
 
 pub enum TokenLang {
@@ -27,8 +27,8 @@ pub enum CandidatesForMergeLang {
 }
 
 pub struct MostFrequentPair {
-    pair:(Ind,Ind),
-    pair_frequency:Quant,
+    pub pair:(Ind,Ind),
+    pub pair_frequency:Quant,
 }
 
 pub enum MostFrequentPairLang {
@@ -133,9 +133,9 @@ pub enum NewTokenLang {
 
 pub struct TokensAndWordsDynamics {
 // TODO is it possible to use &str instead of String ? with reference to token.flattened_to_string?
-     index_token:BTreeMap<Ind,Token>,
-     token_index:BTreeMap<String,Ind>,
-     word_indices:BTreeMap<Ixx,Vec<Ind>>
+     pub index_token:BTreeMap<Ind,Token>,
+     pub token_index:BTreeMap<String,Ind>,
+     pub word_indices:BTreeMap<Ixx,Vec<Ind>>
 }
 
 
