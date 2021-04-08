@@ -56,7 +56,7 @@ fn main() {
     let mut collection = WordToIndexCollection::new();
     collection.from_word_vocab(&vocab,&tokens);
 
-    println!("IndexToWordsCollection.eng_words_n:\n{:?}",&collection.eng_words_n[17000..17350]);
+    println!("IndexToWordsCollection.eng_words_n:\n{:?}",&collection.eng_words_n);
 //    println!("IndexToWordsCollection.eng_words_s:\n{:?}",&collection.eng_words_s);
 
     let mut tokens_words_dynamic = TokensAndWordsDynamicsLang::new(Lang::Eng);
@@ -74,10 +74,12 @@ fn main() {
         println!("Before tokens_words_dynamic");
         tokens_words_dynamic.from_most_frequent_pair(&most_frequent_pair);
     }
-    
+
+/*
     match tokens_words_dynamic {
-        TokensAndWordsDynamicsLang::Eng(x) => println!(" Eng word indices:\n{:?}",&x.word_indices[17000..17350]),
+        TokensAndWordsDynamicsLang::Eng(x) => println!(" Eng word indices:\n{:?}",&x.word_indices),
         _=> println!("Somethin is wrong with word_indices printing"),
 
     }
+*/
 }

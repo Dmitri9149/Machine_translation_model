@@ -37,6 +37,30 @@ pub enum MostFrequentPairLang {
 }
 
 impl CandidatesForMerge {
+    pub fn from_tokens_words_dynamic(index_token:&BTreeMap<Ind,Token>
+                                     ,word_indices:&BTreeMap<String,Vec<Ind>>
+                                     ,word_quantity:&BTreeMap<Ixx,Qxx>) -> CandidatesForMerge {
+        let mut pairs:HashMap<(Ind,Ind),Quant> = HashMap::new();
+        let mut quant:Quant;
+//        let mut collection:Vec<Ind> = vec![];
+        let mut pair:(Ind,Ind);
+        let mut size;
+        for (word,collection) in word_indices.keys() {
+            size = collection.len();
+                if size == 0 {
+                    panic!("from CandidatesForMerge: collection has 0 length, breack");
+                } else if size ==1 {
+                    continue
+                }
+            for i in 0..size-1 {
+                pair = (collection[i],collection[i+1]);
+                quant = *word_quantity.get(&word).unwrap();
+                *pairs.entry(pair).or_insert(quant)+=quant;
+            }
+        }
+                
+    } 
+
 
     pub fn from_word_vocab(index_word:&BTreeMap<Ixx,String>
                            ,words_n:&BTreeMap<Ixx,Vec<Ind>>
@@ -71,7 +95,7 @@ impl CandidatesForMerge {
             let res = max_key(pairs).expect("The vocabulary is to be not empty");
             (*res.0,*res.1)
         };
-        let max_pair = closure(&self.pairs);
+        
         MostFrequentPair {
         pair:max_pair.0,    
         pair_frequency:max_pair.1,
@@ -113,29 +137,13 @@ impl MostFrequentPairLang {
     }
 }
 
-/*
-pub struct NewToken {
-    new_token:Token,
-}
-
-impl NewToken {
-    pub fn from_most_frequent_pair (pair:&MostFrequentPair,dynamic:&TokensDynamic) -> NewToken{
-        
-    }
-}
-
-pub enum NewTokenLang {
-    Eng(NewToken),
-    Fra(NewToken)
-}
-*/
-
-
 pub struct TokensAndWordsDynamics {
 // TODO is it possible to use &str instead of String ? with reference to token.flattened_to_string?
-     pub index_token:BTreeMap<Ind,Token>,
-     pub token_index:BTreeMap<String,Ind>,
-     pub word_indices:BTreeMap<Ixx,Vec<Ind>>
+    pub index_token:BTreeMap<Ind,Token>,
+    pub token_index:BTreeMap<String,Ind>,
+    pub word_quantity:BTreeMap<Ixx,Qxx>,
+    pub word_indices:BTreeMap<Ixx,Vec<Ind>>
+    
 }
 
 
@@ -144,13 +152,15 @@ impl TokensAndWordsDynamics {
         TokensAndWordsDynamics {
             index_token:BTreeMap::new()
                 ,token_index:BTreeMap::new()
+                ,word_quantity:BTreeMap::new()
                 ,word_indices:BTreeMap::new()
         }
     }
 
     pub fn initial_set_from_vocab(index_word:&BTreeMap<Ixx,String>
                                   ,index_token:&BTreeMap<Ind,String>
-                                  ,token_index:&BTreeMap<String,Ind>) -> TokensAndWordsDynamics {
+                                  ,token_index:&BTreeMap<String,Ind>
+                                  ,word_quantity:&BTreeMap<Ixx,Qxx>) -> TokensAndWordsDynamics {
         let mut hsh_index:BTreeMap<Ind,Token> = BTreeMap::new();
         let mut hsh_token:BTreeMap<String,Ind> = BTreeMap::new();
 // TODO rewrite to:  for (index,token) in index_token { .... }
@@ -183,6 +193,7 @@ impl TokensAndWordsDynamics {
             index_token:hsh_index
             ,token_index:hsh_token
             ,word_indices:hsh_word_ics
+            ,word_quantity:word_quantity.to_owned()
         }
     }
  
@@ -204,7 +215,10 @@ impl TokensAndWordsDynamics {
             panic!("The new key already exist: {:?} ; panic!", new_index);
         }
         self.index_token.insert(new_index,token);
-// TODO what to do if "to_string_left" already exist ? 
+// TODO what to do if "to_string_left" already exist ?
+        if self.token_index.contains_key(st) {
+            panic!("The string key already exist: {:?}",st.to_string());
+        }
         self.token_index.entry(st.to_string()).or_insert(new_index);
 // TODO find needed pair in vector of numbers and change the pair to a new number
 //
@@ -237,11 +251,13 @@ impl TokensAndWordsDynamicsLang {
             Lang::Eng  => TokensAndWordsDynamicsLang
                 ::Eng(TokensAndWordsDynamics::initial_set_from_vocab(&vocab_w.eng_index_word
                                                             ,&vocab_t.eng_index_token
-                                                            ,&vocab_t.eng_token_index)),
+                                                            ,&vocab_t.eng_token_index
+                                                            ,&vocab_w.eng_numbers)),
             Lang::Fra  => TokensAndWordsDynamicsLang
                 ::Fra(TokensAndWordsDynamics::initial_set_from_vocab(&vocab_w.fra_index_word
                                                             ,&vocab_t.fra_index_token
-                                                            ,&vocab_t.fra_token_index)),
+                                                            ,&vocab_t.fra_token_index
+                                                            ,&vocab_w.fra_numbers)),
         }
     }
 
