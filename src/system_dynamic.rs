@@ -38,14 +38,14 @@ pub enum MostFrequentPairLang {
 
 impl CandidatesForMerge {
     pub fn from_tokens_words_dynamic(index_token:&BTreeMap<Ind,Token>
-                                     ,word_indices:&BTreeMap<String,Vec<Ind>>
+                                     ,word_indices:&BTreeMap<Ixx,Vec<Ind>>
                                      ,word_quantity:&BTreeMap<Ixx,Qxx>) -> CandidatesForMerge {
         let mut pairs:HashMap<(Ind,Ind),Quant> = HashMap::new();
         let mut quant:Quant;
 //        let mut collection:Vec<Ind> = vec![];
         let mut pair:(Ind,Ind);
         let mut size;
-        for (word,collection) in word_indices.keys() {
+        for (word,collection) in word_indices {
             size = collection.len();
                 if size == 0 {
                     panic!("from CandidatesForMerge: collection has 0 length, breack");
@@ -58,6 +58,11 @@ impl CandidatesForMerge {
                 *pairs.entry(pair).or_insert(quant)+=quant;
             }
         }
+
+        CandidatesForMerge {
+            pairs:pairs
+        }
+
                 
     } 
 
@@ -90,12 +95,14 @@ impl CandidatesForMerge {
         }
     }
 
+
     pub fn most_frequent_pair(&self) -> MostFrequentPair {
         let closure = |pairs:&HashMap<(Ind,Ind),Quant>| {
             let res = max_key(pairs).expect("The vocabulary is to be not empty");
             (*res.0,*res.1)
         };
-        
+
+        let max_pair = closure(&self.pairs);
         MostFrequentPair {
         pair:max_pair.0,    
         pair_frequency:max_pair.1,
@@ -104,6 +111,27 @@ impl CandidatesForMerge {
 }
 
 impl CandidatesForMergeLang {
+
+    pub fn from_tokens_words_dynamic(dynamics:&TokensAndWordsDynamicsLang) 
+        -> CandidatesForMergeLang {
+            match dynamics {
+                TokensAndWordsDynamicsLang::Eng(x) => 
+                    CandidatesForMergeLang
+                    ::Eng(CandidatesForMerge
+                          ::from_tokens_words_dynamic(&x.index_token
+                                                      ,&x.word_indices
+                                                      ,&x.word_quantity)),
+
+                TokensAndWordsDynamicsLang::Fra(y) => 
+                    CandidatesForMergeLang
+                    ::Fra(CandidatesForMerge
+                          ::from_tokens_words_dynamic(&y.index_token
+                                                      ,&y.word_indices
+                                                      ,&y.word_quantity)),
+            }
+    }
+
+
     pub fn from_word_vocab(vocab:&Vocab, collection:&WordToIndexCollection,lang:Lang) 
         -> CandidatesForMergeLang {
             match lang {
@@ -278,47 +306,3 @@ impl TokensAndWordsDynamicsLang {
 }
 
 
-// dynamically changing Vocab of Words which are represented 
-// as map from numbers (word indices) to collection of token indices
-// the dynamic is because new tokens (and new indixes) are generated 
-// while the tokenizer is runnind
-
-pub struct WordAsTokensDynamic {
-
-    word_as_indices:BTreeMap<Ixx,Vec<Ind>>,
-    word_as_collection:BTreeMap<Ixx,Vec<Vec<Ind>>>
-}
-
-pub enum WordAsTokensDynamicLang {
-    Eng(WordAsTokensDynamic),
-    Fra(WordAsTokensDynamic)
-}
-
-impl WordAsTokensDynamic {
-    pub fn at_the_beginning(words_n:&BTreeMap<Ixx,Vec<Ind>>) -> WordAsTokensDynamic{
-        let mut hsh:BTreeMap<Ixx,Vec<Vec<Ind>>> = BTreeMap::new();
-        for word in words_n {
-// TODO what if there is already an entry
-            hsh.entry(*word.0).or_insert(vec![word.1.to_vec()]);
-        }
-
-        WordAsTokensDynamic {
-            word_as_indices:words_n.to_owned(),
-            word_as_collection:hsh
-        }
-    }
-
-//    pub fn words_dynamic (&mut self, )
-}
-
-impl WordAsTokensDynamicLang {
-    pub fn at_the_beginning(lang:Lang,collections:&WordToIndexCollection)
-        -> WordAsTokensDynamicLang {
-            match lang {
-                Lang::Eng => WordAsTokensDynamicLang
-                    ::Eng(WordAsTokensDynamic::at_the_beginning(&collections.eng_words_n)),
-                Lang::Fra => WordAsTokensDynamicLang
-                    ::Fra(WordAsTokensDynamic::at_the_beginning(&collections.fra_words_n)),
-            }
-    }
-}

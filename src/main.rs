@@ -68,7 +68,7 @@ fn main() {
     for merge in 0..num_merges {
         println!("Iteration: {:?}",merge);
         println!("Before candidate");
-        condidate_pairs_for_merge = CandidatesForMergeLang::from_word_vocab(&vocab,&collection,Lang::Eng);
+        condidate_pairs_for_merge = CandidatesForMergeLang::from_tokens_words_dynamic(&tokens_words_dynamic);
         println!("Before most frequent");
         most_frequent_pair=MostFrequentPairLang::most_frequent_pair(&condidate_pairs_for_merge);
         println!("Before tokens_words_dynamic");

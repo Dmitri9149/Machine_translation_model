@@ -18,8 +18,6 @@ pub use system_dynamic::{CandidatesForMerge
     ,TokensAndWordsDynamics
     ,TokensAndWordsDynamicsLang
     ,Token
-    ,WordAsTokensDynamic
-    ,WordAsTokensDynamicLang
 };
 
 // indexation of tokens 
