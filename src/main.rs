@@ -48,14 +48,26 @@ fn main() {
     tokens.index_to_token();
     println!("Initial eng_tokens as indices:\n{:?}",&tokens.eng_token_index);
     println!("Initial eng_index_token representation;\n{:?}",&tokens.eng_index_token);
+    
+    let mut collection = WordToIndexCollection::new();
+    collection.from_word_vocab(&vocab,&tokens);
 
+    println!("IndexToWordsCollection.eng_words_n:\n{:?}",&collection.eng_words_n);
+    println!("IndexToWordsCollection.eng_words_s:\n{:?}",&collection.eng_words_s);
 
-//TODO    
-/*
+    let mut tokens_words_dynamic = TokensAndWordsDynamicsLang::new(Lang::Eng);
+    tokens_words_dynamic=TokensAndWordsDynamicsLang::initial_set_from_vocab(Lang::Eng,&tokens,&vocab);
+     
     let num_merges = 10;
-    let mut prs; 
-    let mut max_pair;
-    for merge in 0..num_merges 
-    prs = CandidatesForMergeLang::from_word_vocab(&vocab,&collection,Eng);
-*/
+    let mut condidate_pairs_for_merge; 
+    let mut most_frequent_pair;
+    for merge in 0..num_merges {
+        println!("Iteration: {:?}",merge);
+        println!("Before candidate");
+        condidate_pairs_for_merge = CandidatesForMergeLang::from_word_vocab(&vocab,&collection,Lang::Eng);
+        println!("Before most frequent");
+        most_frequent_pair=MostFrequentPairLang::most_frequent_pair(&condidate_pairs_for_merge);
+        println!("Before tokens_words_dynamic");
+        tokens_words_dynamic.from_most_frequent_pair(&most_frequent_pair);
+    }
 }
