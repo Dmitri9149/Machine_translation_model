@@ -35,6 +35,7 @@ pub enum Lang {
     Fra
 } 
 
+static SENTENCES_NUMBER:Ixs = 190000;
 
 pub fn replace_chars_to_char(input:&str, aa:&str, b:char) -> String {
     let mut output = String::with_capacity(input.len());
