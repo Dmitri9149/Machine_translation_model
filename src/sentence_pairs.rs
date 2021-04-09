@@ -56,8 +56,15 @@ impl Debug for TranslationPair {
 impl TranslationPairs {
 // construct it from SentencesForTranslation
     pub fn from_sentences(sentences:&SentencesForTranslation) -> TranslationPairs{
-        let size = sentences.eng.len();
-        let mut pairs:Vec<TranslationPair>= vec![];
+        let size_eng = sentences.eng.len();
+        let size_fra = sentences.fra.len();
+        if size_eng != size_fra {
+            panic!("Numbers of source and target sentences are different ! Panic.");
+        }
+
+        let size = size_eng;
+        
+        let mut pairs:Vec<TranslationPair>= Vec::with_capacity(size_eng);
         for i in 0..size {
             pairs.push(TranslationPair::from_sentences(&sentences.eng[i], &sentences.fra[i]));
         }
