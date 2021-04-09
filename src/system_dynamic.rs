@@ -4,6 +4,8 @@
 use super::*;
 use std::collections::HashMap;
 use std::collections::BTreeMap;
+use std::fmt::{self,Debug,Formatter};
+
 
 // keep the records of the flattened tokens as 
 // list of indices or as String
@@ -11,6 +13,15 @@ pub struct Token {
     pub flattened_to_index:Vec<Ind>,
     pub flattened_to_string:String,
 }
+
+impl Debug for Token {
+    fn fmt(&self, f: &mut Formatter ) -> fmt::Result {
+        write!(f, "\nToken:\n  As indices:  {:?} \n  As string:  {}\n"
+               , self.flattened_to_index
+               , self.flattened_to_string)
+    }
+}
+
 
 
 pub struct CandidatesForMerge {
