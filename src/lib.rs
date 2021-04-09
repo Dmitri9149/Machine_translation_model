@@ -34,6 +34,8 @@ pub enum Lang {
     Eng,
     Fra
 } 
+// for word length 
+pub type Ixw=u16;
 
 static SENTENCES_NUMBER:Ixs = 190000;
 

@@ -143,7 +143,9 @@ pub struct WordToIndexCollection {
     pub eng_words_s:BTreeMap<String,Vec<Ind>>,
     pub fra_words_s:BTreeMap<String,Vec<Ind>>,
     pub eng_words_n:BTreeMap<Ixx,Vec<Ind>>,
-    pub fra_words_n:BTreeMap<Ixx,Vec<Ind>>
+    pub fra_words_n:BTreeMap<Ixx,Vec<Ind>>,
+    pub eng_word_max_length:Ixw,
+    pub fra_word_max_length:Ixw,
 
 }
 
@@ -155,6 +157,8 @@ impl WordToIndexCollection {
         fra_words_s:BTreeMap::new(),
         eng_words_n:BTreeMap::new(),
         fra_words_n:BTreeMap::new(),
+        eng_word_max_length:0,
+        fra_word_max_length:0,
         }
     }
 
@@ -163,31 +167,38 @@ impl WordToIndexCollection {
             ,words_n:&mut BTreeMap<Ixx,Vec<Ind>>
             ,words:&BTreeMap<String,Quant>
             ,word_index:&BTreeMap<String,Ixx>
-            ,token_index:&BTreeMap<String,Ind>| {
+            ,token_index:&BTreeMap<String,Ind>
+            ,max_length:&mut Ixw | {
+                *max_length =0;
                 for (word,_) in words {
                     let words_iter = word.chars();
 // approximate length of word in chars by the length is bytes
                     let collection:&mut Vec<Ind> = &mut Vec::with_capacity(word.len());
-
+                    let mut current_length:Ixw = 0;
                     for ch in words_iter {
                         collection.push(*token_index.get(&ch.to_string()).unwrap());
+                        current_length+=1;
                     }
                     words_s.insert(word.to_string(),collection.to_vec());
                     words_n.insert(*word_index.get(word).unwrap(),collection.to_vec());
+                    if current_length > *max_length {
+                        *max_length = current_length;
+                    }
                 }
-
             };
 
         closure(&mut self.eng_words_s
                 ,&mut self.eng_words_n
                 ,&word_vocab.eng_words
                 ,&word_vocab.eng_word_index
-                ,&token_vocab.eng_token_index);
+                ,&token_vocab.eng_token_index
+                ,&mut self.eng_word_max_length);
         closure(&mut self.fra_words_s
                 ,&mut self.fra_words_n
                 ,&word_vocab.fra_words
                 ,&word_vocab.fra_word_index
-                ,&token_vocab.fra_token_index);
+                ,&token_vocab.fra_token_index
+                ,&mut self.fra_word_max_length);
 
 
 
