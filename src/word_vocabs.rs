@@ -165,9 +165,11 @@ impl WordToIndexCollection {
             ,word_index:&BTreeMap<String,Ixx>
             ,token_index:&BTreeMap<String,Ind>| {
                 for (word,_) in words {
-                    let collection:&mut Vec<Ind> = &mut Vec::new();
+                    let words_iter = word.chars();
+// approximate length of word in chars by the length is bytes
+                    let collection:&mut Vec<Ind> = &mut Vec::with_capacity(word.len());
 
-                    for ch in word.chars() {
+                    for ch in words_iter {
                         collection.push(*token_index.get(&ch.to_string()).unwrap());
                     }
                     words_s.insert(word.to_string(),collection.to_vec());
