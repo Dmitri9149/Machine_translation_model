@@ -19,7 +19,8 @@ pub use system_dynamic::{CandidatesForMerge
     ,TokensAndWordsDynamicsLang
     ,Token
 };
-
+// the index for sentences numbering
+pub type Ixs = usize;
 // indexation of tokens 
 pub type Ind = usize;
 // for tokens quantity

@@ -6,7 +6,8 @@ use super::*;
 
 pub struct SentencesForTranslation {
     pub eng:Vec<String>,
-    pub fra:Vec<String>
+    pub fra:Vec<String>,
+    pub size:Ixs,
 }
 
 impl SentencesForTranslation {
@@ -18,10 +19,15 @@ impl SentencesForTranslation {
             eng.push(it.next().unwrap().to_owned());
             fra.push(it.next().unwrap().to_owned());
 
+        } 
+
+        let size = eng.len();
+        if size != fra.len() {
+            panic!("Numbr of source sentences is not same as for target. Panic! ");
         }
 
         SentencesForTranslation {
-            eng:eng, fra:fra
+            eng:eng, fra:fra, size:size
         }
 
     }
