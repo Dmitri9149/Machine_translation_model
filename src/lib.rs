@@ -179,15 +179,27 @@ mod tests {
         let mut vector3 = vec![3,100,3,100,3,100,3,100,1,2,3,3,100];
         let mut vector4 = vec![3,100];
 
-
         find_and_change_in_place_pair(&mut vector1,&pair,&new);
         find_and_change_in_place_pair(&mut vector2,&pair,&new);
         find_and_change_in_place_pair(&mut vector3,&pair,&new);
         find_and_change_in_place_pair(&mut vector4,&pair,&new);
+
         assert_eq!(vec![1,2,100,777,777,5,78,39,1,2,3,777], vector1);
         assert_eq!(vec![3], vector2);
         assert_eq!(vec![777,777,777,777,1,2,3,777], vector3);
         assert_eq!(vec![777], vector4);
+
+
+        let pair = (57,62);
+        let new = 91;
+        let mut vector5 = vec![71, 63, 66, 66, 73, 57, 62, 55];
+        find_and_change_in_place_pair(&mut vector5,&pair,&new);
+        assert_eq!(vec![71,63,66,66,73,91,55], vector5);
+       
+
+
+
+
     }
 
     #[test]

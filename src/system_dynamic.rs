@@ -12,10 +12,6 @@ pub struct Token {
     pub flattened_to_string:String,
 }
 
-pub enum TokenLang {
-    Eng(Token),
-    Fra(Token)
-}
 
 pub struct CandidatesForMerge {
     pub pairs:HashMap<(Ind,Ind),Quant>,
@@ -37,8 +33,7 @@ pub enum MostFrequentPairLang {
 }
 
 impl CandidatesForMerge {
-    pub fn from_tokens_words_dynamic(index_token:&BTreeMap<Ind,Token>
-                                     ,word_indices:&BTreeMap<Ixx,Vec<Ind>>
+    pub fn from_tokens_words_dynamic(word_indices:&BTreeMap<Ixx,Vec<Ind>>
                                      ,word_quantity:&BTreeMap<Ixx,Qxx>) -> CandidatesForMerge {
         let mut pairs:HashMap<(Ind,Ind),Quant> = HashMap::new();
         let mut quant:Quant;
@@ -52,9 +47,9 @@ impl CandidatesForMerge {
                 } else if size ==1 {
                     continue
                 }
+            quant = *word_quantity.get(&word).unwrap();
             for i in 0..size-1 {
                 pair = (collection[i],collection[i+1]);
-                quant = *word_quantity.get(&word).unwrap();
                 *pairs.entry(pair).or_insert(quant)+=quant;
             }
         }
@@ -72,9 +67,9 @@ impl CandidatesForMerge {
                            ,numbers:&BTreeMap<Ixx,Qxx>)  -> CandidatesForMerge {
         let mut pairs:HashMap<(Ind,Ind),Quant> = HashMap::new();
         let mut quant:Quant;
-        let mut collection:Vec<Ind> = vec![];
         let mut pair:(Ind,Ind);
         let mut size;
+        let mut collection;
         for word in index_word.keys() {
             collection = words_n.get(&word).unwrap().to_vec();
             size = collection.len();
@@ -118,15 +113,13 @@ impl CandidatesForMergeLang {
                 TokensAndWordsDynamicsLang::Eng(x) => 
                     CandidatesForMergeLang
                     ::Eng(CandidatesForMerge
-                          ::from_tokens_words_dynamic(&x.index_token
-                                                      ,&x.word_indices
+                          ::from_tokens_words_dynamic(&x.word_indices
                                                       ,&x.word_quantity)),
 
                 TokensAndWordsDynamicsLang::Fra(y) => 
                     CandidatesForMergeLang
                     ::Fra(CandidatesForMerge
-                          ::from_tokens_words_dynamic(&y.index_token
-                                                      ,&y.word_indices
+                          ::from_tokens_words_dynamic(&y.word_indices
                                                       ,&y.word_quantity)),
             }
     }
@@ -203,7 +196,6 @@ impl TokensAndWordsDynamics {
             hsh_token.entry(st).or_insert(*index.0);
         }
 
-        let mut hsh_word:BTreeMap<Ixx,Vec<Token>> = BTreeMap::new();
         let mut hsh_word_ics:BTreeMap<Ixx,Vec<Ind>> = BTreeMap::new();
         let mut char_index:Ind;
         let mut char_as_string:String;
@@ -254,7 +246,7 @@ impl TokensAndWordsDynamics {
         
         self.word_indices
         .iter_mut()
-        .map(|(index,mut vector)| find_and_change_in_place_pair(vector,&pair.pair,&new_index))
+        .map(|(_index,vector)| find_and_change_in_place_pair(vector,&pair.pair,&new_index))
         .collect()    
     }
 }

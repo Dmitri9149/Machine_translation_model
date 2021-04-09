@@ -1,5 +1,4 @@
 // vocabulary for eng and fra corpus , on the level of words
-use std::collections::HashMap;
 use std::collections::BTreeMap;
 use super::*;
 

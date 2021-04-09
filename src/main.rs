@@ -60,10 +60,10 @@ fn main() {
     println!("IndexToWordsCollection.eng_words_n:\n{:?}",&collection.eng_words_n);
 //    println!("IndexToWordsCollection.eng_words_s:\n{:?}",&collection.eng_words_s);
 
-    let mut tokens_words_dynamic = TokensAndWordsDynamicsLang::new(Lang::Eng);
-    tokens_words_dynamic=TokensAndWordsDynamicsLang::initial_set_from_vocab(Lang::Eng,&tokens,&vocab);
+    let mut tokens_words_dynamic=TokensAndWordsDynamicsLang
+        ::initial_set_from_vocab(Lang::Eng,&tokens,&vocab);
      
-    let num_merges = 500;
+    let num_merges = 100;
     let mut condidate_pairs_for_merge; 
     let mut most_frequent_pair;
     for merge in 0..num_merges {
