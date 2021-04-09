@@ -8,7 +8,7 @@ use super::*;
 // pub type Ixx = u32;
 
 pub struct Vocab {
-// the list of all words (may repeat) which we can get by splitting all 
+// the list of all words (may with possible repeats) which we can get by splitting all 
 // sentences (usually we split on white space)
     pub eng_set:Vec<String>,
     pub fra_set:Vec<String>,
