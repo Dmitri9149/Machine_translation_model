@@ -84,40 +84,7 @@ where
 }
 // take vector of numbers find pais which are equal to pair-parameter and change the pair to new
 // (number)
-pub fn find_and_change_pair(vect:&mut Vec<Ind>,pair:&(Ind,Ind),new:&Ind) -> Vec<Ind> {
-    let size = vect.len();
-    if size == 0 {
-//        println!("The vector of Ind is empty !!");
-        return vect.to_vec()
-    } else if size == 1 {
-        return vect.to_vec()
-    }
-    let mut pointer = 0;
-    let mut collector:Vec<Ind> = Vec::new();
-    let mut counter = 0;
-    let mut pointers:Vec<(Ind,Ind)>=Vec::new();
-    while counter < size {
-        if (vect[counter],vect[counter+1]) == (pair.0,pair.1) {
-            pointers.push((pointer,counter));
-            counter+=2;
-            pointer = counter;
-//            println!("pointers {:?}",pointers);
-            continue;
-        }
-
-        counter+=1;
-    }
-    if pointers.len() !=0 {
-        for (pointer,counter) in pointers {
-            collector.append(&mut vect[pointer..counter].to_vec());
-            collector.push(*new);
-        }
-    return collector
-    }
-    return vect.to_vec()
-}
-// same as for the function above , but the vectro is changed in place
-pub fn find_and_change_in_place_pair(vect:&mut Vec<Ind>,pair:&(Ind,Ind),new:&Ind) {
+pub fn find_and_replace_pair(vect:&mut Vec<Ind>,pair:&(Ind,Ind),new:&Ind) {
     let size = vect.len();
     if size == 0 {
         panic!("The vector of Ind is empty !!");
@@ -127,29 +94,28 @@ pub fn find_and_change_in_place_pair(vect:&mut Vec<Ind>,pair:&(Ind,Ind),new:&Ind
     let mut pointer = 0;
     let mut collector:Vec<Ind> = Vec::new();
     let mut counter = 0;
-    let mut pointers:Vec<(Ind,Ind)>=Vec::new();
+    let mut flag = false;
     while counter < size-1 {
         if (vect[counter],vect[counter+1]) == (pair.0,pair.1) {
-            pointers.push((pointer,counter));
-            counter+=2;
-            pointer = counter;
-//            println!("pointers {:?}",pointers);
-            continue;
-        }
-
-        counter+=1;
-    }
-    if pointers.len() !=0 {
-        for (pointer,counter) in pointers {
             collector.append(&mut vect[pointer..counter].to_vec());
             collector.push(*new);
-        }
-    *vect=collector;
+            counter+=2;
+            pointer = counter;
+            flag = true;
+
+            continue;
+        } 
+        counter+=1;
     }
-    return ()
+
+    if flag == false {
+        return ()
+    } else {
+        collector.append(&mut vect[pointer..size].to_vec());
+    }
+
+    *vect = collector;
 }
-
-
 
 #[cfg(test)]
 mod tests {
@@ -161,16 +127,7 @@ mod tests {
     }
 
     #[test]
-    fn find_and_change_pairs_in_vector() {
-        println!("In test function!");
-        let pair = (3,100);
-        let new = 777; 
-        let mut vector = vec![1,2,100,3,100,3,100,5,78,39,1,2,3,3,100];
-        assert_eq!(vec![1,2,100,777,777,5,78,39,1,2,3,777], find_and_change_pair(&mut vector,&pair,&new));
-    }
-
-    #[test]
-    fn find_and_change_pairs_in_vector_in_place() {
+    fn find_and_replace_pair_b() {
         println!("In test function!");
         let pair = (3,100);
         let new = 777; 
@@ -179,10 +136,10 @@ mod tests {
         let mut vector3 = vec![3,100,3,100,3,100,3,100,1,2,3,3,100];
         let mut vector4 = vec![3,100];
 
-        find_and_change_in_place_pair(&mut vector1,&pair,&new);
-        find_and_change_in_place_pair(&mut vector2,&pair,&new);
-        find_and_change_in_place_pair(&mut vector3,&pair,&new);
-        find_and_change_in_place_pair(&mut vector4,&pair,&new);
+        find_and_replace_pair(&mut vector1,&pair,&new);
+        find_and_replace_pair(&mut vector2,&pair,&new);
+        find_and_replace_pair(&mut vector3,&pair,&new);
+        find_and_replace_pair(&mut vector4,&pair,&new);
 
         assert_eq!(vec![1,2,100,777,777,5,78,39,1,2,3,777], vector1);
         assert_eq!(vec![3], vector2);
@@ -193,7 +150,7 @@ mod tests {
         let pair = (57,62);
         let new = 91;
         let mut vector5 = vec![71, 63, 66, 66, 73, 57, 62, 55];
-        find_and_change_in_place_pair(&mut vector5,&pair,&new);
+        find_and_replace_pair(&mut vector5,&pair,&new);
         assert_eq!(vec![71,63,66,66,73,91,55], vector5);
        
 
@@ -209,7 +166,7 @@ mod tests {
         let pair = (3,100);
         let new = 777; 
         let mut vector = vec![];
-        find_and_change_in_place_pair(&mut vector,&pair,&new);
+        find_and_replace_pair(&mut vector,&pair,&new);
     }
 
 

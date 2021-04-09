@@ -241,12 +241,10 @@ impl TokensAndWordsDynamics {
         }
         self.token_index.entry(st.to_string()).or_insert(new_index);
 // TODO find needed pair in vector of numbers and change the pair to a new number
-//
-//        find_and_change_in_place_pair(&mut self,&pair,new:&Ind) 
         
         self.word_indices
         .iter_mut()
-        .map(|(_index,vector)| find_and_change_in_place_pair(vector,&pair.pair,&new_index))
+        .map(|(_index,vector)| find_and_replace_pair(vector,&pair.pair,&new_index))
         .collect()    
     }
 }
