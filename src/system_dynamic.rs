@@ -16,7 +16,7 @@ pub struct Token {
 
 #[derive(Debug)]
 pub struct WordsAsTokens {
-    word_tokens:BTreeMap<Ixx,Vec<String>>,
+    pub word_tokens:BTreeMap<Ixx,Vec<String>>,
 }
 
 #[derive(Debug)]
@@ -352,7 +352,7 @@ impl TokensAndWordsDynamicsLang {
         }
     }
 
-    pub fn word_as_strings_collection(self) -> WordsAsTokensLang {
+    pub fn word_as_strings_collection(&self) -> WordsAsTokensLang {
         match self {
             TokensAndWordsDynamicsLang::Eng(x) => 
                 WordsAsTokensLang::Eng(x.word_as_strings_collection()),

@@ -65,8 +65,10 @@ fn main() {
 
     let mut tokens_words_dynamic=TokensAndWordsDynamicsLang
         ::initial_set_from_vocab(Lang::Eng,&tokens,&vocab);
+    let mut words_as_substrings = TokensAndWordsDynamicsLang
+        ::word_as_strings_collection(&tokens_words_dynamic);
      
-    let num_merges = 100;
+    let num_merges = 500;
     let mut condidate_pairs_for_merge; 
     let mut most_frequent_pair;
     for merge in 0..num_merges {
@@ -80,17 +82,25 @@ fn main() {
             _ => println!(" Something is wrong with printing most frequent pair")                                                
         }
         tokens_words_dynamic.from_most_frequent_pair(&most_frequent_pair);
+        words_as_substrings = TokensAndWordsDynamicsLang
+            ::word_as_strings_collection(&tokens_words_dynamic);
+
+
         match tokens_words_dynamic {
             TokensAndWordsDynamicsLang::Eng(ref x) => println!(" Eng word indices:\n{:?}",&x.word_indices.get(&17206).unwrap()),
             _=> println!("Somethin is wrong with word_indices printing"),
 
         }
 
+        match words_as_substrings {
+            WordsAsTokensLang::Eng(ref x) => println!(" Eng word substrings:\n{:?}",&x.word_tokens.get(&17206).unwrap()),
+            _=> println!("Somethin is wrong with word_tokens printing"),
+
+        }
 
 
 
     }
-
 
     match tokens_words_dynamic {
         TokensAndWordsDynamicsLang::Eng(ref x) => println!(" Eng word indices:\n{:?}",&x.word_indices.get(&17206).unwrap()),

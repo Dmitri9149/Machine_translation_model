@@ -18,6 +18,8 @@ pub use system_dynamic::{CandidatesForMerge
     ,TokensAndWordsDynamics
     ,TokensAndWordsDynamicsLang
     ,Token
+    ,WordsAsTokens
+    ,WordsAsTokensLang
 };
 // the index for sentences numbering
 pub type Ixs = usize;
