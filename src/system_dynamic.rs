@@ -14,6 +14,18 @@ pub struct Token {
     pub flattened_to_string:String,
 }
 
+#[derive(Debug)]
+pub struct WordsAsTokens {
+    word_tokens:BTreeMap<Ixx,Vec<String>>,
+}
+
+#[derive(Debug)]
+pub enum WordsAsTokensLang {
+    Eng(WordsAsTokens),
+    Fra(WordsAsTokens)
+}
+
+
 impl Debug for Token {
     fn fmt(&self, f: &mut Formatter ) -> fmt::Result {
         write!(f, "\nToken:\n  As indices:  {:?} \n  As string:  {}\n"
@@ -272,6 +284,25 @@ impl TokensAndWordsDynamics {
         .map(|(_index,vector)| find_and_replace_pair(vector,&pair.pair,&new_index))
         .collect()    
     }
+
+    fn word_as_strings_collection(&self) -> WordsAsTokens {
+        let mut map = BTreeMap::<Ixx,Vec<String>>::new();
+        for (ixx,collection) in &self.word_indices {
+            let mut substrings_collection = vec![];
+            for ind in collection {
+                substrings_collection
+                    .push(self.index_token
+                          .get(&ind)
+                          .unwrap()
+                          .flattened_to_string
+                          .to_owned());
+            }
+            map.insert(*ixx, substrings_collection);
+        }
+        WordsAsTokens {
+            word_tokens:map
+        }
+    }
 }
 
 #[derive(Debug)]
@@ -320,13 +351,15 @@ impl TokensAndWordsDynamicsLang {
                 }
         }
     }
+
+    pub fn word_as_strings_collection(self) -> WordsAsTokensLang {
+        match self {
+            TokensAndWordsDynamicsLang::Eng(x) => 
+                WordsAsTokensLang::Eng(x.word_as_strings_collection()),
+            TokensAndWordsDynamicsLang::Fra(x) => 
+                WordsAsTokensLang::Fra(x.word_as_strings_collection()),
+        }
+    }
 }
 
-pub struct WordsAsTokens {
-    word_tokens:BTreeMap<Ixx,Token>
-}
 
-pub enum WordsAsTokensLang {
-    Eng(WordsAsTokens),
-    Fra(WordsAsTokens)
-}
