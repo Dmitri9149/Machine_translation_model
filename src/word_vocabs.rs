@@ -90,11 +90,13 @@ impl Vocab {
     }
 // unique numbers are attached to every word in vocab and this is stored in hash structures
 // so we can go from word to its number representation and back
+// the total quantity of eng, fra words is also calculated here
     pub fn word_to_index(&mut self) {
         let mut index:Ixx = 0;
         for word in &self.eng_words {
             self.eng_word_index
                 .insert(word.0.to_owned(), index);
+            self.eng_words_total+=1;
             index+=1;
 
         }
@@ -103,12 +105,12 @@ impl Vocab {
         for word in &self.fra_words {
             self.fra_word_index
                 .insert(word.0.to_owned(), index);
+            self.fra_words_total+=1;
             index+=1;
 
         }
 
     }
-
     pub fn index_to_word(&mut self) {
         for word in &self.eng_word_index {
             self.eng_index_word

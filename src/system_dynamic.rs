@@ -169,6 +169,7 @@ impl MostFrequentPairLang {
     }
 }
 
+#[derive(Debug)]
 pub struct TokensAndWordsDynamics {
 // TODO is it possible to use &str instead of String ? with reference to token.flattened_to_string?
     pub index_token:BTreeMap<Ind,Token>,
@@ -177,7 +178,20 @@ pub struct TokensAndWordsDynamics {
     pub word_indices:BTreeMap<Ixx,Vec<Ind>>
     
 }
-
+// TODO
+/*
+impl Debug for TokensAndWordsDynamics {
+    fn fmt(&self, f: &mut Formatter ) -> fmt::Result {
+        Ok(for (word,indices) in self.word_indices {
+            write!(f,"\n")
+            for index in indices.iter() {
+                write!(f,"- {:?} -", self.index_token.get(index).unwrap())
+            }
+            write!(f,"\n")
+        })
+    }
+}
+*/
 
 impl TokensAndWordsDynamics {
     pub fn new() -> TokensAndWordsDynamics {
@@ -202,7 +216,7 @@ impl TokensAndWordsDynamics {
                 flattened_to_index:vec![*index.0],
                 flattened_to_string:st.to_owned()
             };
-// TODO check for containing of the index key -> generate corresp behaviour
+// TODO check for containing the index key -> generate corresp behaviour
             hsh_index.entry(*index.0).or_insert(token);
             hsh_token.entry(st).or_insert(*index.0);
         }
@@ -260,10 +274,12 @@ impl TokensAndWordsDynamics {
     }
 }
 
+#[derive(Debug)]
 pub enum TokensAndWordsDynamicsLang {
     Eng(TokensAndWordsDynamics),
     Fra(TokensAndWordsDynamics)
 }
+
 
 impl TokensAndWordsDynamicsLang {
     pub fn new(lang:Lang) -> TokensAndWordsDynamicsLang {
@@ -306,4 +322,11 @@ impl TokensAndWordsDynamicsLang {
     }
 }
 
+pub struct WordsAsTokens {
+    word_tokens:BTreeMap<Ixx,Token>
+}
 
+pub enum WordsAsTokensLang {
+    Eng(WordsAsTokens),
+    Fra(WordsAsTokens)
+}
