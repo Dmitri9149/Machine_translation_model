@@ -84,7 +84,8 @@ impl TranslationPairs {
 // the second is target
 pub struct PairsForTranslation {
     as_text:HashMap<Ixs,(String,String)>,
-    as_words:HashMap<Ixs,(Vec<String>,Vec<String>)>
+    as_words:HashMap<Ixs,(Vec<String>,Vec<String>)>,
+    as_indices:HashMap<Ixs,(Vec<Vec<Ixx>>,Vec<Vec<Ixx>>)>,
 }
 
 impl PairsForTranslation {
@@ -95,11 +96,11 @@ impl PairsForTranslation {
                 hsh.insert(i,(sentences.eng[i].to_owned(),sentences.fra[i].to_owned()));
             }
 
-            PairsForTranslation {as_text:hsh,as_words:HashMap::new()}
+            PairsForTranslation {as_text:hsh,as_words:HashMap::new(),as_indices:HashMap::new()}
         }
 //TODO
     pub fn from_vords_vocab(&mut self,vocab:&Vocab) {
-        return ()
+        ()
     }
 }
 
