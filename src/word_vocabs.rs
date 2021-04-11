@@ -27,11 +27,6 @@ pub struct Vocab {
 // number of words in fra or eng 
     pub eng_words_total:Ixx,
     pub fra_words_total:Ixx,
-
-    pub eng_max_words_sentence:Ixx,
-    pub fra_max_words_sentence:Ixx,
-
-
 }
 
 impl Vocab {
@@ -48,11 +43,7 @@ impl Vocab {
         fra_word_index:BTreeMap::new(),
         eng_words_total:0,
         fra_words_total:0,
-
-        eng_max_words_sentence:0,
-        fra_max_words_sentence:0,
-
-    }
+        }   
     }
 //TODO
 /*
@@ -70,8 +61,30 @@ impl Vocab {
     }
 */
 
+    pub fn list_of_words(&mut self, vector_sentences:&SentencesForTranslation) {
+        let size_eng = vector_sentences.eng.len();
+        let size_fra = vector_sentences.fra.len();
+        let mut res_eng:Vec<String>=Vec::with_capacity(size_eng);
+        let mut res_fra:Vec<String>=Vec::with_capacity(size_fra);
+        for sentence in &vector_sentences.eng_as_words {
+            for word in sentence{
+                res_eng.push(word.to_owned());
+            }
+        }
 
+        for sentence in &vector_sentences.fra_as_words {
+            for word in sentence {
+                res_fra.push(word.to_owned());
+            }
 
+        }
+
+        self.eng_set=res_eng;
+        self.fra_set=res_fra;
+        
+    }
+
+/*
     pub fn list_of_words(&mut self, vector_sentences:&SentencesForTranslation) {
         let size_eng = vector_sentences.eng.len();
         let size_fra = vector_sentences.fra.len();
@@ -108,7 +121,7 @@ impl Vocab {
         self.fra_max_words_sentence=max_fra;
         
     }
-
+*/
     pub fn words_and_quantity(&mut self) {
         for word in self.eng_set.iter() {
             let count = self

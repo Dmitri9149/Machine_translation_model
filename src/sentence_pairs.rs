@@ -31,18 +31,27 @@ impl SentencesForTranslation {
         }
 
         SentencesForTranslation {
-            eng:eng, fra:fra, size:size
+            eng:eng,
+            fra:fra,
+            size:size,
+            eng_as_words:Vec::new(),
+            fra_as_words:Vec::new(),
+            eng_max_words_sentence:0,
+            fra_max_words_sentence:0,
+            
         }
 
     }
 
-    pub fn from_sentence(&mut self {
+    pub fn from_sentence(&mut self) {
         let mut res_eng:Vec<Vec<String>>=Vec::with_capacity(self.size);
-        let mut res_fra:Vec<String>=Vec::with_capacity(self.size);
+        let mut res_fra:Vec<Vec<String>>=Vec::with_capacity(self.size);
         let mut max_eng = 0;
         let mut max_fra = 0;
         for sentence in &self.eng {
+//            let mut eng_collector:Vec<String> = Vec::with_capacity(MAX_WORDS_IN_SENTENCE_SOURCE);
             let mut eng_collector:Vec<String> = Vec::new();
+
             let mut eng_counter = 0;
             for word in sentence.trim().split_whitespace(){
                 eng_collector.push(word.to_owned());
@@ -53,27 +62,30 @@ impl SentencesForTranslation {
                 max_eng = eng_counter;
             }
         }
+    
 
-        for sentence in &vector_sentences.fra {
-            let mut fra_collector:Vec<String>= Vec::new()
+        for sentence in &self.fra {
+//            let mut fra_collector:Vec<String>= Vec::with_capacity(MAX_WORDS_IN_SENTENCE_TARGET);
+            let mut fra_collector:Vec<String>= Vec::new();
+
             let mut fra_counter = 0;
             for word in sentence.trim().split_whitespace(){
-                res_fra.push(word.to_owned());
+                fra_collector.push(word.to_owned());
                 fra_counter+=1;
             }
-
+            res_fra.push(fra_collector);
             if fra_counter > max_fra {
                 max_fra = fra_counter;
             }
         }
 
-        self.eng_set=res_eng;
-        self.fra_set=res_fra;
+        self.eng_as_words=res_eng;
+        self.fra_as_words=res_fra;
         self.eng_max_words_sentence=max_eng;
         self.fra_max_words_sentence=max_fra;
 
 
-    })
+    }
 
 }
 

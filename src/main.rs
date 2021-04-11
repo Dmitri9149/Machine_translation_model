@@ -9,7 +9,8 @@ fn main() {
     txt = txt.replace_some_chars("\"",' ');
     txt.separate_punctuation("?!.,");
 
-    let sentences = SentencesForTranslation::from_corpus(&txt);
+    let mut sentences = SentencesForTranslation::from_corpus(&txt);
+    sentences.from_sentence();
 
     println!("The first part of the text {:?}\n", &txt.processed[0..1000]);
     println!("The number of pairs for translation: {:?}\n", sentences.size);
