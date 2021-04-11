@@ -23,7 +23,7 @@ impl SentencesForTranslation {
 
         let size = eng.len();
         if size != fra.len() {
-            panic!("Numbr of source sentences is not same as for target. Panic! ");
+            panic!("Quantity of source sentences is not same as for target. Panic! ");
         }
 
         SentencesForTranslation {
@@ -77,6 +77,29 @@ impl TranslationPairs {
 
         TranslationPairs {pairs:pairs}
 
+    }
+}
+
+// map of translation pairs, in a pair a first is source, 
+// the second is target
+pub struct PairsForTranslation {
+    as_text:HashMap<Ixs,(String,String)>,
+    as_words:HashMap<Ixs,(Vec<String>,Vec<String>)>
+}
+
+impl PairsForTranslation {
+    pub fn from_sentences(sentences:&SentencesForTranslation) 
+        -> PairsForTranslation { 
+            let mut hsh = HashMap::with_capacity(sentences.eng.len());
+            for i in 0..sentences.eng.len() {
+                hsh.insert(i,(sentences.eng[i].to_owned(),sentences.fra[i].to_owned()));
+            }
+
+            PairsForTranslation {as_text:hsh,as_words:HashMap::new()}
+        }
+//TODO
+    pub fn from_vords_vocab(&mut self,vocab:&Vocab) {
+        return ()
     }
 }
 
