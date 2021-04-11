@@ -12,6 +12,8 @@ pub struct SentencesForTranslation {
     pub eng_max_words_sentence:Ixx,
     pub fra_max_words_sentence:Ixx,
     pub size:Ixs,
+
+// to be populated after vocab of words formation
 }
 
 impl SentencesForTranslation {
@@ -89,6 +91,37 @@ impl SentencesForTranslation {
 
 }
 
+pub struct SentencesInIndices {
+    pub eng_words_as_indices:Vec<Vec<Ixx>>,
+    pub fra_words_as_indices:Vec<Vec<Ixx>>,
+}
+
+impl SentencesInIndices {
+    pub fn new() -> SentencesInIndices {
+        SentencesInIndices {
+        eng_words_as_indices:Vec::new(),
+        fra_words_as_indices:Vec::new(),
+        }
+    }   
+//TODO
+/*
+    pub fn from_word_vocab(&mut self, vocab:&Vocab, sentences:&SentencesForTranslation) {
+        for ind in sentences.eng_as_words {
+            let mut sent_as_indices_eng = Vec::with_capacity(sentences.eng_as_words.len());
+//            let mut sent_as_indices_fra = Vec::with_capacity(sentences.fra_as_words.len());
+            sent_as_indices_eng = self.eng_words_as_indices[ind]
+                .iter()
+                .map(|x| vocab.eng_word_index.get(x).unwrap()).collect();
+            self.eng_words_as_indices.insert(ind,sent_as_indices_eng);
+
+        }
+
+    
+    }
+*/
+}
+
+
 // eng and fra sentences as a pair in one struct 
 pub struct TranslationPair {
     pub eng:String,
@@ -138,9 +171,9 @@ impl TranslationPairs {
 // map of translation pairs, in a pair a first is source, 
 // the second is target
 pub struct PairsForTranslation {
-    as_text:HashMap<Ixs,(String,String)>,
-    as_words:HashMap<Ixs,(Vec<String>,Vec<String>)>,
-    as_indices:HashMap<Ixs,(Vec<Vec<Ixx>>,Vec<Vec<Ixx>>)>,
+    pub as_text:HashMap<Ixs,(String,String)>,
+    pub as_words:HashMap<Ixs,(Vec<String>,Vec<String>)>,
+    pub as_indices:HashMap<Ixs,(Vec<Vec<Ixx>>,Vec<Vec<Ixx>>)>,
 }
 
 impl PairsForTranslation {
@@ -161,7 +194,14 @@ impl PairsForTranslation {
 //TODO
 /*
     pub fn from_vords_vocab(&mut self,vocab:&Vocab) {
-        self.as_words = self.as_text
+        for (ind) in self.eng_as_words.iter {
+            let mut sent_as_indices_eng = Vec::new();
+            let mut sent_as_indices_fra = Vec::new();
+            (sent_as_indices_eng, sent_as_indices_fra) = (self.as_words[i].0
+                .iter()
+                .map(|x| vocab.eng_word_index.get(x).unwrap()).collect();
+        }
+        self.eng_as_index.insert(ind,sent_as_indices);
     }
 */
 }
