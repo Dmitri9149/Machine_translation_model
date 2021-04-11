@@ -7,6 +7,10 @@ use super::*;
 pub struct SentencesForTranslation {
     pub eng:Vec<String>,
     pub fra:Vec<String>,
+    pub eng_as_words:Vec<Vec<String>>,
+    pub fra_as_words:Vec<Vec<String>>,
+    pub eng_max_words_sentence:Ixx,
+    pub fra_max_words_sentence:Ixx,
     pub size:Ixs,
 }
 
@@ -31,6 +35,45 @@ impl SentencesForTranslation {
         }
 
     }
+
+    pub fn from_sentence(&mut self {
+        let mut res_eng:Vec<Vec<String>>=Vec::with_capacity(self.size);
+        let mut res_fra:Vec<String>=Vec::with_capacity(self.size);
+        let mut max_eng = 0;
+        let mut max_fra = 0;
+        for sentence in &self.eng {
+            let mut eng_collector:Vec<String> = Vec::new();
+            let mut eng_counter = 0;
+            for word in sentence.trim().split_whitespace(){
+                eng_collector.push(word.to_owned());
+                eng_counter +=1;
+            }
+            res_eng.push(eng_collector);
+            if eng_counter > max_eng {
+                max_eng = eng_counter;
+            }
+        }
+
+        for sentence in &vector_sentences.fra {
+            let mut fra_collector:Vec<String>= Vec::new()
+            let mut fra_counter = 0;
+            for word in sentence.trim().split_whitespace(){
+                res_fra.push(word.to_owned());
+                fra_counter+=1;
+            }
+
+            if fra_counter > max_fra {
+                max_fra = fra_counter;
+            }
+        }
+
+        self.eng_set=res_eng;
+        self.fra_set=res_fra;
+        self.eng_max_words_sentence=max_eng;
+        self.fra_max_words_sentence=max_fra;
+
+
+    })
 
 }
 
@@ -89,18 +132,25 @@ pub struct PairsForTranslation {
 }
 
 impl PairsForTranslation {
-    pub fn from_sentences(sentences:&SentencesForTranslation) 
-        -> PairsForTranslation { 
-            let mut hsh = HashMap::with_capacity(sentences.eng.len());
+
+    pub fn from_sentences(sentences:&SentencesForTranslation) -> PairsForTranslation { 
+            let mut hsh = HashMap::with_capacity(sentences.size);
             for i in 0..sentences.eng.len() {
-                hsh.insert(i,(sentences.eng[i].to_owned(),sentences.fra[i].to_owned()));
+                hsh
+                    .insert(i,(sentences.eng[i].to_owned(),sentences.fra[i].to_owned()));
             }
 
-            PairsForTranslation {as_text:hsh,as_words:HashMap::new(),as_indices:HashMap::new()}
-        }
-//TODO
-    pub fn from_vords_vocab(&mut self,vocab:&Vocab) {
-        ()
+            PairsForTranslation {
+                as_text:hsh
+                    ,as_words:HashMap::with_capacity(sentences.size)
+                    ,as_indices:HashMap::with_capacity(sentences.size)
+            }
     }
+//TODO
+/*
+    pub fn from_vords_vocab(&mut self,vocab:&Vocab) {
+        self.as_words = self.as_text
+    }
+*/
 }
 

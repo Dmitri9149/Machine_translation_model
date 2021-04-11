@@ -40,6 +40,9 @@ pub enum Lang {
 pub type Ixw=u16;
 
 static SENTENCES_NUMBER:Ixs = 190000;
+static MAX_WORDS_IN_SENTENCE_SOURCE = 30;
+static MAX_WORDS_IN_SENTENCE_TARGET = 30;
+
 
 pub fn replace_chars_to_char(input:&str, aa:&str, b:char) -> String {
     let mut output = String::with_capacity(input.len());
@@ -121,6 +124,10 @@ pub fn find_and_replace_pair(vect:&mut Vec<Ind>,pair:&(Ind,Ind),new:&Ind) {
     }
 
     *vect = collector;
+}
+
+pub fn splitter(sentence:&str) -> SplitWhitespace {
+    sentence.trim().split_whitespace()
 }
 
 #[cfg(test)]
