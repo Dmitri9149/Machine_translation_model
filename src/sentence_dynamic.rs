@@ -58,21 +58,19 @@ pub enum MostFrequentPairLang {
 
 
 impl CandidatesForMerge {
-    pub fn from_tokens_words_dynamic(word_indices:&BTreeMap<Ixx,Vec<Ind>>
-                                     ,word_quantity:&BTreeMap<Ixx,Qxx>) -> CandidatesForMerge {
-        let mut pairs:HashMap<(Ind,Ind),Quant> = HashMap::new();
-        let mut quant:Quant;
-//        let mut collection:Vec<Ind> = vec![];
-        let mut pair:(Ind,Ind);
+    pub fn from_words_sentence_dynamic(sentence_indices:&BTreeMap<Ixs,Vec<Ixx>>) -> CandidatesForMerge {
+        let mut pairs:HashMap<(Ixx,Ixx),Qxx> = HashMap::new();
+        let mut quant:Qxx;
+        let mut pair:(Ixx,Ixx);
         let mut size;
-        for (word,collection) in word_indices {
+        for (sentence,collection) in sentence_indices {
             size = collection.len();
                 if size == 0 {
                     panic!("from CandidatesForMerge: collection has 0 length, breack");
                 } else if size ==1 {
                     continue
                 }
-            quant = *word_quantity.get(&word).unwrap();
+            quant = 1;
             for i in 0..size-1 {
                 pair = (collection[i],collection[i+1]);
                 *pairs.entry(pair).or_insert(quant)+=quant;
@@ -114,11 +112,11 @@ impl CandidatesForMerge {
             pairs:pairs
         }
     }
-
+*/
 
     pub fn most_frequent_pair(&self) -> MostFrequentPair {
-        let closure = |pairs:&HashMap<(Ind,Ind),Quant>| {
-            let res = max_key(pairs).expect("The vocabulary is to be not empty");
+        let closure = |pairs:&HashMap<(Ixx,Ixx),Qxx>| {
+            let res = max_key(pairs).expect("The vocabulary for pairs is to be not empty! Panic!");
             (*res.0,*res.1)
         };
 
@@ -128,29 +126,27 @@ impl CandidatesForMerge {
         pair_frequency:max_pair.1,
         }
     }
-*/
+
 }
-/*
+
 impl CandidatesForMergeLang {
 
-    pub fn from_tokens_words_dynamic(dynamics:&TokensAndWordsDynamicsLang) 
+    pub fn from_words_sentence_dynamic(dynamics:&WordsAndSentenceDynamicsLang) 
         -> CandidatesForMergeLang {
             match dynamics {
-                TokensAndWordsDynamicsLang::Eng(x) => 
+                WordsAndSentenceDynamicsLang::Eng(x) => 
                     CandidatesForMergeLang
                     ::Eng(CandidatesForMerge
-                          ::from_tokens_words_dynamic(&x.word_indices
-                                                      ,&x.word_quantity)),
+                          ::from_words_sentence_dynamic(&x.sentence_indices)),
 
-                TokensAndWordsDynamicsLang::Fra(y) => 
+                WordsAndSentenceDynamicsLang::Fra(y) => 
                     CandidatesForMergeLang
                     ::Fra(CandidatesForMerge
-                          ::from_tokens_words_dynamic(&y.word_indices
-                                                      ,&y.word_quantity)),
+                          ::from_words_sentence_dynamic(&y.sentence_indices)),
             }
     }
 
-
+/*
     pub fn from_word_vocab(vocab:&Vocab, collection:&WordToIndexCollection,lang:Lang) 
         -> CandidatesForMergeLang {
             match lang {
@@ -170,6 +166,7 @@ impl CandidatesForMergeLang {
 
             }
         }
+*/
 }
 
 
@@ -184,8 +181,6 @@ impl MostFrequentPairLang {
     }
 }
 
-
-*/
 
 #[derive(Debug)]
 pub struct WordsAndSentenceDynamics {
@@ -224,7 +219,7 @@ impl WordsAndSentenceDynamics {
         }
     }
 
- 
+/* 
     pub fn from_most_frequent_pair(&mut self,pair:&MostFrequentPair) {
         let mut to_index_left = self.index_token.get(&pair.pair.0).unwrap().flattened_to_index.to_vec();
         let mut to_index_right = self.index_token.get(&pair.pair.1).unwrap().flattened_to_index.to_vec();
