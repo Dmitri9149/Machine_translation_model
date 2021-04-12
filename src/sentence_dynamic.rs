@@ -189,7 +189,7 @@ impl MostFrequentPairLang {
 #[derive(Debug)]
 pub struct WordsAndSentenceDynamics {
     pub index_idiom:BTreeMap<Ixx,Idiom>,
-    pub idiom_index:BTreeMap<Vec<String>,Ind>,
+    pub idiom_index:BTreeMap<Vec<String>,Ixx>,
     pub sentence_quantity:BTreeMap<Ixs,u32>,
     pub sentence_indices:BTreeMap<Ixs,Vec<Ixx>>
     
@@ -200,34 +200,30 @@ impl WordsAndSentenceDynamics {
         WordsAndSentence {
             index_idiom:BTreeMap::new()
                 ,idiom_index:BTreeMap::new()
-                ,sentence_quantity:BTreeMap::new()
                 ,sentence_indices:BTreeMap::new()
         }
     }
 
-    pub fn initial_set_from_vocab(index_word:&BTreeMap<Ixx,String>
-                                  ,index_token:&BTreeMap<Ind,String>
-                                  ,token_index:&BTreeMap<String,Ind>
-                                  ,word_quantity:&BTreeMap<Ixx,Qxx>) -> WordsAndSentenceDynamics {
-        let mut hsh_index:BTreeMap<Ind,Token> = BTreeMap::new();
-        let mut hsh_token:BTreeMap<String,Ind> = BTreeMap::new();
-// TODO rewrite to:  for (index,token) in index_token { .... }
-        for index in index_token {
-            let st = index.1.to_string();
-            let token = Token {
-                flattened_to_index:vec![*index.0],
-                flattened_to_string:st.to_owned()
+    pub fn initial_from_sentences(index_word:&BTreeMap<Ixx,String>
+//                                  ,index_token:&BTreeMap<Ind,String>
+                                  ,word_index:&BTreeMap<String,Ixx>
+                                  ,sentence_as_indices:&BTreeMap<Ixs,Vec<Ixx>>) -> WordsAndSentenceDynamics {
+        let mut hsh_index_idiom:BTreeMap<Ind,Token> = BTreeMap::new();
+        let mut hsh_idiom_index:BTreeMap<Vec<String>,Ind> = BTreeMap::new();
+        for (ind,word) in index_word {
+            let idiom = Idiom {
+                flattened_to_index:vec![*ind],
+                flattened_to_collection:vec![word.to_owned()]
             };
-// TODO check for containing the index key -> generate corresp behaviour
-            hsh_index.entry(*index.0).or_insert(token);
-            hsh_token.entry(st).or_insert(*index.0);
+            hsh_index_idiom.entry(*ind).or_insert(idiom);
+            hsh_idiom_endex.entry(vec![word.to_owned()]).or_insert(*ind);
         }
 
-        let mut hsh_word_ics:BTreeMap<Ixx,Vec<Ind>> = BTreeMap::new();
-        let mut char_index:Ind;
-        let mut char_as_string:String;
+        let mut hsh_sentence_ics:BTreeMap<Ixs,Vec<Ixx>> = BTreeMap::new();
+        let mut word_index:Ixx;
+        let mut sentence_as_string:String;
         for (index,word) in index_word {
-            let mut vec_of_indices:Vec<Ind>=Vec::new();
+            let mut vec_of_indices:Vec<Ixx>=Vec::new();
             for ch in word.chars() {
                 char_as_string = ch.to_string();
                 char_index = *token_index.get(&char_as_string).unwrap();
@@ -237,10 +233,9 @@ impl WordsAndSentenceDynamics {
         }
 
         WordsAndSentenceDynamics {
-            index_token:hsh_index
-            ,token_index:hsh_token
-            ,word_indices:hsh_word_ics
-            ,word_quantity:word_quantity.to_owned()
+            index_token:hsh_index_idiom
+            ,token_index:hsh_idiom_index
+            ,sentence_indices:sentence_as_indices
         }
     }
 
