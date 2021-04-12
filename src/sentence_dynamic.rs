@@ -9,35 +9,35 @@ use std::fmt::{self,Debug,Formatter};
 
 // keep the records of the flattened tokens as 
 // list of indices or as String
-pub struct Token {
-    pub flattened_to_index:Vec<Ind>,
-    pub flattened_to_string:String,
+pub struct Idiom {
+    pub flattened_to_index:Vec<Ixx>,
+    pub flattened_to_collection:Vec<String>,
 }
 
 #[derive(Debug)]
-pub struct WordsAsTokens {
-    pub word_tokens:BTreeMap<Ixx,Vec<String>>,
+pub struct SentenceAsWords {
+    pub word_tokens:BTreeMap<Ixs,Vec<Vec<String>>>,
 }
 
 #[derive(Debug)]
-pub enum WordsAsTokensLang {
-    Eng(WordsAsTokens),
-    Fra(WordsAsTokens)
+pub enum SentenceAsWordsLang {
+    Eng(SentenceAsWords),
+    Fra(SentenceAsWords)
 }
 
 
-impl Debug for Token {
+impl Debug for Idiom {
     fn fmt(&self, f: &mut Formatter ) -> fmt::Result {
-        write!(f, "\nToken:\n  As indices:  {:?} \n  As string:  {}\n"
+        write!(f, "\nIdiom:\n  As indices:  {:?} \n  As collection of string:  {}\n"
                , self.flattened_to_index
-               , self.flattened_to_string)
+               , self.flattened_to_collection)
     }
 }
 
 
 
 pub struct CandidatesForMerge {
-    pub pairs:HashMap<(Ind,Ind),Quant>,
+    pub pairs:HashMap<(Ixx,Ixx),Qxx>,
 }
 
 pub enum CandidatesForMergeLang {
@@ -46,8 +46,8 @@ pub enum CandidatesForMergeLang {
 }
 
 pub struct MostFrequentPair {
-    pub pair:(Ind,Ind),
-    pub pair_frequency:Quant,
+    pub pair:(Ixx,Ixx),
+    pub pair_frequency:Qxx,
 }
 
 pub enum MostFrequentPairLang {
@@ -55,6 +55,8 @@ pub enum MostFrequentPairLang {
     Fra(MostFrequentPair)
 }
 
+
+/*
 impl CandidatesForMerge {
     pub fn from_tokens_words_dynamic(word_indices:&BTreeMap<Ixx,Vec<Ind>>
                                      ,word_quantity:&BTreeMap<Ixx,Qxx>) -> CandidatesForMerge {
@@ -181,40 +183,68 @@ impl MostFrequentPairLang {
     }
 }
 
-#[derive(Debug)]
-pub struct TokensAndWordsDynamics {
-// TODO is it possible to use &str instead of String ? with reference to token.flattened_to_string?
-    pub index_token:BTreeMap<Ind,Token>,
-    pub token_index:BTreeMap<String,Ind>,
-    pub word_quantity:BTreeMap<Ixx,Qxx>,
-    pub word_indices:BTreeMap<Ixx,Vec<Ind>>
-    
-}
-// TODO
-/*
-impl Debug for TokensAndWordsDynamics {
-    fn fmt(&self, f: &mut Formatter ) -> fmt::Result {
-        Ok(for (word,indices) in self.word_indices {
-            write!(f,"\n")
-            for index in indices.iter() {
-                write!(f,"- {:?} -", self.index_token.get(index).unwrap())
-            }
-            write!(f,"\n")
-        })
-    }
-}
+
 */
 
-impl TokensAndWordsDynamics {
-    pub fn new() -> TokensAndWordsDynamics {
-        TokensAndWordsDynamics {
-            index_token:BTreeMap::new()
-                ,token_index:BTreeMap::new()
-                ,word_quantity:BTreeMap::new()
-                ,word_indices:BTreeMap::new()
+#[derive(Debug)]
+pub struct WordsAndSentenceDynamics {
+    pub index_idiom:BTreeMap<Ixx,Idiom>,
+    pub idiom_index:BTreeMap<Vec<String>,Ind>,
+    pub sentence_quantity:BTreeMap<Ixs,u32>,
+    pub sentence_indices:BTreeMap<Ixs,Vec<Ixx>>
+    
+}
+
+impl WordsAndSentenceDynamics {
+    pub fn new() -> WordsAndSentenceDynamics {
+        WordsAndSentence {
+            index_idiom:BTreeMap::new()
+                ,idiom_index:BTreeMap::new()
+                ,sentence_quantity:BTreeMap::new()
+                ,sentence_indices:BTreeMap::new()
         }
     }
 
+    pub fn initial_set_from_vocab(index_word:&BTreeMap<Ixx,String>
+                                  ,index_token:&BTreeMap<Ind,String>
+                                  ,token_index:&BTreeMap<String,Ind>
+                                  ,word_quantity:&BTreeMap<Ixx,Qxx>) -> WordsAndSentenceDynamics {
+        let mut hsh_index:BTreeMap<Ind,Token> = BTreeMap::new();
+        let mut hsh_token:BTreeMap<String,Ind> = BTreeMap::new();
+// TODO rewrite to:  for (index,token) in index_token { .... }
+        for index in index_token {
+            let st = index.1.to_string();
+            let token = Token {
+                flattened_to_index:vec![*index.0],
+                flattened_to_string:st.to_owned()
+            };
+// TODO check for containing the index key -> generate corresp behaviour
+            hsh_index.entry(*index.0).or_insert(token);
+            hsh_token.entry(st).or_insert(*index.0);
+        }
+
+        let mut hsh_word_ics:BTreeMap<Ixx,Vec<Ind>> = BTreeMap::new();
+        let mut char_index:Ind;
+        let mut char_as_string:String;
+        for (index,word) in index_word {
+            let mut vec_of_indices:Vec<Ind>=Vec::new();
+            for ch in word.chars() {
+                char_as_string = ch.to_string();
+                char_index = *token_index.get(&char_as_string).unwrap();
+                vec_of_indices.push(char_index);
+            }
+            hsh_word_ics.entry(*index).or_insert(vec_of_indices);
+        }
+
+        WordsAndSentenceDynamics {
+            index_token:hsh_index
+            ,token_index:hsh_token
+            ,word_indices:hsh_word_ics
+            ,word_quantity:word_quantity.to_owned()
+        }
+    }
+
+/*
     pub fn initial_set_from_vocab(index_word:&BTreeMap<Ixx,String>
                                   ,index_token:&BTreeMap<Ind,String>
                                   ,token_index:&BTreeMap<String,Ind>
@@ -304,7 +334,7 @@ impl TokensAndWordsDynamics {
         }
     }
 }
-
+*/
 #[derive(Debug)]
 pub enum TokensAndWordsDynamicsLang {
     Eng(TokensAndWordsDynamics),
@@ -320,6 +350,8 @@ impl TokensAndWordsDynamicsLang {
         }
     }
 
+
+/*
     pub fn initial_set_from_vocab(lang:Lang
                                   ,vocab_t:&VocabOfTokens
                                   ,vocab_w:&Vocab) -> TokensAndWordsDynamicsLang{
@@ -360,6 +392,7 @@ impl TokensAndWordsDynamicsLang {
                 WordsAsTokensLang::Fra(x.word_as_strings_collection()),
         }
     }
+*/
 }
 
 
