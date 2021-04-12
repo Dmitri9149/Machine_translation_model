@@ -16,7 +16,7 @@ pub struct Idiom {
 
 #[derive(Debug)]
 pub struct SentenceAsWords {
-    pub word_tokens:BTreeMap<Ixs,Vec<Vec<String>>>,
+    pub sentence_idioms:BTreeMap<Ixs,Vec<Vec<String>>>,
 }
 
 #[derive(Debug)]
@@ -219,38 +219,80 @@ impl WordsAndSentenceDynamics {
         }
     }
 
-/* 
+ 
     pub fn from_most_frequent_pair(&mut self,pair:&MostFrequentPair) {
-        let mut to_index_left = self.index_token.get(&pair.pair.0).unwrap().flattened_to_index.to_vec();
-        let mut to_index_right = self.index_token.get(&pair.pair.1).unwrap().flattened_to_index.to_vec();
+        let mut to_index_left = self.index_idiom.get(&pair.pair.0).unwrap().flattened_to_index.to_vec();
+        let mut to_index_right = self.index_idiom.get(&pair.pair.1).unwrap().flattened_to_index.to_vec();
         to_index_left.append(&mut to_index_right);
 
-        let mut to_string_left = self.index_token.get(&pair.pair.0).unwrap().flattened_to_string.to_owned();
-        let to_string_right = self.index_token.get(&pair.pair.1).unwrap().flattened_to_string.to_owned();
-        to_string_left.push_str(&to_string_right);
-        let st = &to_string_left.to_owned();
+        let mut to_collection_left = self.index_idiom.get(&pair.pair.0).unwrap().flattened_to_collection.to_owned();
+        let mut to_collection_right = self.index_idiom.get(&pair.pair.1).unwrap().flattened_to_collection.to_owned();
+        to_collection_left.append(&mut to_collection_right);
+        let collection = &to_collection_left.to_owned();
 
-        let token = Token {flattened_to_index:to_index_left,flattened_to_string:to_string_left};
+        let idiom = Idiom {flattened_to_index:to_index_left,flattened_to_collection:to_collection_left};
         
-        let size = self.index_token.keys().len();
+        let size = self.index_idiom.keys().len();
         let new_index = size +1;
-        if self.index_token.contains_key(&new_index) {
+        if self.index_idiom.contains_key(&new_index) {
             panic!("The new key already exist: {:?} ; panic!", new_index);
         }
-        self.index_token.insert(new_index,token);
-// TODO what to do if "to_string_left" already exist ?
-        if self.token_index.contains_key(st) {
-            panic!("The string key already exist: {:?}",st.to_string());
+        self.index_idiom.insert(new_index,idiom);
+// TODO what to do if "to_collection_left" already exist ?
+        if self.idiom_index.contains_key(collection) {
+            panic!("The string key already exist: {:?}",collection.to_owned());
         }
-        self.token_index.entry(st.to_string()).or_insert(new_index);
+        self.idiom_index.entry(collection.to_owned()).or_insert(new_index);
 // TODO find needed pair in vector of numbers and change the pair to a new number
         
-        self.word_indices
+        self.sentence_indices
         .iter_mut()
         .map(|(_index,vector)| find_and_replace_pair(vector,&pair.pair,&new_index))
         .collect()    
     }
+/*
+    fn word_as_strings_collection(&self) -> WordsAsTokens {
+        let mut map = BTreeMap::<Ixx,Vec<String>>::new();
+        for (ixx,collection) in &self.word_indices {
+            let mut substrings_collection = vec![];
+            for ind in collection {
+                substrings_collection
+                    .push(self.index_token
+                          .get(&ind)
+                          .unwrap()
+                          .flattened_to_string
+                          .to_owned());
+            }
+            map.insert(*ixx, substrings_collection);
+        }
+        WordsAsTokens {
+            word_tokens:map
+        }
+    }
+*/
 
+    fn sentence_as_words_collection(&self) -> SentenceAsWords {
+        let mut map = BTreeMap::<Ixs,Vec<Vec<String>>>::new();
+        for (ixs,collection) in &self.sentence_indices {  // sentence_indices -> Vec<Ixx>
+            let mut substrings_collection = vec![];
+            for ind in collection {
+// index_idiom -> BTreeMap<Ixx,Idiom> Idiom -> Vec<Ixx> and Vec<String>
+                substrings_collection
+                    .push(self.index_idiom  
+                          .get(&ind)
+                          .unwrap()
+                          .flattened_to_collection   // Vec<String>
+                          .to_vec());
+            }
+            map.insert(*ixs, substrings_collection);
+        }
+        SentenceAsWords {
+            sentence_idioms:map
+        }
+    }
+
+
+/*
     fn word_as_strings_collection(&self) -> WordsAsTokens {
         let mut map = BTreeMap::<Ixx,Vec<String>>::new();
         for (ixx,collection) in &self.word_indices {
@@ -303,15 +345,15 @@ impl WordsAndSentenceDynamicsLang {
         }
     }
 
-/*
+
     pub fn from_most_frequent_pair(&mut self,pair:&MostFrequentPairLang) {
         match self {
-            TokensAndWordsDynamicsLang::Eng(x) => 
+            WordsAndSentenceDynamicsLang::Eng(x) => 
                 match pair {
                     MostFrequentPairLang::Eng(y) => x.from_most_frequent_pair(y),
                     _ => panic!("TokensDynamicLang error: Source...Target language data inconsistency"),
                 }
-            TokensAndWordsDynamicsLang::Fra(x) => 
+            WordsAndSentenceDynamicsLang::Fra(x) => 
                 match pair {
                     MostFrequentPairLang::Fra(y) => x.from_most_frequent_pair(y),
                     _ => panic!("TokensDynamicLang error: Source...Target language data inconsistency"),
@@ -319,15 +361,14 @@ impl WordsAndSentenceDynamicsLang {
         }
     }
 
-    pub fn word_as_strings_collection(&self) -> WordsAsTokensLang {
+    pub fn sentence_as_words_collection(&self) -> SentenceAsWordsLang {
         match self {
-            TokensAndWordsDynamicsLang::Eng(x) => 
-                WordsAsTokensLang::Eng(x.word_as_strings_collection()),
-            TokensAndWordsDynamicsLang::Fra(x) => 
-                WordsAsTokensLang::Fra(x.word_as_strings_collection()),
+            WordsAndSentenceDynamicsLang::Eng(x) => 
+                SentenceAsWordsLang::Eng(x.sentence_as_words_collection()),
+            WordsAndSentenceDynamicsLang::Fra(x) => 
+                SentenceAsWordsLang::Fra(x.sentence_as_words_collection()),
         }
     }
-*/
 }
 
 
