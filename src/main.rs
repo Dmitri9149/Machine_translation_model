@@ -14,9 +14,10 @@ fn main() {
 
     println!("The first part of the text {:?}\n", &txt.processed[0..1000]);
     println!("The number of pairs for translation: {:?}\n", sentences.size);
-    println!("The first pairs for translation {:?}\n", &sentences.eng[0..10]);
+    println!("The first pairs for translation:\n");
     for i in 0..1000 {
-        println!("{:?}         {:?}", sentences.eng[i], sentences.fra[i]); 
+        println!("{:?}         {:?}", sentences.eng.get(&i).unwrap()
+                 ,sentences.fra.get(&i).unwrap()); 
     }
 
     let translation_pairs = TranslationPairs::from_sentences(&sentences);

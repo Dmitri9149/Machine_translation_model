@@ -1,14 +1,15 @@
 use std::fmt::{self,Debug,Formatter};
+use std::collections::BTreeMap;
 use super::*;
 
 // the struct is keeping 2 Vectors with sentences : one for englich 
 // and another for the french pairs
 
 pub struct SentencesForTranslation {
-    pub eng:Vec<String>,
-    pub fra:Vec<String>,
-    pub eng_as_words:Vec<Vec<String>>,
-    pub fra_as_words:Vec<Vec<String>>,
+    pub eng:BTreeMap<Ixs,String>,
+    pub fra:BTreeMap<Ixs,String>,
+    pub eng_as_words:BTreeMap<Ixs,Vec<String>>,
+    pub fra_as_words:BTreeMap<Ixs,Vec<String>>,
     pub eng_max_words_sentence:Ixx,
     pub fra_max_words_sentence:Ixx,
     pub size:Ixs,
@@ -18,12 +19,14 @@ pub struct SentencesForTranslation {
 
 impl SentencesForTranslation {
     pub fn from_corpus(corpus:&CorpusAsString) -> SentencesForTranslation{
-        let mut eng:Vec<String>=vec![];
-        let mut fra:Vec<String>=vec![];
+        let mut eng=BTreeMap::new();
+        let mut fra=BTreeMap::new();
+        let mut ixs = 0;
         for sub in corpus.processed.lines() {
             let mut it = sub.split("\t");
-            eng.push(it.next().unwrap().to_owned());
-            fra.push(it.next().unwrap().to_owned());
+            eng.insert(ixs,it.next().unwrap().to_owned());
+            fra.insert(ixs,it.next().unwrap().to_owned());
+            ixs+=1;
 
         } 
 
@@ -36,8 +39,8 @@ impl SentencesForTranslation {
             eng:eng,
             fra:fra,
             size:size,
-            eng_as_words:Vec::new(),
-            fra_as_words:Vec::new(),
+            eng_as_words:BTreeMap::new(),
+            fra_as_words:BTreeMap::new(),
             eng_max_words_sentence:0,
             fra_max_words_sentence:0,
             
@@ -46,11 +49,11 @@ impl SentencesForTranslation {
     }
 
     pub fn from_sentence(&mut self) {
-        let mut res_eng:Vec<Vec<String>>=Vec::with_capacity(self.size);
-        let mut res_fra:Vec<Vec<String>>=Vec::with_capacity(self.size);
+        let mut res_eng:BTreeMap<Ixs,Vec<String>>=BTreeMap::new();
+        let mut res_fra:BTreeMap<Ixs,Vec<String>>=BTreeMap::new();
         let mut max_eng = 0;
         let mut max_fra = 0;
-        for sentence in &self.eng {
+        for (ind,sentence) in &self.eng {
 //            let mut eng_collector:Vec<String> = Vec::with_capacity(MAX_WORDS_IN_SENTENCE_SOURCE);
             let mut eng_collector:Vec<String> = Vec::new();
 
@@ -59,14 +62,14 @@ impl SentencesForTranslation {
                 eng_collector.push(word.to_owned());
                 eng_counter +=1;
             }
-            res_eng.push(eng_collector);
+            res_eng.insert(*ind,eng_collector);
             if eng_counter > max_eng {
                 max_eng = eng_counter;
             }
         }
     
 
-        for sentence in &self.fra {
+        for (ind,sentence) in &self.fra {
 //            let mut fra_collector:Vec<String>= Vec::with_capacity(MAX_WORDS_IN_SENTENCE_TARGET);
             let mut fra_collector:Vec<String>= Vec::new();
 
@@ -75,7 +78,7 @@ impl SentencesForTranslation {
                 fra_collector.push(word.to_owned());
                 fra_counter+=1;
             }
-            res_fra.push(fra_collector);
+            res_fra.insert(*ind,fra_collector);
             if fra_counter > max_fra {
                 max_fra = fra_counter;
             }
@@ -91,34 +94,67 @@ impl SentencesForTranslation {
 
 }
 
-pub struct SentencesInIndices {
-    pub eng_words_as_indices:Vec<Vec<Ixx>>,
-    pub fra_words_as_indices:Vec<Vec<Ixx>>,
+pub struct SentencesAsIndices {
+    pub eng_word_as_index:BTreeMap<Ixs,Vec<Ixx>>,
+    pub fra_word_as_index:BTreeMap<Ixs,Vec<Ixx>>,
+    pub eng_word_as_tokens_n:BTreeMap<Ixs,Vec<Vec<Ind>>>,
+    pub fra_word_as_tokens_n:BTreeMap<Ixs,Vec<Vec<Ind>>>
 }
 
-impl SentencesInIndices {
-    pub fn new() -> SentencesInIndices {
-        SentencesInIndices {
-        eng_words_as_indices:Vec::new(),
-        fra_words_as_indices:Vec::new(),
+impl SentencesAsIndices {
+    pub fn new() -> SentencesAsIndices {
+        SentencesAsIndices {
+        eng_word_as_index:BTreeMap::new(),
+        fra_word_as_index:BTreeMap::new(),
+        eng_word_as_tokens_n:BTreeMap::new(),
+        fra_word_as_tokens_n:BTreeMap::new()
+
         }
     }   
 //TODO
-/*
-    pub fn from_word_vocab(&mut self, vocab:&Vocab, sentences:&SentencesForTranslation) {
-        for ind in sentences.eng_as_words {
-            let mut sent_as_indices_eng = Vec::with_capacity(sentences.eng_as_words.len());
-//            let mut sent_as_indices_fra = Vec::with_capacity(sentences.fra_as_words.len());
-            sent_as_indices_eng = self.eng_words_as_indices[ind]
-                .iter()
-                .map(|x| vocab.eng_word_index.get(x).unwrap()).collect();
-            self.eng_words_as_indices.insert(ind,sent_as_indices_eng);
 
+    pub fn from_word_vocab(&mut self, vocab:&Vocab, sentences:&SentencesForTranslation) {
+        for (ind, sentence) in &sentences.eng_as_words {
+            let mut sent_as_indices_eng = Vec::with_capacity(sentences.eng_as_words.get(&ind).unwrap().len());
+            sent_as_indices_eng = sentence
+                .iter()
+                .map(|x| *vocab.eng_word_index.get(x).unwrap()).collect();
+            self.eng_word_as_index.insert(*ind,sent_as_indices_eng);
         }
 
-    
+        for (ind, sentence) in &sentences.fra_as_words {
+            let mut sent_as_indices_fra = Vec::with_capacity(sentences.fra_as_words.get(&ind).unwrap().len());
+            sent_as_indices_fra = sentence
+                .iter()
+                .map(|x| *vocab.fra_word_index.get(x).unwrap()).collect();
+            self.fra_word_as_index.insert(*ind,sent_as_indices_fra);
+        }
+
     }
-*/
+
+    pub fn from_word_as_tokens(&mut self,collections:&WordToIndexCollection) {
+
+        for (ind,sentence) in &self.eng_word_as_index {
+            let mut tokens= Vec::with_capacity(sentence.len());
+            for word in sentence {
+                tokens.push(collections.eng_words_n.get(&word).unwrap().to_owned())
+            }
+
+            self.eng_word_as_tokens_n
+                .insert(*ind,tokens);
+        }
+        for (ind,sentence) in &self.fra_word_as_index {
+            let mut tokens= Vec::with_capacity(sentence.len());
+            for word in sentence {
+                tokens.push(collections.fra_words_n.get(&word).unwrap().to_owned())
+            }
+
+            self.fra_word_as_tokens_n
+                .insert(*ind,tokens);
+        }
+
+
+    }
 }
 
 
@@ -160,7 +196,14 @@ impl TranslationPairs {
         
         let mut pairs:Vec<TranslationPair>= Vec::with_capacity(size_eng);
         for i in 0..size {
-            pairs.push(TranslationPair::from_sentences(&sentences.eng[i], &sentences.fra[i]));
+            pairs.push(TranslationPair::from_sentences(&sentences.eng.get(&i).unwrap()
+                                                       , &sentences.fra.get(&i).unwrap()));
+        }
+
+        for key in sentences.eng.keys() {
+            pairs.push(TranslationPair::from_sentences(&sentences.eng.get(&key).unwrap()
+                                                       , &sentences.fra.get(&key).unwrap()));
+            
         }
 
         TranslationPairs {pairs:pairs}
@@ -171,24 +214,36 @@ impl TranslationPairs {
 // map of translation pairs, in a pair a first is source, 
 // the second is target
 pub struct PairsForTranslation {
-    pub as_text:HashMap<Ixs,(String,String)>,
-    pub as_words:HashMap<Ixs,(Vec<String>,Vec<String>)>,
-    pub as_indices:HashMap<Ixs,(Vec<Vec<Ixx>>,Vec<Vec<Ixx>>)>,
+    pub as_text:BTreeMap<Ixs,(String,String)>,
+    pub as_words:BTreeMap<Ixs,(Vec<String>,Vec<String>)>,
+    pub as_tokens:BTreeMap<Ixs,(Vec<Vec<Ind>>,Vec<Vec<Ind>>)>,
 }
 
 impl PairsForTranslation {
 
     pub fn from_sentences(sentences:&SentencesForTranslation) -> PairsForTranslation { 
-            let mut hsh = HashMap::with_capacity(sentences.size);
-            for i in 0..sentences.eng.len() {
-                hsh
-                    .insert(i,(sentences.eng[i].to_owned(),sentences.fra[i].to_owned()));
+            let mut hsh_as_text = BTreeMap::new();
+            let mut hsh_as_words = BTreeMap::new();
+//            let mut hsh_as_tokens = BTreeMap::new();
+            let size = sentences.size;
+            if size == 0 {
+                panic!("Size of sentenses for translation collection is zero ! Panic!");
+            }
+            for i in sentences.eng.keys() {
+                hsh_as_text
+                    .insert(*i,(sentences.eng.get(i).unwrap().to_owned()
+                               ,sentences.fra.get(i).unwrap().to_owned()));
+                hsh_as_words
+                    .insert(*i,(sentences.eng_as_words.get(i).unwrap().to_owned()
+                               ,sentences.fra_as_words.get(i).unwrap().to_owned()));
+                
+
             }
 
             PairsForTranslation {
-                as_text:hsh
-                    ,as_words:HashMap::with_capacity(sentences.size)
-                    ,as_indices:HashMap::with_capacity(sentences.size)
+                as_text:hsh_as_text
+                    ,as_words:hsh_as_words
+                    ,as_tokens:BTreeMap::new()
             }
     }
 //TODO

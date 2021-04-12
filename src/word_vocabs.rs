@@ -66,13 +66,13 @@ impl Vocab {
         let size_fra = vector_sentences.fra.len();
         let mut res_eng:Vec<String>=Vec::with_capacity(size_eng);
         let mut res_fra:Vec<String>=Vec::with_capacity(size_fra);
-        for sentence in &vector_sentences.eng_as_words {
+
+        for (_,sentence) in &vector_sentences.eng_as_words {
             for word in sentence{
                 res_eng.push(word.to_owned());
             }
         }
-
-        for sentence in &vector_sentences.fra_as_words {
+        for (_,sentence) in &vector_sentences.fra_as_words {
             for word in sentence {
                 res_fra.push(word.to_owned());
             }
