@@ -56,7 +56,7 @@ pub enum MostFrequentPairLang {
 }
 
 
-/*
+
 impl CandidatesForMerge {
     pub fn from_tokens_words_dynamic(word_indices:&BTreeMap<Ixx,Vec<Ind>>
                                      ,word_quantity:&BTreeMap<Ixx,Qxx>) -> CandidatesForMerge {
@@ -86,7 +86,7 @@ impl CandidatesForMerge {
                 
     } 
 
-
+/*
     pub fn from_word_vocab(index_word:&BTreeMap<Ixx,String>
                            ,words_n:&BTreeMap<Ixx,Vec<Ind>>
                            ,numbers:&BTreeMap<Ixx,Qxx>)  -> CandidatesForMerge {
@@ -128,8 +128,9 @@ impl CandidatesForMerge {
         pair_frequency:max_pair.1,
         }
     }
+*/
 }
-
+/*
 impl CandidatesForMergeLang {
 
     pub fn from_tokens_words_dynamic(dynamics:&TokensAndWordsDynamicsLang) 
@@ -204,7 +205,6 @@ impl WordsAndSentenceDynamics {
     }
 
     pub fn initial_from_sentences(index_word:&BTreeMap<Ixx,String>
-//                                  ,index_token:&BTreeMap<Ind,String>
                                   ,word_index:&BTreeMap<String,Ixx>
                                   ,sentence_as_indices:&BTreeMap<Ixs,Vec<Ixx>>) -> WordsAndSentenceDynamics {
         let mut hsh_index_idiom:BTreeMap<Ixx,Idiom> = BTreeMap::new();
@@ -224,45 +224,6 @@ impl WordsAndSentenceDynamics {
         }
     }
 
-/*
-    pub fn initial_set_from_vocab(index_word:&BTreeMap<Ixx,String>
-                                  ,index_token:&BTreeMap<Ind,String>
-                                  ,token_index:&BTreeMap<String,Ind>
-                                  ,word_quantity:&BTreeMap<Ixx,Qxx>) -> TokensAndWordsDynamics {
-        let mut hsh_index:BTreeMap<Ind,Token> = BTreeMap::new();
-        let mut hsh_token:BTreeMap<String,Ind> = BTreeMap::new();
-// TODO rewrite to:  for (index,token) in index_token { .... }
-        for index in index_token {
-            let st = index.1.to_string();
-            let token = Token {
-                flattened_to_index:vec![*index.0],
-                flattened_to_string:st.to_owned()
-            };
-// TODO check for containing the index key -> generate corresp behaviour
-            hsh_index.entry(*index.0).or_insert(token);
-            hsh_token.entry(st).or_insert(*index.0);
-        }
-
-        let mut hsh_word_ics:BTreeMap<Ixx,Vec<Ind>> = BTreeMap::new();
-        let mut char_index:Ind;
-        let mut char_as_string:String;
-        for (index,word) in index_word {
-            let mut vec_of_indices:Vec<Ind>=Vec::new();
-            for ch in word.chars() {
-                char_as_string = ch.to_string();
-                char_index = *token_index.get(&char_as_string).unwrap();
-                vec_of_indices.push(char_index);
-            }
-            hsh_word_ics.entry(*index).or_insert(vec_of_indices);
-        }
-
-        TokensAndWordsDynamics {
-            index_token:hsh_index
-            ,token_index:hsh_token
-            ,word_indices:hsh_word_ics
-            ,word_quantity:word_quantity.to_owned()
-        }
-    }
  
     pub fn from_most_frequent_pair(&mut self,pair:&MostFrequentPair) {
         let mut to_index_left = self.index_token.get(&pair.pair.0).unwrap().flattened_to_index.to_vec();
@@ -317,39 +278,37 @@ impl WordsAndSentenceDynamics {
 }
 
 #[derive(Debug)]
-pub enum TokensAndWordsDynamicsLang {
-    Eng(TokensAndWordsDynamics),
-    Fra(TokensAndWordsDynamics)
+pub enum WordsAndSentenceDynamicsLang {
+    Eng(WordsAndSentenceDynamics),
+    Fra(WordsAndSentenceDynamics)
 }
 
 
-impl TokensAndWordsDynamicsLang {
-    pub fn new(lang:Lang) -> TokensAndWordsDynamicsLang {
+impl WordsAndSentenceDynamicsLang {
+
+    pub fn new(lang:Lang) -> WordsAndSentenceDynamicsLang {
         match lang {
-            Lang::Eng => TokensAndWordsDynamicsLang::Eng(TokensAndWordsDynamics::new()),
-            Lang::Fra => TokensAndWordsDynamicsLang::Fra(TokensAndWordsDynamics::new()),
+            Lang::Eng => WordsAndSentenceDynamicsLang::Eng(WordsAndSentenceDynamics::new()),
+            Lang::Fra => WordsAndSentenceDynamicsLang::Fra(WordsAndSentenceDynamics::new()),
         }
     }
 
+    pub fn initial_from_sentences(lang:Lang
+                                  ,vocab:&Vocab
+                                  ,sentences:&SentencesAsIndices) -> WordsAndSentenceDynamicsLang{
+        match lang {
+            Lang::Eng  => WordsAndSentenceDynamicsLang
+                ::Eng(WordsAndSentenceDynamics::initial_from_sentences(&vocab.eng_index_word
+                                                            ,&vocab.eng_word_index
+                                                            ,&sentences.eng_word_as_index)),
+            Lang::Fra  => WordsAndSentenceDynamicsLang
+                ::Fra(WordsAndSentenceDynamics::initial_from_sentences(&vocab.fra_index_word
+                                                            ,&vocab.fra_word_index
+                                                            ,&sentences.fra_word_as_index)),
+        }
+    }
 
 /*
-    pub fn initial_set_from_vocab(lang:Lang
-                                  ,vocab_t:&VocabOfTokens
-                                  ,vocab_w:&Vocab) -> TokensAndWordsDynamicsLang{
-        match lang {
-            Lang::Eng  => TokensAndWordsDynamicsLang
-                ::Eng(TokensAndWordsDynamics::initial_set_from_vocab(&vocab_w.eng_index_word
-                                                            ,&vocab_t.eng_index_token
-                                                            ,&vocab_t.eng_token_index
-                                                            ,&vocab_w.eng_numbers)),
-            Lang::Fra  => TokensAndWordsDynamicsLang
-                ::Fra(TokensAndWordsDynamics::initial_set_from_vocab(&vocab_w.fra_index_word
-                                                            ,&vocab_t.fra_index_token
-                                                            ,&vocab_t.fra_token_index
-                                                            ,&vocab_w.fra_numbers)),
-        }
-    }
-
     pub fn from_most_frequent_pair(&mut self,pair:&MostFrequentPairLang) {
         match self {
             TokensAndWordsDynamicsLang::Eng(x) => 
