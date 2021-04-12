@@ -5,10 +5,13 @@ mod sentence_pairs;
 mod word_vocabs;
 mod tokens_vocab;
 mod system_dynamic;
+mod sentence_dynamic;
 
 pub use crate::translation_corpus::{CorpusAsString};
-pub use crate::sentence_pairs::{SentencesForTranslation,TranslationPair,
-TranslationPairs};
+pub use crate::sentence_pairs::{SentencesForTranslation
+    ,SentencesAsIndices
+    ,TranslationPair
+    ,TranslationPairs};
 pub use crate::word_vocabs::{Vocab,WordToIndexCollection};
 pub use tokens_vocab::{VocabOfTokens};
 pub use system_dynamic::{CandidatesForMerge
@@ -21,6 +24,13 @@ pub use system_dynamic::{CandidatesForMerge
     ,WordsAsTokens
     ,WordsAsTokensLang
 };
+pub use sentence_dynamic::{SentenceAsWords
+    ,SentenceAsWordsLang
+//    ,Idiom
+//    ,CandidatesForMerge
+//    ,CandidatesForMergeLang
+};
+
 // the index for sentences numbering
 pub type Ixs = usize;
 // indexation of tokens 

@@ -28,7 +28,7 @@ pub enum SentenceAsWordsLang {
 
 impl Debug for Idiom {
     fn fmt(&self, f: &mut Formatter ) -> fmt::Result {
-        write!(f, "\nIdiom:\n  As indices:  {:?} \n  As collection of string:  {}\n"
+        write!(f, "\nIdiom:\n  As indices:  {:?} \n  As collection of string:  {:?}\n"
                , self.flattened_to_index
                , self.flattened_to_collection)
     }
@@ -190,14 +190,13 @@ impl MostFrequentPairLang {
 pub struct WordsAndSentenceDynamics {
     pub index_idiom:BTreeMap<Ixx,Idiom>,
     pub idiom_index:BTreeMap<Vec<String>,Ixx>,
-    pub sentence_quantity:BTreeMap<Ixs,u32>,
     pub sentence_indices:BTreeMap<Ixs,Vec<Ixx>>
     
 }
 
 impl WordsAndSentenceDynamics {
     pub fn new() -> WordsAndSentenceDynamics {
-        WordsAndSentence {
+        WordsAndSentenceDynamics {
             index_idiom:BTreeMap::new()
                 ,idiom_index:BTreeMap::new()
                 ,sentence_indices:BTreeMap::new()
@@ -208,7 +207,7 @@ impl WordsAndSentenceDynamics {
 //                                  ,index_token:&BTreeMap<Ind,String>
                                   ,word_index:&BTreeMap<String,Ixx>
                                   ,sentence_as_indices:&BTreeMap<Ixs,Vec<Ixx>>) -> WordsAndSentenceDynamics {
-        let mut hsh_index_idiom:BTreeMap<Ind,Token> = BTreeMap::new();
+        let mut hsh_index_idiom:BTreeMap<Ixx,Idiom> = BTreeMap::new();
         let mut hsh_idiom_index:BTreeMap<Vec<String>,Ind> = BTreeMap::new();
         for (ind,word) in index_word {
             let idiom = Idiom {
@@ -216,26 +215,12 @@ impl WordsAndSentenceDynamics {
                 flattened_to_collection:vec![word.to_owned()]
             };
             hsh_index_idiom.entry(*ind).or_insert(idiom);
-            hsh_idiom_endex.entry(vec![word.to_owned()]).or_insert(*ind);
+            hsh_idiom_index.entry(vec![word.to_owned()]).or_insert(*ind);
         }
-
-        let mut hsh_sentence_ics:BTreeMap<Ixs,Vec<Ixx>> = BTreeMap::new();
-        let mut word_index:Ixx;
-        let mut sentence_as_string:String;
-        for (index,word) in index_word {
-            let mut vec_of_indices:Vec<Ixx>=Vec::new();
-            for ch in word.chars() {
-                char_as_string = ch.to_string();
-                char_index = *token_index.get(&char_as_string).unwrap();
-                vec_of_indices.push(char_index);
-            }
-            hsh_word_ics.entry(*index).or_insert(vec_of_indices);
-        }
-
         WordsAndSentenceDynamics {
-            index_token:hsh_index_idiom
-            ,token_index:hsh_idiom_index
-            ,sentence_indices:sentence_as_indices
+            index_idiom:hsh_index_idiom
+            ,idiom_index:hsh_idiom_index
+            ,sentence_indices:sentence_as_indices.to_owned()
         }
     }
 
@@ -328,8 +313,9 @@ impl WordsAndSentenceDynamics {
             word_tokens:map
         }
     }
-}
 */
+}
+
 #[derive(Debug)]
 pub enum TokensAndWordsDynamicsLang {
     Eng(TokensAndWordsDynamics),
