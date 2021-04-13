@@ -194,6 +194,19 @@ impl MostFrequentPairLang {
                 => MostFrequentPairLang::Fra(CandidatesForMerge::most_frequent_pair(&y))
         }
     }
+
+    pub fn get_as_words(&self,dynamics:&WordsAndSentenceDynamicsLang) -> ((Vec<String>,Vec<String>),Qxx) {
+        match self {
+            MostFrequentPairLang::Eng(x) => match dynamics {
+                WordsAndSentenceDynamicsLang::Eng(d) => x.get_as_words(&d.index_idiom),
+                    _ => panic!(" Enumeration types inconsistency!"),
+            },
+            MostFrequentPairLang::Fra(x) => match dynamics {
+                WordsAndSentenceDynamicsLang::Fra(d) => x.get_as_words(&d.index_idiom),
+                    _ => panic!(" Enumeration types inconsistency!"),
+            },
+        }
+    }
 }
 
 

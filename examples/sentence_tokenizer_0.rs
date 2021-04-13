@@ -86,12 +86,15 @@ fn main() {
             ::most_frequent_pair(&condidate_pairs_for_merge);
         println!("Before tokens_words_dynamic");
         match most_frequent_pair { 
-            OtherMostFrequentPairLang::Eng(ref x) => println!("Most frequent pair eng: {:?}"
-                                                              , x.get_as_words(&vocab.eng_index_word)),
+            OtherMostFrequentPairLang
+                ::Eng(ref x) => println!("Most frequent pair eng: {:?}  frequency: {:?}"
+                                                              , x.pair, x.pair_frequency),
             _ => println!(" Something is wrong with printing most frequent pair")                                                
         }
         words_sentence_dynamics.from_most_frequent_pair(&most_frequent_pair);
         sentences_as_words = words_sentence_dynamics.sentence_as_words_collection();
+
+        println!("Most frequent pair:{:?}", most_frequent_pair.get_as_words(&words_sentence_dynamics));
 
 
         match words_sentence_dynamics {
