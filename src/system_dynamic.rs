@@ -395,28 +395,29 @@ impl SentencesAsIndicesDynamics {
                 .collect::<Vec<Vec<Ind>>>();
             self.words_as_token_indices.insert(ixs,wd);
         }
-//TODO
-/*
-        println!("self..as words(numbers)..{:?}", self.words_as_token_indices);
 
-        println!("after first for loop");
-        let mut counter = 0;
+//        println!("self..as words(numbers)..{:?}", self.words_as_token_indices);
+
+//        println!("after first for loop");
+//        let mut counter = 0;
 
         for (ixs,word) in self.words_as_indices.to_owned() {
-            println!("In second for loop");
-            println!("Word; {:?}", word);
+        let mut wdd:Vec<Ind> = Vec::new();
+
+//            println!("In second for loop");
+//            println!("Word; {:?}", word);
             for ind in word.iter() {
-                wdd.push(*ind); 
+                wdd.append(&mut word_indices.get(ind).unwrap().to_owned()); 
             }
-            println!("counter {:?}", counter);
+//          println!("counter {:?}", counter);
 //            println!("wdd ....{:?}",&wdd);
-            counter +=1;
+//            counter +=1;
             self.sentence_flattened_to_token_indices.insert(ixs,wdd.to_owned());
         }
 
-        println!("after second for loop");
-        println!("self.flattened...{:?}", self.sentence_flattened_to_token_indices);
-*/
+//        println!("after second for loop");
+//        println!("self.flattened...{:?}", self.sentence_flattened_to_token_indices);
+
 
 
     }
