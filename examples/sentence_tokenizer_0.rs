@@ -98,7 +98,8 @@ fn main() {
 
 
         match words_sentence_dynamics {
-            WordsAndSentenceDynamicsLang::Eng(ref x) => println!(" Eng word indices:\n{:?}",&x.sentence_indices.get(&17206).unwrap()),
+            WordsAndSentenceDynamicsLang
+                ::Eng(ref x) => println!(" Eng word indices:\n{:?}",&x.sentence_indices.get(&17206).unwrap()),
             _=> println!("Somethin is wrong with word_indices printing"),
 
         }
