@@ -26,6 +26,11 @@ pub use system_dynamic::{CandidatesForMerge
 };
 pub use sentence_dynamic::{SentenceAsWords
     ,SentenceAsWordsLang
+    ,WordsAndSentenceDynamicsLang
+    ,WordsAndSentenceDynamics
+    ,CandidatesForMergeLang as OtherCandidatesForMergeLang
+    ,MostFrequentPairLang as OtherMostFrequentPairLang
+
 //    ,Idiom
 //    ,CandidatesForMerge
 //    ,CandidatesForMergeLang
