@@ -371,7 +371,6 @@ impl SentencesAsIndicesDynamics {
     pub fn initial_from_sentences_and_indices(word_as_index:&BTreeMap<Ixs,Vec<Ixx>>
                                               ,word_as_tokens_n:&BTreeMap<Ixs,Vec<Vec<Ind>>>) 
         -> SentencesAsIndicesDynamics {
-
         let mut sents_flatten = BTreeMap::new();
         for (ixs,collection) in word_as_tokens_n {
             sents_flatten.insert(*ixs,collection.iter().flat_map(|x| x.to_owned()).collect());
@@ -386,8 +385,9 @@ impl SentencesAsIndicesDynamics {
     }  
 
     pub fn from_tokens_words_dynamic(&mut self, word_indices:&BTreeMap<Ixx,Vec<Ind>>) { // dynamics.word_indices 
+//        println!("In from token function");
         let mut wd;
-        let mut wdd:Vec<Ind> = Vec::new();
+//        let mut wdd:Vec<Ind> = Vec::new();
         for (ixs,word) in self.words_as_indices.to_owned() {
             wd = word
                 .iter()
@@ -395,17 +395,35 @@ impl SentencesAsIndicesDynamics {
                 .collect::<Vec<Vec<Ind>>>();
             self.words_as_token_indices.insert(ixs,wd);
         }
+//TODO
+/*
+        println!("self..as words(numbers)..{:?}", self.words_as_token_indices);
+
+        println!("after first for loop");
+        let mut counter = 0;
 
         for (ixs,word) in self.words_as_indices.to_owned() {
+            println!("In second for loop");
+            println!("Word; {:?}", word);
             for ind in word.iter() {
                 wdd.push(*ind); 
             }
+            println!("counter {:?}", counter);
+//            println!("wdd ....{:?}",&wdd);
+            counter +=1;
             self.sentence_flattened_to_token_indices.insert(ixs,wdd.to_owned());
         }
+
+        println!("after second for loop");
+        println!("self.flattened...{:?}", self.sentence_flattened_to_token_indices);
+*/
+
+
     }
 }
 
 impl SentencesAsIndicesDynamicsLang {
+
     pub fn initial_from_sentences_and_indices(lang:&Lang,sentences:&SentencesAsIndices) 
         -> SentencesAsIndicesDynamicsLang {
             match lang {
