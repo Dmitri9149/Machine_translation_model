@@ -50,6 +50,13 @@ pub struct MostFrequentPair {
     pub pair_frequency:Qxx,
 }
 
+impl Debug for MostFrequentPair {
+    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
+        write!(f, "\nMostFrequentPair:  ({}{})\nFrequency:  {}\n"
+               ,self.pair.0,self.pair.1,self.pair_frequency)
+    }
+}
+
 pub enum MostFrequentPairLang {
     Eng(MostFrequentPair),
     Fra(MostFrequentPair)
@@ -167,6 +174,13 @@ impl CandidatesForMergeLang {
             }
         }
 */
+}
+
+impl MostFrequentPair {
+    pub fn get_as_words(&self,vocab:&BTreeMap<Ixx,String>) -> ((String,String),Qxx) {
+        ((vocab.get(&self.pair.0).unwrap().to_owned(),vocab.get(&self.pair.1).unwrap().to_owned()),
+        self.pair_frequency)
+    }
 }
 
 

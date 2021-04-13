@@ -30,6 +30,7 @@ pub use sentence_dynamic::{SentenceAsWords
     ,WordsAndSentenceDynamics
     ,CandidatesForMergeLang as OtherCandidatesForMergeLang
     ,MostFrequentPairLang as OtherMostFrequentPairLang
+    ,MostFrequentPair as OtherMostFrequentPair
 
 //    ,Idiom
 //    ,CandidatesForMerge

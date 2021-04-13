@@ -79,12 +79,15 @@ fn main() {
     let mut most_frequent_pair;
     for merge in 0..num_merges {
         println!("Iteration: {:?}",merge);
-        condidate_pairs_for_merge = OtherCandidatesForMergeLang::from_words_sentence_dynamic(&words_sentence_dynamics);
+        condidate_pairs_for_merge = OtherCandidatesForMergeLang
+            ::from_words_sentence_dynamic(&words_sentence_dynamics);
         println!("Before most frequent");
-        most_frequent_pair=OtherMostFrequentPairLang::most_frequent_pair(&condidate_pairs_for_merge);
+        most_frequent_pair=OtherMostFrequentPairLang
+            ::most_frequent_pair(&condidate_pairs_for_merge);
         println!("Before tokens_words_dynamic");
         match most_frequent_pair { 
-            OtherMostFrequentPairLang::Eng(ref x) => println!("Most frequent pair eng: {:?}", x.pair),
+            OtherMostFrequentPairLang::Eng(ref x) => println!("Most frequent pair eng: {:?}"
+                                                              , x.get_as_words(&vocab.eng_index_word)),
             _ => println!(" Something is wrong with printing most frequent pair")                                                
         }
         words_sentence_dynamics.from_most_frequent_pair(&most_frequent_pair);
