@@ -177,8 +177,9 @@ impl CandidatesForMergeLang {
 }
 
 impl MostFrequentPair {
-    pub fn get_as_words(&self,vocab:&BTreeMap<Ixx,String>) -> ((String,String),Qxx) {
-        ((vocab.get(&self.pair.0).unwrap().to_owned(),vocab.get(&self.pair.1).unwrap().to_owned()),
+    pub fn get_as_words(&self,idioms:&BTreeMap<Ixx,Idiom>) -> ((Vec<String>,Vec<String>),Qxx) {
+        ((idioms.get(&self.pair.0).unwrap().flattened_to_collection.to_owned()
+          ,idioms.get(&self.pair.1).unwrap().flattened_to_collection.to_owned()),
         self.pair_frequency)
     }
 }
