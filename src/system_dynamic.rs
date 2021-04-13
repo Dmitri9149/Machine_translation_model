@@ -385,8 +385,23 @@ impl SentencesAsIndicesDynamics {
         }
     }  
 
-    pub fn from_tokens_words_dynamic(&self,dynamics:&TokensAndWordsDynamics) {
+    pub fn from_tokens_words_dynamic(&mut self, word_indices:&BTreeMap<Ixx,Vec<Ind>>) { // dynamics.word_indices 
+        let mut wd;
+        let mut wdd:Vec<Ind> = Vec::new();
+        for (ixs,word) in self.words_as_indices.to_owned() {
+            wd = word
+                .iter()
+                .map(|z| word_indices.get(z).unwrap().to_owned())
+                .collect::<Vec<Vec<Ind>>>();
+            self.words_as_token_indices.insert(ixs,wd);
+        }
 
+        for (ixs,word) in self.words_as_indices.to_owned() {
+            for ind in word.iter() {
+                wdd.push(*ind); 
+            }
+            self.sentence_flattened_to_token_indices.insert(ixs,wdd.to_owned());
+        }
     }
 }
 
