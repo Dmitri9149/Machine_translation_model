@@ -16,7 +16,8 @@ fn main() {
     println!("The number of pairs for translation: {:?}\n", sentences.size);
     println!("The first pairs for translation:\n");
     for i in 0..1000 {
-        println!("{:?}         {:?}", sentences.eng.get(&i).unwrap()
+        println!("{:?}         {:?}"
+                 ,sentences.eng.get(&i).unwrap()
                  ,sentences.fra.get(&i).unwrap()); 
     }
 
@@ -64,13 +65,18 @@ fn main() {
 
     println!("IndexToWordsCollection.eng_words_n:\n{:?}",&collection.eng_words_n);
 //    println!("IndexToWordsCollection.eng_words_s:\n{:?}",&collection.eng_words_s);
+//
+    let mut sentences_indices = SentencesAsIndices::new();
+    sentences_indices.from_word_vocab(&vocab,&sentences);
+    sentences_indices.from_word_as_tokens(&collection);
+
 
     let mut tokens_words_dynamic=TokensAndWordsDynamicsLang
         ::initial_set_from_vocab(Lang::Eng,&tokens,&vocab);
     let mut words_as_substrings = TokensAndWordsDynamicsLang
         ::word_as_strings_collection(&tokens_words_dynamic);
      
-    let num_merges = 500;
+    let num_merges = 10;
     let mut condidate_pairs_for_merge; 
     let mut most_frequent_pair;
     for merge in 0..num_merges {
@@ -89,24 +95,40 @@ fn main() {
 
 
         match tokens_words_dynamic {
-            TokensAndWordsDynamicsLang::Eng(ref x) => println!(" Eng word indices:\n{:?}",&x.word_indices.get(&17206).unwrap()),
+            TokensAndWordsDynamicsLang
+                ::Eng(ref x) => println!(" Eng word indices:\n{:?}",&x.word_indices.get(&17206).unwrap()),
             _=> println!("Somethin is wrong with word_indices printing"),
 
         }
 
         match words_as_substrings {
-            WordsAsTokensLang::Eng(ref x) => println!(" Eng word substrings:\n{:?}",&x.word_tokens.get(&17206).unwrap()),
+            WordsAsTokensLang
+                ::Eng(ref x) => println!(" Eng word substrings:\n{:?}",&x.word_tokens.get(&17206).unwrap()),
             _=> println!("Somethin is wrong with word_tokens printing"),
 
         }
-
-
+    }
+/*
+    match tokens_words_dynamic {
+        TokensAndWordsDynamicsLang
+            ::Eng(ref x) => println!(" Eng word indices:\n{:?}",&x.word_indices.get(&17206).unwrap()),
+        _=> println!("Somethin is wrong with word_indices printing"),
 
     }
+*/
 
-    match tokens_words_dynamic {
-        TokensAndWordsDynamicsLang::Eng(ref x) => println!(" Eng word indices:\n{:?}",&x.word_indices.get(&17206).unwrap()),
-        _=> println!("Somethin is wrong with word_indices printing"),
+
+    let mut sentence_as_indices_dynamics = SentencesAsIndicesDynamicsLang
+        ::initial_from_sentences_and_indices(&Lang::Eng,&sentences_indices);
+    println!("after let");
+    sentence_as_indices_dynamics.from_tokens_words_dynamic(&tokens_words_dynamic);
+    println!("after from token...");
+
+    match sentence_as_indices_dynamics {
+        SentencesAsIndicesDynamicsLang
+            ::Eng(ref x) => println!(" Sentences as tokens:\n{:?}"
+                                     ,&x.sentence_flattened_to_token_indices.get(&17206).unwrap()),
+        _=> println!("Somethin is wrong with the sentence printing!"),
 
     }
 

@@ -23,6 +23,8 @@ pub use system_dynamic::{CandidatesForMerge
     ,Token
     ,WordsAsTokens
     ,WordsAsTokensLang
+    ,SentencesAsIndicesDynamicsLang
+    ,SentencesAsIndicesDynamics
 };
 pub use sentence_dynamic::{SentenceAsWords
     ,SentenceAsWordsLang
