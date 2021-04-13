@@ -422,5 +422,26 @@ impl SentencesAsIndicesDynamicsLang {
                                                              ,&sentences.fra_word_as_tokens_n)
                         ),
             }
+    }
+
+    pub fn from_tokens_words_dynamic(&mut self, dynamics:&TokensAndWordsDynamicsLang) {
+        match self {
+            SentencesAsIndicesDynamicsLang::Eng(x) => {
+                match dynamics {
+                    TokensAndWordsDynamicsLang::Eng(z) => x.from_tokens_words_dynamic(&z.word_indices),
+                    _=> panic!("Types of arguments are not consistent!"),
+                }
+            },
+
+            SentencesAsIndicesDynamicsLang::Fra(x) => {
+                match dynamics {
+                    TokensAndWordsDynamicsLang::Fra(z) => x.from_tokens_words_dynamic(&z.word_indices),
+                    _=> panic!("Types of arguments are not consistent!"),
+                }
+            },
+
+
+
         }
+    }
 }
