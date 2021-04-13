@@ -38,8 +38,8 @@ fn main() {
     vocab.index_to_word();
     vocab.index_quantity();
 
-//////    println!("The eng words indexation: {:?}\n", &vocab.eng_word_index);
-//////    println!("The eng index to words:  {:?}\n", &vocab.eng_index_word);
+//    println!("The eng words indexation: {:?}\n", &vocab.eng_word_index);
+//    println!("The eng index to words:  {:?}\n", &vocab.eng_index_word);
 
     let mut tokens = VocabOfTokens::new();
     tokens.from_word_vocab(&vocab);
@@ -65,37 +65,40 @@ fn main() {
     println!("IndexToWordsCollection.eng_words_n:\n{:?}",&collection.eng_words_n);
 //    println!("IndexToWordsCollection.eng_words_s:\n{:?}",&collection.eng_words_s);
 
-    let mut tokens_words_dynamic=TokensAndWordsDynamicsLang
-        ::initial_set_from_vocab(Lang::Eng,&tokens,&vocab);
-    let mut words_as_substrings = TokensAndWordsDynamicsLang
-        ::word_as_strings_collection(&tokens_words_dynamic);
+
+    let mut sentences_indices = SentencesAsIndices::new();
+    sentences_indices.from_word_vocab(&vocab,&sentences);
+    sentences_indices.from_word_as_tokens(&collection);
+
+    let mut words_sentence_dynamics=WordsAndSentenceDynamicsLang
+        ::initial_from_sentences(Lang::Eng,&vocab,&sentences_indices);
+    let mut sentences_as_words = words_sentence_dynamics.sentence_as_words_collection();
      
     let num_merges = 500;
     let mut condidate_pairs_for_merge; 
     let mut most_frequent_pair;
     for merge in 0..num_merges {
         println!("Iteration: {:?}",merge);
-        condidate_pairs_for_merge = CandidatesForMergeLang::from_tokens_words_dynamic(&tokens_words_dynamic);
+        condidate_pairs_for_merge = OtherCandidatesForMergeLang::from_words_sentence_dynamic(&words_sentence_dynamics);
         println!("Before most frequent");
-        most_frequent_pair=MostFrequentPairLang::most_frequent_pair(&condidate_pairs_for_merge);
+        most_frequent_pair=OtherMostFrequentPairLang::most_frequent_pair(&condidate_pairs_for_merge);
         println!("Before tokens_words_dynamic");
         match most_frequent_pair { 
-            MostFrequentPairLang::Eng(ref x) => println!("Most frequent pair eng: {:?}", x.pair),
+            OtherMostFrequentPairLang::Eng(ref x) => println!("Most frequent pair eng: {:?}", x.pair),
             _ => println!(" Something is wrong with printing most frequent pair")                                                
         }
-        tokens_words_dynamic.from_most_frequent_pair(&most_frequent_pair);
-        words_as_substrings = TokensAndWordsDynamicsLang
-            ::word_as_strings_collection(&tokens_words_dynamic);
+        words_sentence_dynamics.from_most_frequent_pair(&most_frequent_pair);
+        sentences_as_words = words_sentence_dynamics.sentence_as_words_collection();
 
 
-        match tokens_words_dynamic {
-            TokensAndWordsDynamicsLang::Eng(ref x) => println!(" Eng word indices:\n{:?}",&x.word_indices.get(&17206).unwrap()),
+        match words_sentence_dynamics {
+            WordsAndSentenceDynamicsLang::Eng(ref x) => println!(" Eng word indices:\n{:?}",&x.sentence_indices.get(&17206).unwrap()),
             _=> println!("Somethin is wrong with word_indices printing"),
 
         }
 
-        match words_as_substrings {
-            WordsAsTokensLang::Eng(ref x) => println!(" Eng word substrings:\n{:?}",&x.word_tokens.get(&17206).unwrap()),
+        match sentences_as_words {
+            SentenceAsWordsLang::Eng(ref x) => println!(" Eng word substrings:\n{:?}",&x.sentence_idioms.get(&17206).unwrap()),
             _=> println!("Somethin is wrong with word_tokens printing"),
 
         }
@@ -104,8 +107,8 @@ fn main() {
 
     }
 
-    match tokens_words_dynamic {
-        TokensAndWordsDynamicsLang::Eng(ref x) => println!(" Eng word indices:\n{:?}",&x.word_indices.get(&17206).unwrap()),
+    match words_sentence_dynamics {
+        WordsAndSentenceDynamicsLang::Eng(ref x) => println!(" Eng word indices:\n{:?}",&x.sentence_indices.get(&17206).unwrap()),
         _=> println!("Somethin is wrong with word_indices printing"),
 
     }
