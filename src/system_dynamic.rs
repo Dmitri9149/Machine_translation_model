@@ -190,20 +190,6 @@ pub struct TokensAndWordsDynamics {
     pub word_indices:BTreeMap<Ixx,Vec<Ind>>
     
 }
-// TODO
-/*
-impl Debug for TokensAndWordsDynamics {
-    fn fmt(&self, f: &mut Formatter ) -> fmt::Result {
-        Ok(for (word,indices) in self.word_indices {
-            write!(f,"\n")
-            for index in indices.iter() {
-                write!(f,"- {:?} -", self.index_token.get(index).unwrap())
-            }
-            write!(f,"\n")
-        })
-    }
-}
-*/
 
 impl TokensAndWordsDynamics {
     pub fn new() -> TokensAndWordsDynamics {
@@ -362,4 +348,64 @@ impl TokensAndWordsDynamicsLang {
     }
 }
 
+pub struct SentencesAsIndicesDynamics {
+    pub words_as_indices:BTreeMap<Ixs,Vec<Ixx>>,
+    pub words_as_token_indices:BTreeMap<Ixs,Vec<Vec<Ind>>>,
+    pub sentence_flattened_to_token_indices:BTreeMap<Ixs,Vec<Ind>>
+}
 
+pub enum SentencesAsIndicesDynamicsLang {
+    Eng(SentencesAsIndicesDynamics),
+    Fra(SentencesAsIndicesDynamics)
+}
+
+impl SentencesAsIndicesDynamics {
+    pub fn new() -> SentencesAsIndicesDynamics {
+        SentencesAsIndicesDynamics {
+        words_as_indices:BTreeMap::new(),
+        words_as_token_indices:BTreeMap::new(),
+        sentence_flattened_to_token_indices:BTreeMap::new(),
+        }
+    }
+
+    pub fn initial_from_sentences_and_indices(word_as_index:&BTreeMap<Ixs,Vec<Ixx>>
+                                              ,word_as_tokens_n:&BTreeMap<Ixs,Vec<Vec<Ind>>>) 
+        -> SentencesAsIndicesDynamics {
+
+        let mut sents_flatten = BTreeMap::new();
+        for (ixs,collection) in word_as_tokens_n {
+            sents_flatten.insert(*ixs,collection.iter().flat_map(|x| x.to_owned()).collect());
+        }
+
+
+        SentencesAsIndicesDynamics {
+        words_as_indices:word_as_index.to_owned(),
+        words_as_token_indices:word_as_tokens_n.to_owned(),
+        sentence_flattened_to_token_indices:sents_flatten,
+        }
+    }  
+
+    pub fn from_tokens_words_dynamic(&self,dynamics:&TokensAndWordsDynamics) {
+
+    }
+}
+
+impl SentencesAsIndicesDynamicsLang {
+    pub fn initial_from_sentences_and_indices(lang:&Lang,sentences:&SentencesAsIndices) 
+        -> SentencesAsIndicesDynamicsLang {
+            match lang {
+                Lang::Eng 
+                    => SentencesAsIndicesDynamicsLang::Eng(
+                        SentencesAsIndicesDynamics
+                        ::initial_from_sentences_and_indices(&sentences.eng_word_as_index
+                                                             ,&sentences.eng_word_as_tokens_n)
+                        ),
+                Lang::Fra 
+                    => SentencesAsIndicesDynamicsLang::Fra(
+                        SentencesAsIndicesDynamics
+                        ::initial_from_sentences_and_indices(&sentences.fra_word_as_index
+                                                             ,&sentences.fra_word_as_tokens_n)
+                        ),
+            }
+        }
+}
