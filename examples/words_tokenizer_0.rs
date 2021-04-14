@@ -1,4 +1,5 @@
 use translationlib::*;
+use serde_json::{Result, Value};
 
 fn main() {
     let mut txt = CorpusAsString::corpus_from_file("data/fra_eng/fra.txt");
@@ -76,7 +77,7 @@ fn main() {
     let mut words_as_substrings = TokensAndWordsDynamicsLang
         ::word_as_strings_collection(&tokens_words_dynamic);
      
-    let num_merges = 200;
+    let num_merges = 500;
     let mut condidate_pairs_for_merge; 
     let mut most_frequent_pair;
     for merge in 0..num_merges {
@@ -143,6 +144,12 @@ fn main() {
         _=> println!("Something is wrong with the sentence printing!"),
 
     }
+
+    let serialized = serde_json::to_string(&sentence_as_indices_dynamics).unwrap();
+    println!("serialized = {}", serialized);
+
+    let deserialized: SentencesAsIndicesDynamicsLang = serde_json::from_str(&serialized).unwrap();
+    println!("deserialized = {:?}", deserialized);
 
 
 }

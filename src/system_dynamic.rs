@@ -5,6 +5,7 @@ use super::*;
 use std::collections::HashMap;
 use std::collections::BTreeMap;
 use std::fmt::{self,Debug,Formatter};
+use serde::{Serialize, Deserialize};
 
 
 // keep the records of the flattened tokens as 
@@ -348,12 +349,15 @@ impl TokensAndWordsDynamicsLang {
     }
 }
 
+#[derive(Serialize, Deserialize, Debug)]
 pub struct SentencesAsIndicesDynamics {
     pub words_as_indices:BTreeMap<Ixs,Vec<Ixx>>,
     pub words_as_token_indices:BTreeMap<Ixs,Vec<Vec<Ind>>>,
     pub sentence_flattened_to_token_indices:BTreeMap<Ixs,Vec<Ind>>
 }
 
+
+#[derive(Serialize, Deserialize, Debug)]
 pub enum SentencesAsIndicesDynamicsLang {
     Eng(SentencesAsIndicesDynamics),
     Fra(SentencesAsIndicesDynamics)

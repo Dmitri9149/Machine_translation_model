@@ -1,5 +1,7 @@
 use std::fmt::{self,Debug,Formatter};
 use std::collections::BTreeMap;
+use serde::{Deserialize, Serialize};
+//use serde::serde_derive::{Serialize, Deserialize};
 use super::*;
 
 // the struct is keeping 2 Vectors with sentences : one for englich 
@@ -93,7 +95,7 @@ impl SentencesForTranslation {
     }
 
 }
-
+#[derive(Serialize, Deserialize, Debug)]
 pub struct SentencesAsIndices {
     pub eng_word_as_index:BTreeMap<Ixs,Vec<Ixx>>,
     pub fra_word_as_index:BTreeMap<Ixs,Vec<Ixx>>,
