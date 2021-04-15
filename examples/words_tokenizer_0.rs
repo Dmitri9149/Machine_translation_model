@@ -77,7 +77,7 @@ fn main() {
     let mut words_as_substrings = TokensAndWordsDynamicsLang
         ::word_as_strings_collection(&tokens_words_dynamic);
      
-    let num_merges = 500;
+    let num_merges = 1000;
     let mut condidate_pairs_for_merge; 
     let mut most_frequent_pair;
     let mut entropy; 
@@ -96,9 +96,9 @@ fn main() {
             ::word_as_strings_collection(&tokens_words_dynamic);
 
 // calculate entropy 
-        entropy = tokens_words_dynamic.tokens_vocab_and_entropy().1;
+        entropy = tokens_words_dynamic.tokens_vocab_and_entropy();
 
-        println!(" Entropy:   {:?}", entropy);
+        println!(" Entropy:   {:?} ; Tokens number: {:?}", entropy.1, entropy.0.keys().len());
 
         match tokens_words_dynamic {
             TokensAndWordsDynamicsLang
