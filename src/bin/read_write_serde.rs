@@ -25,6 +25,7 @@ fn load_world<P: AsRef<Path>>(path: P) -> World {
         let mut buf = vec![];
         if file.read_to_end(&mut buf).is_ok() {
             if let Ok(world) = serde_json::from_slice(&buf[..]) {
+
                 return world;
             }
         }
