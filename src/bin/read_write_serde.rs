@@ -30,7 +30,7 @@ fn load_world<P: AsRef<Path>>(path: P) -> World {
         }
     }
     
-    //There was no file, or the file failed to load, create a new World.
+//There was no file, or the file failed to load, create a new World.
     World(vec![Entity { x: 0.0, y: 4.0 }, Entity { x: 10.0, y: 20.5 }])
 }
 
