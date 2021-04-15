@@ -1,3 +1,7 @@
+// initial commit is based on 
+// https://stackoverflow.com/questions/62771576/how-do-i-save-structured-data-to-file
+// https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=f6bd6ea542877293e8a85cd25419a77c
+
 extern crate serde;
 extern crate serde_json;
 
