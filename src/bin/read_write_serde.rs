@@ -44,7 +44,7 @@ fn save_world<P: AsRef<Path>>(path: P, world: World) -> Result<()> {
 fn main() {
     //Let's do it twice to see if the changes save
     for _ in 0..2 {
-        let mut world = load_world("cached_world");
+        let mut world = load_world("data/stages/cached_world");
         
         println!("Loaded: {:?}", world);
         
@@ -54,6 +54,6 @@ fn main() {
             i.y += 5.0;
         }
     
-        let _ = save_world("cached_world", world);
+        let _ = save_world("data/stages/cached_world", world);
     }
 }
