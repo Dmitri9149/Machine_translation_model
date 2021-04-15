@@ -290,6 +290,41 @@ impl TokensAndWordsDynamics {
             word_tokens:map
         }
     }
+/*
+pub struct TokensAndWordsDynamics {
+// TODO is it possible to use &str instead of String ? with reference to token.flattened_to_string?
+    pub index_token:BTreeMap<Ind,Token>,
+    pub token_index:BTreeMap<String,Ind>,
+    pub word_quantity:BTreeMap<Ixx,Qxx>,
+    pub word_indices:BTreeMap<Ixx,Vec<Ind>>
+
+}
+*/
+    pub fn tokens_vocab_and_entropy(&self) -> (BTreeMap<Ind,Quant>, f32) {
+        let mut tokens_distribution = BTreeMap::<Ind,Quant>::new();
+        let mut word_factor; 
+        for (ixx,vec) in &self.word_indices {
+           word_factor = self.word_quantity.get(&ixx).unwrap();
+            for ind in vec {
+                *tokens_distribution
+                    .entry(*ind)
+                    .or_insert(*word_factor)+=word_factor;
+            }
+        }
+
+        let mut sum:f32 = 0.0;
+        let mut entropy:f32 = 0.0;
+        for (_key,value) in &tokens_distribution {
+            sum += *value as f32;
+       }
+        for (_key,value) in &tokens_distribution {
+            let f = *value as f32/sum;
+            entropy -= f*f.log2();
+        }
+
+        (tokens_distribution,entropy)
+
+    }   
 }
 
 #[derive(Debug)]
@@ -345,6 +380,14 @@ impl TokensAndWordsDynamicsLang {
                 WordsAsTokensLang::Eng(x.word_as_strings_collection()),
             TokensAndWordsDynamicsLang::Fra(x) => 
                 WordsAsTokensLang::Fra(x.word_as_strings_collection()),
+        }
+    }
+
+    pub fn tokens_vocab_and_entropy(&self) -> (BTreeMap<Ind,Quant>, f32) {
+        match self {
+            TokensAndWordsDynamicsLang::Eng(x) => x.tokens_vocab_and_entropy(),
+            TokensAndWordsDynamicsLang::Fra(x) => x.tokens_vocab_and_entropy(),
+                                                                            
         }
     }
 }
