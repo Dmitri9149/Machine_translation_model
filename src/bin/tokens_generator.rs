@@ -1,10 +1,7 @@
 use translationlib::*;
-//use serde_json::{Result, Value};
+use serde_json::{Result, Value};
 
-//#[macro_use] extern crate serde_derive;
-use std::fs::File;
-
-fn main() -> Result<(),Box<dyn std::error::Error>>{
+fn main() {
     let mut txt = CorpusAsString::corpus_from_file("data/fra_eng/fra.txt");
 /*
 // eliminate u{202f} non breaking space and '\xa0' which in unicode is u{00a0}
@@ -80,7 +77,7 @@ fn main() -> Result<(),Box<dyn std::error::Error>>{
     let mut words_as_substrings = TokensAndWordsDynamicsLang
         ::word_as_strings_collection(&tokens_words_dynamic);
      
-    let num_merges = 2000;
+    let num_merges = 1000;
     let mut condidate_pairs_for_merge; 
     let mut most_frequent_pair;
     let mut entropy; 
@@ -153,16 +150,11 @@ fn main() -> Result<(),Box<dyn std::error::Error>>{
 
     }
 
-
-// serialize and deserialize
-/*
     let serialized = serde_json::to_string(&sentence_as_indices_dynamics).unwrap();
     println!("serialized = {}", serialized);
 
     let deserialized: SentencesAsIndicesDynamicsLang = serde_json::from_str(&serialized).unwrap();
     println!("deserialized = {:?}", deserialized);
-*/
 
-    ::serde_json::to_writer(&File::create("data/data.json")?, &sentence_as_indices_dynamics)?;
-    Ok(())
+
 }
