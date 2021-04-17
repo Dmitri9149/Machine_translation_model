@@ -30,5 +30,7 @@ fn main() {
     let sentences:SentencesAsIndicesDynamicsLang = serde_json::from_str(&json_file_str).expect("error while reading json");
     let elapsed = start.elapsed();
     println!("Elapsed: {:.2?}", elapsed);
+
+    println!("The sentences in initial form: {:?}", sentences);
 }
 
