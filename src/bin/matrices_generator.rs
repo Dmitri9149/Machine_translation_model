@@ -10,6 +10,10 @@ use std::fs::File;
 use std::time::Instant;
 use std::fs::read_to_string; // use instead of std::fs::File
 use std::path::Path;
+use ndarray::prelude::*;
+
+static NUMBER_TOKENS:Ind = 573;
+static NUMBER_PAIRS:Ixs = 185583;
 
 
 
@@ -32,5 +36,28 @@ fn main() {
     println!("Elapsed: {:.2?}", elapsed);
 
     println!("The sentences in initial form: {:?}", sentences);
+
+    let mut pairs_tokens_matrix:Array2<f32> = Array::zeros((NUMBER_PAIRS,NUMBER_TOKENS));
+
+    match sentences {
+        SentencesAsIndicesDynamicsLang::Eng(x)=> 
+            for (ixs,collection) in x.sentence_flattened_to_token_indices.iter() {
+                for ind in collection.iter() {
+                    pairs_tokens_matrix[[ixs,ind]] = 1.;
+                }
+            },
+            
+        _ => (),
+    }
+
+    println!("Array ! :{:?}", pairs_tokens_matrix);
+
 }
 
+/*
+pub struct SentencesAsIndicesDynamics {
+    pub words_as_indices:BTreeMap<Ixs,Vec<Ixx>>,
+    pub words_as_token_indices:BTreeMap<Ixs,Vec<Vec<Ind>>>,
+    pub sentence_flattened_to_token_indices:BTreeMap<Ixs,Vec<Ind>>
+}
+*/
