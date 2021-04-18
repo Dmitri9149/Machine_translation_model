@@ -37,20 +37,28 @@ fn main() {
 
     println!("The sentences in initial form: {:?}", sentences);
 
-    let mut pairs_tokens_matrix:Array2<f32> = Array::zeros((NUMBER_PAIRS,NUMBER_TOKENS));
+    let mut pairs_tokens_matrix:Array1<f32> = Array::zeros(NUMBER_PAIRS*NUMBER_TOKENS);
+    let mut p_t_matrix:Array2<f32> = Array::zeros((NUMBER_PAIRS,NUMBER_TOKENS));
+
 
     match sentences {
-        SentencesAsIndicesDynamicsLang::Eng(x)=> 
+        SentencesAsIndicesDynamicsLang::Eng(x)=> {
             for (ixs,collection) in x.sentence_flattened_to_token_indices.iter() {
                 for ind in collection.iter() {
-                    pairs_tokens_matrix[[ixs,ind]] = 1.;
+                    pairs_tokens_matrix[[ixs+ind]] += 1.;
                 }
-            },
+            }
+            let p_t_matrix = pairs_tokens_matrix.into_shape((NUMBER_PAIRS,NUMBER_TOKENS)).unwrap();
+
+
+        },
             
         _ => (),
     }
 
-    println!("Array ! :{:?}", pairs_tokens_matrix);
+    println!("Array ! :{:?}", &p_t_matrix.slice(s![0,..]));
+    println!("Shapes:\nshape: {:?}\ndim: {:?}\nraw_dim: {:?}"
+             ,p_t_matrix.shape(), p_t_matrix.dim(), p_t_matrix.raw_dim());
 
 }
 
