@@ -331,6 +331,13 @@ pub struct TokensAndWordsDynamics {
     
 }
 
+pub struct TokensDynamicsAndEntropy {
+    pub eng_dyn_tokens:BTreeMap<Ind,Quant>,
+    pub eng_entropy:f32,
+    pub fra_dyn_tokens:BTreeMap<Ind,Quant>,
+    pub fra_entropy:f32,
+}
+
 impl TokensAndWordsDynamics {
     pub fn new() -> TokensAndWordsDynamics {
         TokensAndWordsDynamics {
@@ -516,6 +523,45 @@ impl TokensAndWordsDynamics {
         .collect()    
     }
 
+
+    fn word_as_strings_collection(&self) -> WordsAsTokens {
+        let mut eng_map = BTreeMap::<Ixx,Vec<String>>::new();
+        let mut fra_map = BTreeMap::<Ixx,Vec<String>>::new();
+
+        for (ixx,collection) in &self.eng_word_indices {
+            let mut substrings_collection = vec![];
+            for ind in collection {
+                substrings_collection
+                    .push(self.eng_index_token
+                          .get(&ind)
+                          .unwrap()
+                          .flattened_to_string
+                          .to_owned());
+            }
+            eng_map.insert(*ixx, substrings_collection);
+        }
+
+        for (ixx,collection) in &self.fra_word_indices {
+            let mut substrings_collection = vec![];
+            for ind in collection {
+                substrings_collection
+                    .push(self.fra_index_token
+                          .get(&ind)
+                          .unwrap()
+                          .flattened_to_string
+                          .to_owned());
+            }
+            fra_map.insert(*ixx, substrings_collection);
+        }
+
+
+        WordsAsTokens {
+            eng_word_tokens:eng_map,
+            fra_word_tokens:fra_map
+        }
+    }
+
+/*
     fn word_as_strings_collection(&self) -> WordsAsTokens {
         let mut map = BTreeMap::<Ixx,Vec<String>>::new();
         for (ixx,collection) in &self.word_indices {
@@ -534,7 +580,63 @@ impl TokensAndWordsDynamics {
             word_tokens:map
         }
     }
+*/
 
+    pub fn tokens_vocab_and_entropy(&self) -> TokensDynamicsAndEntropy {
+        let mut eng_tokens_distribution = BTreeMap::<Ind,Quant>::new();
+        let mut eng_tokens_distribution = BTreeMap::<Ind,Quant>::new();
+        let mut word_factor; 
+
+        for (ixx,vec) in &self.eng_word_indices {
+           word_factor = self.eng_word_quantity.get(&ixx).unwrap();
+            for ind in vec {
+                *eng_tokens_distribution
+                    .entry(*ind)
+                    .or_insert(*word_factor)+=word_factor;
+            }
+        }
+
+        for (ixx,vec) in &self.fra_word_indices {
+           word_factor = self.fra_word_quantity.get(&ixx).unwrap();
+            for ind in vec {
+                *fra_tokens_distribution
+                    .entry(*ind)
+                    .or_insert(*word_factor)+=word_factor;
+            }
+        }
+
+// entropy calculation
+        let mut sum:f32 = 0.0;
+        let mut entropy:f32 = 0.0;
+
+        for (_key,value) in &eng_tokens_distribution {
+            sum += *value as f32;
+       }
+        for (_key,value) in &eng_tokens_distribution {
+            let f = *value as f32/sum;
+            eng_entropy -= f*f.log2();
+        }
+
+        for (_key,value) in &fra_tokens_distribution {
+            sum += *value as f32;
+       }
+        for (_key,value) in &fra_tokens_distribution {
+            let f = *value as f32/sum;
+            fra_entropy -= f*f.log2();
+        }
+
+
+        TokensDynamicsAndEntropy {
+            eng_dyn_tokens:eng_tokens_distribution,
+            eng_entropy:eng_entropy,
+            fra_dyn_tokens:fra_tokens_distribution,
+            fra_entropy:fra_entropy,
+
+        }
+    }   
+}
+
+/*
     pub fn tokens_vocab_and_entropy(&self) -> (BTreeMap<Ind,Quant>, f32) {
         let mut tokens_distribution = BTreeMap::<Ind,Quant>::new();
         let mut word_factor; 
@@ -560,8 +662,9 @@ impl TokensAndWordsDynamics {
         (tokens_distribution,entropy)
 
     }   
+*/
 }
-
+/*
 #[derive(Debug)]
 pub enum TokensAndWordsDynamicsLang {
     Eng(TokensAndWordsDynamics),
@@ -626,43 +729,64 @@ impl TokensAndWordsDynamicsLang {
         }
     }
 }
+*/
+
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct SentencesAsIndicesDynamics {
-    pub words_as_indices:BTreeMap<Ixs,Vec<Ixx>>,
-    pub words_as_token_indices:BTreeMap<Ixs,Vec<Vec<Ind>>>,
-    pub sentence_flattened_to_token_indices:BTreeMap<Ixs,Vec<Ind>>
+    pub eng_words_as_indices:BTreeMap<Ixs,Vec<Ixx>>,
+    pub eng_words_as_token_indices:BTreeMap<Ixs,Vec<Vec<Ind>>>,
+    pub eng_sentence_flattened_to_token_indices:BTreeMap<Ixs,Vec<Ind>>,
+    pub fra_words_as_indices:BTreeMap<Ixs,Vec<Ixx>>,
+    pub fra_words_as_token_indices:BTreeMap<Ixs,Vec<Vec<Ind>>>,
+    pub fra_sentence_flattened_to_token_indices:BTreeMap<Ixs,Vec<Ind>>
+
 }
 
-
+/*
 #[derive(Serialize, Deserialize, Debug)]
 pub enum SentencesAsIndicesDynamicsLang {
     Eng(SentencesAsIndicesDynamics),
     Fra(SentencesAsIndicesDynamics)
 }
+*/
 
 impl SentencesAsIndicesDynamics {
     pub fn new() -> SentencesAsIndicesDynamics {
         SentencesAsIndicesDynamics {
-        words_as_indices:BTreeMap::new(),
-        words_as_token_indices:BTreeMap::new(),
-        sentence_flattened_to_token_indices:BTreeMap::new(),
+        eng_words_as_indices:BTreeMap::new(),
+        eng_words_as_token_indices:BTreeMap::new(),
+        eng_sentence_flattened_to_token_indices:BTreeMap::new(),
+        fra_words_as_indices:BTreeMap::new(),
+        fra_words_as_token_indices:BTreeMap::new(),
+        fra_sentence_flattened_to_token_indices:BTreeMap::new(),
         }
     }
 
     pub fn initial_from_sentences_and_indices(word_as_index:&BTreeMap<Ixs,Vec<Ixx>>
-                                              ,word_as_tokens_n:&BTreeMap<Ixs,Vec<Vec<Ind>>>) 
+                                              ,word_as_tokens_n:&BTreeMap<Ixs,Vec<Vec<Ind>>>) (sentences:&SentencesAsIndices) 
         -> SentencesAsIndicesDynamics {
-        let mut sents_flatten = BTreeMap::new();
-        for (ixs,collection) in word_as_tokens_n {
-            sents_flatten.insert(*ixs,collection.iter().flat_map(|x| x.to_owned()).collect());
+        let mut eng_sents_flatten = BTreeMap::new();
+        let mut fra_sents_flatten = BTreeMap::new();
+
+        for (ixs,collection) in sentences.eng_word_as_tokens_n {
+            eng_sents_flatten
+                .insert(*ixs,collection.iter().flat_map(|x| x.to_owned()).collect());
         }
 
+        for (ixs,collection) in sentences.fra_word_as_tokens_n {
+            fra_sents_flatten
+                .insert(*ixs,collection.iter().flat_map(|x| x.to_owned()).collect());
+        }
 
         SentencesAsIndicesDynamics {
-        words_as_indices:word_as_index.to_owned(),
-        words_as_token_indices:word_as_tokens_n.to_owned(),
-        sentence_flattened_to_token_indices:sents_flatten,
+        eng_words_as_indices:sentences.eng_word_as_index.to_owned(),
+        eng_words_as_token_indices:sentences.eng_word_as_tokens_n.to_owned(),
+        eng_sentence_flattened_to_token_indices:eng_sents_flatten,
+        fra_words_as_indices:sentences.fra_word_as_index.to_owned(),
+        fra_words_as_token_indices:sentences.fra_word_as_tokens_n.to_owned(),
+        fra_sentence_flattened_to_token_indices:fra_sents_flatten,
+
         }
     }  
 
@@ -705,6 +829,7 @@ impl SentencesAsIndicesDynamics {
     }
 }
 
+/*
 impl SentencesAsIndicesDynamicsLang {
 
     pub fn initial_from_sentences_and_indices(lang:&Lang,sentences:&SentencesAsIndices) 
@@ -746,3 +871,6 @@ impl SentencesAsIndicesDynamicsLang {
         }
     }
 }
+
+*/
+
