@@ -19,15 +19,18 @@ pub struct Token {
 
 #[derive(Debug)]
 pub struct WordsAsTokens {
-    pub word_tokens:BTreeMap<Ixx,Vec<String>>,
+    pub eng_word_tokens:BTreeMap<Ixx,Vec<String>>,
+    pub fra_word_tokens:BTreeMap<Ixx,Vec<String>>,
+
 }
 
+/*
 #[derive(Debug)]
 pub enum WordsAsTokensLang {
     Eng(WordsAsTokens),
     Fra(WordsAsTokens)
 }
-
+*/
 
 impl Debug for Token {
     fn fmt(&self, f: &mut Formatter ) -> fmt::Result {
@@ -40,25 +43,35 @@ impl Debug for Token {
 
 
 pub struct CandidatesForMerge {
-    pub pairs:HashMap<(Ind,Ind),Quant>,
+    pub eng_pairs:HashMap<(Ind,Ind),Quant>,
+    pub fra_pairs:HashMap<(Ind,Ind),Quant>,
+
 }
 
+/*
 pub enum CandidatesForMergeLang {
     Eng(CandidatesForMerge),
     Fra(CandidatesForMerge)
 }
+*/
 
 pub struct MostFrequentPair {
-    pub pair:(Ind,Ind),
-    pub pair_frequency:Quant,
+    pub eng_pair:(Ind,Ind),
+    pub eng_pair_frequency:Quant,
+    pub fra_pair:(Ind,Ind),
+    pub fra_pair_frequency:Quant,
+
 }
 
+/*
 pub enum MostFrequentPairLang {
     Eng(MostFrequentPair),
     Fra(MostFrequentPair)
 }
+*/
 
 impl CandidatesForMerge {
+/*
     pub fn from_tokens_words_dynamic(word_indices:&BTreeMap<Ixx,Vec<Ind>>
                                      ,word_quantity:&BTreeMap<Ixx,Qxx>) -> CandidatesForMerge {
         let mut pairs:HashMap<(Ind,Ind),Quant> = HashMap::new();
@@ -86,8 +99,56 @@ impl CandidatesForMerge {
 
                 
     } 
+*/
 
 
+    pub fn from_tokens_words_dynamic(dynamics:&TokensAndWordsDynamics) -> CandidatesForMerge {
+        let mut eng_pairs:HashMap<(Ind,Ind),Quant> = HashMap::new();
+        let mut fra_pairs:HashMap<(Ind,Ind),Quant> = HashMap::new();
+
+        let mut quant:Quant;
+        let mut pair:(Ind,Ind);
+        let mut size;
+
+        for (word,collection) in dynamics.eng_word_indices {
+            size = collection.len();
+                if size == 0 {
+                    panic!("from CandidatesForMerge: collection has 0 length, breack");
+                } else if size ==1 {
+                    continue
+                }
+            quant = *dynamics.eng_word_quantity.get(&word).unwrap();
+            for i in 0..size-1 {
+                pair = (collection[i],collection[i+1]);
+                *eng_pairs.entry(pair).or_insert(quant)+=quant;
+            }
+        }
+
+        for (word,collection) in dynamics.fra_word_indices {
+            size = collection.len();
+                if size == 0 {
+                    panic!("from CandidatesForMerge: collection has 0 length, breack");
+                } else if size ==1 {
+                    continue
+                }
+            quant = *dynamics.fra_word_quantity.get(&word).unwrap();
+            for i in 0..size-1 {
+                pair = (collection[i],collection[i+1]);
+                *fra_pairs.entry(pair).or_insert(quant)+=quant;
+            }
+        }
+
+        CandidatesForMerge {
+            eng_pairs:eng_pairs
+            fra_pairs:fra_pairs
+
+        }
+
+                
+    } 
+
+
+/*
     pub fn from_word_vocab(index_word:&BTreeMap<Ixx,String>
                            ,words_n:&BTreeMap<Ixx,Vec<Ind>>
                            ,numbers:&BTreeMap<Ixx,Qxx>)  -> CandidatesForMerge {
@@ -116,7 +177,56 @@ impl CandidatesForMerge {
         }
     }
 
+*/
 
+    pub fn from_word_vocab(vocab:&Vocab, collection:&WordToIndexCollection)  -> CandidatesForMerge {
+        let mut eng_pairs:HashMap<(Ind,Ind),Quant> = HashMap::new();
+        let mut fra_pairs:HashMap<(Ind,Ind),Quant> = HashMap::new();
+
+        let mut quant:Quant;
+        let mut pair:(Ind,Ind);
+        let mut size;
+        let mut collection;
+
+        for word in vocab.eng_index_word.keys() {
+            collection = vocab.eng_words_n.get(&word).unwrap().to_vec();
+            size = collection.len();
+                if size == 0 {
+                    panic!("from CandidatesForMerge: collection has 0 length, breack");
+                } else if size ==1 {
+                    continue
+                }
+            for i in 0..size-1 {
+                pair = (collection[i],collection[i+1]);
+                quant = *collection.en_numbers.get(&word).unwrap();
+                *eng_pairs.entry(pair).or_insert(quant)+=quant;
+            }
+        }
+
+        for word in vocab.fra_index_word.keys() {
+            collection = vocab.fra_words_n.get(&word).unwrap().to_vec();
+            size = collection.len();
+                if size == 0 {
+                    panic!("from CandidatesForMerge: collection has 0 length, breack");
+                } else if size ==1 {
+                    continue
+                }
+            for i in 0..size-1 {
+                pair = (collection[i],collection[i+1]);
+                quant = *collection.fra_numbers.get(&word).unwrap();
+                *fra_pairs.entry(pair).or_insert(quant)+=quant;
+            }
+        }
+
+
+        CandidatesForMerge {
+            eng_pairs:eng_pairs,
+            fra_pairs:fra_pairs,
+
+        }
+    }
+
+/*
     pub fn most_frequent_pair(&self) -> MostFrequentPair {
         let closure = |pairs:&HashMap<(Ind,Ind),Quant>| {
             let res = max_key(pairs).expect("The vocabulary is to be not empty");
@@ -129,8 +239,29 @@ impl CandidatesForMerge {
         pair_frequency:max_pair.1,
         }
     }
+*/
+
+    pub fn most_frequent_pair(&self) -> MostFrequentPair {
+        let closure = |pairs:&HashMap<(Ind,Ind),Quant>| {
+            let res = max_key(pairs).expect("The vocabulary is to be not empty");
+            (*res.0,*res.1)
+        };
+
+        let eng_max_pair = closure(&self.eng_pairs);
+        let fra_max_pair = closure(&self.fra_pairs);
+
+        MostFrequentPair {
+        eng_pair:eng_max_pair.0,    
+        eng_pair_frequency:eng_max_pair.1,
+        fra_pair:fra_max_pair.0,    
+        fra_pair_frequency:fra_max_pair.1,
+
+        }
+    }
 }
 
+
+/*
 impl CandidatesForMergeLang {
 
     pub fn from_tokens_words_dynamic(dynamics:&TokensAndWordsDynamicsLang) 
@@ -184,93 +315,204 @@ impl MostFrequentPairLang {
     }
 }
 
+*/
+
 #[derive(Debug)]
 pub struct TokensAndWordsDynamics {
 // TODO is it possible to use &str instead of String ? with reference to token.flattened_to_string?
-    pub index_token:BTreeMap<Ind,Token>,
-    pub token_index:BTreeMap<String,Ind>,
-    pub word_quantity:BTreeMap<Ixx,Qxx>,
-    pub word_indices:BTreeMap<Ixx,Vec<Ind>>
+    pub eng_index_token:BTreeMap<Ind,Token>,
+    pub eng_token_index:BTreeMap<String,Ind>,
+    pub eng_word_quantity:BTreeMap<Ixx,Qxx>,
+    pub eng_word_indices:BTreeMap<Ixx,Vec<Ind>>
+    pub fra_index_token:BTreeMap<Ind,Token>,
+    pub fra_token_index:BTreeMap<String,Ind>,
+    pub fra_word_quantity:BTreeMap<Ixx,Qxx>,
+    pub fra_word_indices:BTreeMap<Ixx,Vec<Ind>>
     
 }
 
 impl TokensAndWordsDynamics {
     pub fn new() -> TokensAndWordsDynamics {
         TokensAndWordsDynamics {
-            index_token:BTreeMap::new()
-                ,token_index:BTreeMap::new()
-                ,word_quantity:BTreeMap::new()
-                ,word_indices:BTreeMap::new()
+            eng_index_token:BTreeMap::new()
+                ,eng_token_index:BTreeMap::new()
+                ,eng_word_quantity:BTreeMap::new()
+                ,eng_word_indices:BTreeMap::new()
+                ,fra_index_token:BTreeMap::new()
+                ,fra_token_index:BTreeMap::new()
+                ,fra_word_quantity:BTreeMap::new()
+                ,fra_word_indices:BTreeMap::new()
+
         }
     }
 
-    pub fn initial_set_from_vocab(index_word:&BTreeMap<Ixx,String>
-                                  ,index_token:&BTreeMap<Ind,String>
-                                  ,token_index:&BTreeMap<String,Ind>
-                                  ,word_quantity:&BTreeMap<Ixx,Qxx>) -> TokensAndWordsDynamics {
-        let mut hsh_index:BTreeMap<Ind,Token> = BTreeMap::new();
-        let mut hsh_token:BTreeMap<String,Ind> = BTreeMap::new();
+    pub fn initial_set_from_vocab(vocab_t:&VocabOfTokens
+                                  ,vocab_w:&Vocab) -> TokensAndWordsDynamics {
+        let mut eng_hsh_index:BTreeMap<Ind,Token> = BTreeMap::new();
+        let mut eng_hsh_token:BTreeMap<String,Ind> = BTreeMap::new();
+        let mut fra_hsh_index:BTreeMap<Ind,Token> = BTreeMap::new();
+        let mut fra_hsh_token:BTreeMap<String,Ind> = BTreeMap::new();
+
 // TODO rewrite to:  for (index,token) in index_token { .... }
-        for index in index_token {
+        for index in vocab_t.eng_index_token {
             let st = index.1.to_string();
             let token = Token {
                 flattened_to_index:vec![*index.0],
                 flattened_to_string:st.to_owned()
             };
 // TODO check for containing the index key -> generate corresp behaviour
-            hsh_index.entry(*index.0).or_insert(token);
-            hsh_token.entry(st).or_insert(*index.0);
+            eng_hsh_index.entry(*index.0).or_insert(token);
+            eng_hsh_token.entry(st).or_insert(*index.0);
         }
 
-        let mut hsh_word_ics:BTreeMap<Ixx,Vec<Ind>> = BTreeMap::new();
+// TODO rewrite to:  for (index,token) in index_token { .... }
+        for index in vocab_t.fra_index_token {
+            let st = index.1.to_string();
+            let token = Token {
+                flattened_to_index:vec![*index.0],
+                flattened_to_string:st.to_owned()
+            };
+// TODO check for containing the index key -> generate corresp behaviour
+            fra_hsh_index.entry(*index.0).or_insert(token);
+            fra_hsh_token.entry(st).or_insert(*index.0);
+        }
+
+
+        let mut eng_hsh_word_ics:BTreeMap<Ixx,Vec<Ind>> = BTreeMap::new();
+        let mut fra_hsh_word_ics:BTreeMap<Ixx,Vec<Ind>> = BTreeMap::new();
+
         let mut char_index:Ind;
         let mut char_as_string:String;
-        for (index,word) in index_word {
+
+        for (index,word) in vocab_w.eng_index_word {
             let mut vec_of_indices:Vec<Ind>=Vec::new();
             for ch in word.chars() {
                 char_as_string = ch.to_string();
-                char_index = *token_index.get(&char_as_string).unwrap();
+                char_index = *vocab_t.eng_token_index.get(&char_as_string).unwrap();
                 vec_of_indices.push(char_index);
             }
-            hsh_word_ics.entry(*index).or_insert(vec_of_indices);
+            eng_hsh_word_ics.entry(*index).or_insert(vec_of_indices);
         }
 
+        for (index,word) in vocab_w.fra_index_word {
+            let mut vec_of_indices:Vec<Ind>=Vec::new();
+            for ch in word.chars() {
+                char_as_string = ch.to_string();
+                char_index = *vocab_t.fra_token_index.get(&char_as_string).unwrap();
+                vec_of_indices.push(char_index);
+            }
+            fra_hsh_word_ics.entry(*index).or_insert(vec_of_indices);
+        }
+
+
         TokensAndWordsDynamics {
-            index_token:hsh_index
-            ,token_index:hsh_token
-            ,word_indices:hsh_word_ics
-            ,word_quantity:word_quantity.to_owned()
+            eng_index_token:hsh_index
+            ,eng_token_index:hsh_token
+            ,eng_word_indices:hsh_word_ics
+            ,eng_word_quantity:word_quantity.to_owned(),
+            ,fra_index_token:hsh_index
+            ,fra_token_index:hsh_token
+            ,fra_word_indices:hsh_word_ics
+            ,fra_word_quantity:word_quantity.to_owned()
+
         }
     }
  
     pub fn from_most_frequent_pair(&mut self,pair:&MostFrequentPair) {
-        let mut to_index_left = self.index_token.get(&pair.pair.0).unwrap().flattened_to_index.to_vec();
-        let mut to_index_right = self.index_token.get(&pair.pair.1).unwrap().flattened_to_index.to_vec();
-        to_index_left.append(&mut to_index_right);
+// for eng language
+        let mut eng_to_index_left = self.eng_index_token
+            .get(&pair.eng_pair.0)
+            .unwrap()
+            .flattened_to_index
+            .to_vec();
+        let mut eng_to_index_right = self.eng_index_token
+            .get(&pair.eng_pair.1)
+            .unwrap()
+            .flattened_to_index
+            .to_vec();
+        eng_to_index_left.append(&mut eng_to_index_right);
 
-        let mut to_string_left = self.index_token.get(&pair.pair.0).unwrap().flattened_to_string.to_owned();
-        let to_string_right = self.index_token.get(&pair.pair.1).unwrap().flattened_to_string.to_owned();
-        to_string_left.push_str(&to_string_right);
-        let st = &to_string_left.to_owned();
+        let mut eng_to_string_left = self.eng_index_token
+            .get(&pair.eng_pair.0)
+            .unwrap()
+            .flattened_to_string
+            .to_owned();
+        let eng_to_string_right = self.eng_index_token
+            .get(&pair.eng_pair.1)
+            .unwrap()
+            .flattened_to_string
+            .to_owned();
+        eng_to_string_left.push_str(&eng_to_string_right);
+        let st = &eng_to_string_left.to_owned();
 
-        let token = Token {flattened_to_index:to_index_left,flattened_to_string:to_string_left};
+        let token = Token {flattened_to_index:eng_to_index_left,flattened_to_string:eng_to_string_left};
         
-        let size = self.index_token.keys().len();
+        let size = self.eng_index_token.keys().len();
         let new_index = size +1;
-        if self.index_token.contains_key(&new_index) {
+        if self.eng_index_token.contains_key(&new_index) {
             panic!("The new key already exist: {:?} ; panic!", new_index);
         }
-        self.index_token.insert(new_index,token);
+        self.eng_index_token.insert(new_index,token);
 // TODO what to do if "to_string_left" already exist ?
-        if self.token_index.contains_key(st) {
+        if self.eng_token_index.contains_key(st) {
             panic!("The string key already exist: {:?}",st.to_string());
         }
-        self.token_index.entry(st.to_string()).or_insert(new_index);
+        self.eng_token_index
+            .entry(st.to_string())
+            .or_insert(new_index);
 // TODO find needed pair in vector of numbers and change the pair to a new number
         
-        self.word_indices
+        self.eng_word_indices
         .iter_mut()
-        .map(|(_index,vector)| find_and_replace_pair(vector,&pair.pair,&new_index))
+        .map(|(_index,vector)| find_and_replace_pair(vector,&pair.eng_pair,&new_index))
+        .collect()    
+
+// for fra language
+        let mut fra_to_index_left = self.fra_index_token
+            .get(&pair.fra_pair.0)
+            .unwrap()
+            .flattened_to_index
+            .to_vec();
+        let mut fra_to_index_right = self.fra_index_token
+            .get(&pair.fra_pair.1)
+            .unwrap()
+            .flattened_to_index
+            .to_vec();
+        fra_to_index_left.append(&mut fra_to_index_right);
+
+        let mut fra_to_string_left = self.fra_index_token
+            .get(&pair.fra_pair.0)
+            .unwrap()
+            .flattened_to_string
+            .to_owned();
+        let fra_to_string_right = self.fra_index_token
+            .get(&pair.fra_pair.1)
+            .unwrap()
+            .flattened_to_string
+            .to_owned();
+        fra_to_string_left.push_str(&fra_to_string_right);
+        let st = &fra_to_string_left.to_owned();
+
+        let token = Token {flattened_to_index:fra_to_index_left,flattened_to_string:fra_to_string_left};
+        
+        let size = self.fra_index_token.keys().len();
+        let new_index = size +1;
+        if self.fra_index_token.contains_key(&new_index) {
+            panic!("The new key already exist: {:?} ; panic!", new_index);
+        }
+        self.fra_index_token.insert(new_index,token);
+// TODO what to do if "to_string_left" already exist ?
+        if self.fra_token_index.contains_key(st) {
+            panic!("The string key already exist: {:?}",st.to_string());
+        }
+        self.fra_token_index
+            .entry(st.to_string())
+            .or_insert(new_index);
+// TODO find needed pair in vector of numbers and change the pair to a new number
+        
+        self.fra_word_indices
+        .iter_mut()
+        .map(|(_index,vector)| find_and_replace_pair(vector,&pair.fra_pair,&new_index))
         .collect()    
     }
 
@@ -292,16 +534,7 @@ impl TokensAndWordsDynamics {
             word_tokens:map
         }
     }
-/*
-pub struct TokensAndWordsDynamics {
-// TODO is it possible to use &str instead of String ? with reference to token.flattened_to_string?
-    pub index_token:BTreeMap<Ind,Token>,
-    pub token_index:BTreeMap<String,Ind>,
-    pub word_quantity:BTreeMap<Ixx,Qxx>,
-    pub word_indices:BTreeMap<Ixx,Vec<Ind>>
 
-}
-*/
     pub fn tokens_vocab_and_entropy(&self) -> (BTreeMap<Ind,Quant>, f32) {
         let mut tokens_distribution = BTreeMap::<Ind,Quant>::new();
         let mut word_factor; 
