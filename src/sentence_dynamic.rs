@@ -91,35 +91,6 @@ impl CandidatesForMerge {
                 
     } 
 
-/*
-    pub fn from_word_vocab(index_word:&BTreeMap<Ixx,String>
-                           ,words_n:&BTreeMap<Ixx,Vec<Ind>>
-                           ,numbers:&BTreeMap<Ixx,Qxx>)  -> CandidatesForMerge {
-        let mut pairs:HashMap<(Ind,Ind),Quant> = HashMap::new();
-        let mut quant:Quant;
-        let mut pair:(Ind,Ind);
-        let mut size;
-        let mut collection;
-        for word in index_word.keys() {
-            collection = words_n.get(&word).unwrap().to_vec();
-            size = collection.len();
-                if size == 0 {
-                    panic!("from CandidatesForMerge: collection has 0 length, breack");
-                } else if size ==1 {
-                    continue
-                }
-            for i in 0..size-1 {
-                pair = (collection[i],collection[i+1]);
-                quant = *numbers.get(&word).unwrap();
-                *pairs.entry(pair).or_insert(quant)+=quant;
-            }
-        }
-
-        CandidatesForMerge {
-            pairs:pairs
-        }
-    }
-*/
 
     pub fn most_frequent_pair(&self) -> MostFrequentPair {
         let closure = |pairs:&HashMap<(Ixx,Ixx),Qxx>| {
@@ -153,27 +124,6 @@ impl CandidatesForMergeLang {
             }
     }
 
-/*
-    pub fn from_word_vocab(vocab:&Vocab, collection:&WordToIndexCollection,lang:Lang) 
-        -> CandidatesForMergeLang {
-            match lang {
-                Lang::Eng => 
-                    CandidatesForMergeLang::Eng(CandidatesForMerge::from_word_vocab(
-                            &vocab.eng_index_word
-                            ,&collection.eng_words_n
-                            ,&vocab.eng_numbers
-                                                           )),
-
-                Lang::Fra => 
-                    CandidatesForMergeLang::Eng(CandidatesForMerge::from_word_vocab(
-                            &vocab.fra_index_word
-                            ,&collection.fra_words_n
-                            ,&vocab.fra_numbers
-                                                           )),
-
-            }
-        }
-*/
 }
 
 impl MostFrequentPair {
@@ -278,26 +228,6 @@ impl WordsAndSentenceDynamics {
         .map(|(_index,vector)| find_and_replace_pair(vector,&pair.pair,&new_index))
         .collect()    
     }
-/*
-    fn word_as_strings_collection(&self) -> WordsAsTokens {
-        let mut map = BTreeMap::<Ixx,Vec<String>>::new();
-        for (ixx,collection) in &self.word_indices {
-            let mut substrings_collection = vec![];
-            for ind in collection {
-                substrings_collection
-                    .push(self.index_token
-                          .get(&ind)
-                          .unwrap()
-                          .flattened_to_string
-                          .to_owned());
-            }
-            map.insert(*ixx, substrings_collection);
-        }
-        WordsAsTokens {
-            word_tokens:map
-        }
-    }
-*/
 
     fn sentence_as_words_collection(&self) -> SentenceAsWords {
         let mut map = BTreeMap::<Ixs,Vec<Vec<String>>>::new();
@@ -320,26 +250,6 @@ impl WordsAndSentenceDynamics {
     }
 
 
-/*
-    fn word_as_strings_collection(&self) -> WordsAsTokens {
-        let mut map = BTreeMap::<Ixx,Vec<String>>::new();
-        for (ixx,collection) in &self.word_indices {
-            let mut substrings_collection = vec![];
-            for ind in collection {
-                substrings_collection
-                    .push(self.index_token
-                          .get(&ind)
-                          .unwrap()
-                          .flattened_to_string
-                          .to_owned());
-            }
-            map.insert(*ixx, substrings_collection);
-        }
-        WordsAsTokens {
-            word_tokens:map
-        }
-    }
-*/
 }
 
 #[derive(Debug)]

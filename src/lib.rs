@@ -44,11 +44,11 @@ pub type Ixs = usize;
 // indexation of tokens 
 pub type Ind = usize;
 // for tokens quantity
-pub type Quant = u32;
+pub type Quant = u64;
 // indexation of words
 pub type Ixx= usize;
 // for words quantity
-pub type Qxx = u32;
+pub type Qxx = u64;
 // Lang varints 
 pub enum Lang {
     Eng,
