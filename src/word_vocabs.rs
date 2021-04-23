@@ -45,21 +45,6 @@ impl Vocab {
         fra_words_total:0,
         }   
     }
-//TODO
-/*
-    pub fn from_sentences(&mut self
-                          ,pairs:&mut PairsForTranslation
-                          ,sentences:&SentencesForTranslation) {
-        let size = vector_sentences.eng.len();
-        let size_fra = vector_sentences.fra.len();
-        if size != size_fra {
-            panic!("Quantity of source sentences is different from quantity of target sentences. Panic! ");
-        }
-        let mut res_eng:Vec<String>=Vec::with_capacity(size_eng);
-        let mut res_fra:Vec<String>=Vec::with_capacity(size_fra);
-
-    }
-*/
 
     pub fn list_of_words(&mut self, vector_sentences:&SentencesForTranslation) {
         let size_eng = vector_sentences.eng.len();
@@ -84,44 +69,6 @@ impl Vocab {
         
     }
 
-/*
-    pub fn list_of_words(&mut self, vector_sentences:&SentencesForTranslation) {
-        let size_eng = vector_sentences.eng.len();
-        let size_fra = vector_sentences.fra.len();
-        let mut res_eng:Vec<String>=Vec::with_capacity(size_eng);
-        let mut res_fra:Vec<String>=Vec::with_capacity(size_fra);
-        let mut max_eng = 0;
-        let mut max_fra = 0;
-        for sentence in &vector_sentences.eng {
-            let mut eng_counter = 0;
-            for word in sentence.trim().split_whitespace(){
-                res_eng.push(word.to_owned());
-                eng_counter +=1;
-            }
-            if eng_counter > max_eng {
-                max_eng = eng_counter;
-            }
-        }
-
-        for sentence in &vector_sentences.fra {
-            let mut fra_counter = 0;
-            for word in sentence.trim().split_whitespace(){
-                res_fra.push(word.to_owned());
-                fra_counter+=1;
-            }
-
-            if fra_counter > max_fra {
-                max_fra = fra_counter;
-            }
-        }
-
-        self.eng_set=res_eng;
-        self.fra_set=res_fra;
-        self.eng_max_words_sentence=max_eng;
-        self.fra_max_words_sentence=max_fra;
-        
-    }
-*/
     pub fn words_and_quantity(&mut self) {
         for word in self.eng_set.iter() {
             let count = self
