@@ -3,7 +3,8 @@
 // system in dynamics, merge of most frequent tokens, 
 // dynamic changes in vocabulary because of new tokens,
 // bookkeeping of new tokens 
-use translationlib::*;
+//use translationlib::*;
+use super::super::*;
 use std::collections::HashMap;
 use std::collections::BTreeMap;
 use std::fmt::{self,Debug,Formatter};
@@ -102,7 +103,7 @@ impl CandidatesForMergeN {
 */
 
 
-    pub fn from_tokens_words_dynamic(dynamics:&TokensAndWordsDynamics) -> CandidatesForMergeN {
+    pub fn from_tokens_words_dynamic(dynamics:&TokensAndWordsDynamicsN) -> CandidatesForMergeN {
         let mut eng_pairs:HashMap<(Ind,Ind),Quant> = HashMap::new();
         let mut fra_pairs:HashMap<(Ind,Ind),Quant> = HashMap::new();
 
@@ -110,7 +111,7 @@ impl CandidatesForMergeN {
         let mut pair:(Ind,Ind);
         let mut size;
 
-        for (word,collection) in dynamics.eng_word_indices {
+        for (word,collection) in &dynamics.eng_word_indices {
             size = collection.len();
                 if size == 0 {
                     panic!("from CandidatesForMerge: collection has 0 length, breack");
@@ -124,7 +125,7 @@ impl CandidatesForMergeN {
             }
         }
 
-        for (word,collection) in dynamics.fra_word_indices {
+        for (word,collection) in &dynamics.fra_word_indices {
             size = collection.len();
                 if size == 0 {
                     panic!("from CandidatesForMerge: collection has 0 length, breack");
@@ -179,7 +180,7 @@ impl CandidatesForMergeN {
 
 */
 
-    pub fn from_word_vocab(vocab:&Vocab, collection:&WordToIndexCollection)  -> CandidatesForMergeN {
+    pub fn from_word_vocab(vocab:&Vocab, indexation:&WordToIndexCollection)  -> CandidatesForMergeN {
         let mut eng_pairs:HashMap<(Ind,Ind),Quant> = HashMap::new();
         let mut fra_pairs:HashMap<(Ind,Ind),Quant> = HashMap::new();
 
@@ -189,7 +190,7 @@ impl CandidatesForMergeN {
         let mut collection;
 
         for word in vocab.eng_index_word.keys() {
-            collection = vocab.eng_words_n.get(&word).unwrap().to_vec();
+            collection = indexation.eng_words_n.get(&word).unwrap().to_vec();
             size = collection.len();
                 if size == 0 {
                     panic!("from CandidatesForMerge: collection has 0 length, breack");
@@ -198,13 +199,13 @@ impl CandidatesForMergeN {
                 }
             for i in 0..size-1 {
                 pair = (collection[i],collection[i+1]);
-                quant = *collection.en_numbers.get(&word).unwrap();
+                quant = *vocab.eng_numbers.get(&word).unwrap();
                 *eng_pairs.entry(pair).or_insert(quant)+=quant;
             }
         }
 
         for word in vocab.fra_index_word.keys() {
-            collection = vocab.fra_words_n.get(&word).unwrap().to_vec();
+            collection = indexation.fra_words_n.get(&word).unwrap().to_vec();
             size = collection.len();
                 if size == 0 {
                     panic!("from CandidatesForMerge: collection has 0 length, breack");
@@ -213,7 +214,7 @@ impl CandidatesForMergeN {
                 }
             for i in 0..size-1 {
                 pair = (collection[i],collection[i+1]);
-                quant = *collection.fra_numbers.get(&word).unwrap();
+                quant = *vocab.fra_numbers.get(&word).unwrap();
                 *fra_pairs.entry(pair).or_insert(quant)+=quant;
             }
         }
@@ -320,11 +321,11 @@ impl MostFrequentPairLang {
 #[derive(Debug)]
 pub struct TokensAndWordsDynamicsN {
 // TODO is it possible to use &str instead of String ? with reference to token.flattened_to_string?
-    pub eng_index_token:BTreeMap<Ind,Token>,
+    pub eng_index_token:BTreeMap<Ind,TokenN>,
     pub eng_token_index:BTreeMap<String,Ind>,
     pub eng_word_quantity:BTreeMap<Ixx,Qxx>,
     pub eng_word_indices:BTreeMap<Ixx,Vec<Ind>>,
-    pub fra_index_token:BTreeMap<Ind,Token>,
+    pub fra_index_token:BTreeMap<Ind,TokenN>,
     pub fra_token_index:BTreeMap<String,Ind>,
     pub fra_word_quantity:BTreeMap<Ixx,Qxx>,
     pub fra_word_indices:BTreeMap<Ixx,Vec<Ind>>
@@ -361,7 +362,7 @@ impl TokensAndWordsDynamicsN {
         let mut fra_hsh_token:BTreeMap<String,Ind> = BTreeMap::new();
 
 // TODO rewrite to:  for (index,token) in index_token { .... }
-        for index in vocab_t.eng_index_token {
+        for index in &vocab_t.eng_index_token {
             let st = index.1.to_string();
             let token = TokenN {
                 flattened_to_index:vec![*index.0],
@@ -373,7 +374,7 @@ impl TokensAndWordsDynamicsN {
         }
 
 // TODO rewrite to:  for (index,token) in index_token { .... }
-        for index in vocab_t.fra_index_token {
+        for index in &vocab_t.fra_index_token {
             let st = index.1.to_string();
             let token = TokenN {
                 flattened_to_index:vec![*index.0],
@@ -391,7 +392,7 @@ impl TokensAndWordsDynamicsN {
         let mut char_index:Ind;
         let mut char_as_string:String;
 
-        for (index,word) in vocab_w.eng_index_word {
+        for (index,word) in &vocab_w.eng_index_word {
             let mut vec_of_indices:Vec<Ind>=Vec::new();
             for ch in word.chars() {
                 char_as_string = ch.to_string();
@@ -401,7 +402,7 @@ impl TokensAndWordsDynamicsN {
             eng_hsh_word_ics.entry(*index).or_insert(vec_of_indices);
         }
 
-        for (index,word) in vocab_w.fra_index_word {
+        for (index,word) in &vocab_w.fra_index_word {
             let mut vec_of_indices:Vec<Ind>=Vec::new();
             for ch in word.chars() {
                 char_as_string = ch.to_string();
@@ -413,14 +414,14 @@ impl TokensAndWordsDynamicsN {
 
 
         TokensAndWordsDynamicsN {
-            eng_index_token:hsh_index,
-            eng_token_index:hsh_token,
-            eng_word_indices:hsh_word_ics,
-            eng_word_quantity:word_quantity.to_owned(),
-            fra_index_token:hsh_index,
-            fra_token_index:hsh_token,
-            fra_word_indices:hsh_word_ics,
-            fra_word_quantity:word_quantity.to_owned()
+            eng_index_token:eng_hsh_index,
+            eng_token_index:eng_hsh_token,
+            eng_word_indices:eng_hsh_word_ics,
+            eng_word_quantity:vocab_w.eng_numbers.to_owned(),
+            fra_index_token:fra_hsh_index,
+            fra_token_index:fra_hsh_token,
+            fra_word_indices:fra_hsh_word_ics,
+            fra_word_quantity:vocab_w.fra_numbers.to_owned()
         }
     }
  
@@ -451,7 +452,7 @@ impl TokensAndWordsDynamicsN {
         eng_to_string_left.push_str(&eng_to_string_right);
         let st = &eng_to_string_left.to_owned();
 
-        let token = Token {flattened_to_index:eng_to_index_left,flattened_to_string:eng_to_string_left};
+        let token = TokenN {flattened_to_index:eng_to_index_left,flattened_to_string:eng_to_string_left};
         
         let size = self.eng_index_token.keys().len();
         let new_index = size +1;
@@ -467,12 +468,17 @@ impl TokensAndWordsDynamicsN {
             .entry(st.to_string())
             .or_insert(new_index);
 // TODO find needed pair in vector of numbers and change the pair to a new number
-        
-        self.eng_word_indices
-        .iter_mut()
-        .map(|(_index,vector)| find_and_replace_pair(vector,&pair.eng_pair,&new_index))
-        .collect();   
 
+
+        for (_index,vector) in self.eng_word_indices.iter_mut() {
+            find_and_replace_pair(vector,&pair.eng_pair,&new_index);
+        }
+/*       
+        self.eng_word_indices
+        .iter()
+        .map(|(_index,vector)| find_and_replace_pair(vector,&pair.eng_pair,&new_index).to_owned())
+        .collect::<BTreeMap<Ixx,Vec<Ind>>>();   
+*/
 // for fra language
         let mut fra_to_index_left = self.fra_index_token
             .get(&pair.fra_pair.0)
@@ -515,11 +521,17 @@ impl TokensAndWordsDynamicsN {
             .entry(st.to_string())
             .or_insert(new_index);
 // TODO find needed pair in vector of numbers and change the pair to a new number
-        
+/*        
         self.fra_word_indices
         .iter_mut()
         .map(|(_index,vector)| find_and_replace_pair(vector,&pair.fra_pair,&new_index))
         .collect();    
+*/
+        for (_index,vector) in self.fra_word_indices.iter_mut() {
+            find_and_replace_pair(vector,&pair.fra_pair,&new_index);
+        }
+
+
     }
 
 
@@ -583,7 +595,7 @@ impl TokensAndWordsDynamicsN {
 
     pub fn tokens_vocab_and_entropy(&self) -> TokensDynamicsAndEntropyN {
         let mut eng_tokens_distribution = BTreeMap::<Ind,Quant>::new();
-        let mut eng_tokens_distribution = BTreeMap::<Ind,Quant>::new();
+        let mut fra_tokens_distribution = BTreeMap::<Ind,Quant>::new();
         let mut word_factor; 
 
         for (ixx,vec) in &self.eng_word_indices {
@@ -606,7 +618,9 @@ impl TokensAndWordsDynamicsN {
 
 // entropy calculation
         let mut sum:f32 = 0.0;
-        let mut entropy:f32 = 0.0;
+        let mut eng_entropy:f32 = 0.0;
+        let mut fra_entropy:f32 = 0.0;
+
 
         for (_key,value) in &eng_tokens_distribution {
             sum += *value as f32;
@@ -762,16 +776,16 @@ impl SentencesAsIndicesDynamicsN {
     }
 
     pub fn initial_from_sentences_and_indices(sentences:&SentencesAsIndices) 
-        -> SentencesAsIndicesDynamics {
+        -> SentencesAsIndicesDynamicsN {
         let mut eng_sents_flatten = BTreeMap::new();
         let mut fra_sents_flatten = BTreeMap::new();
 
-        for (ixs,collection) in sentences.eng_word_as_tokens_n {
+        for (ixs,collection) in &sentences.eng_word_as_tokens_n {
             eng_sents_flatten
                 .insert(*ixs,collection.iter().flat_map(|x| x.to_owned()).collect());
         }
 
-        for (ixs,collection) in sentences.fra_word_as_tokens_n {
+        for (ixs,collection) in &sentences.fra_word_as_tokens_n {
             fra_sents_flatten
                 .insert(*ixs,collection.iter().flat_map(|x| x.to_owned()).collect());
         }
@@ -808,12 +822,12 @@ impl SentencesAsIndicesDynamicsN {
     }
 */
 
-    pub fn from_tokens_words_dynamic(&mut self, dynamics:&TokensAndWordsDynamicsLang) { // dynamics.word_indices 
+    pub fn from_tokens_words_dynamic(&mut self, dynamics:&TokensAndWordsDynamicsN) { // dynamics.word_indices 
         let mut wd;
         for (ixs,word) in self.eng_words_as_indices.to_owned() {
             wd = word
                 .iter()
-                .map(|z| sentences.eng_word_indices.get(z).unwrap().to_owned())
+                .map(|z| dynamics.eng_word_indices.get(z).unwrap().to_owned())
                 .collect::<Vec<Vec<Ind>>>();
             self.eng_words_as_token_indices.insert(ixs,wd);
         }
@@ -830,7 +844,7 @@ impl SentencesAsIndicesDynamicsN {
         for (ixs,word) in self.fra_words_as_indices.to_owned() {
             wd = word
                 .iter()
-                .map(|z| sentences.fra_word_indices.get(z).unwrap().to_owned())
+                .map(|z| dynamics.fra_word_indices.get(z).unwrap().to_owned())
                 .collect::<Vec<Vec<Ind>>>();
             self.fra_words_as_token_indices.insert(ixs,wd);
         }
