@@ -7,6 +7,10 @@ mod tokens_vocab;
 mod system_dynamic;
 mod sentence_dynamic;
 
+pub mod word_dynamics {
+    pub mod dynamics;
+}
+
 pub use crate::translation_corpus::{CorpusAsString};
 pub use crate::sentence_pairs::{SentencesForTranslation
     ,SentencesAsIndices
@@ -38,6 +42,15 @@ pub use sentence_dynamic::{SentenceAsWords
 //    ,CandidatesForMerge
 //    ,CandidatesForMergeLang
 };
+
+pub use word_dynamics::dynamics::{CandidatesForMergeN
+    ,MostFrequentPairN
+    ,TokensAndWordsDynamicsN
+    ,TokenN
+    ,WordsAsTokensN
+    ,SentencesAsIndicesDynamicsN
+};
+
 
 // the index for sentences numbering
 pub type Ixs = usize;
