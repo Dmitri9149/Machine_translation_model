@@ -7,9 +7,7 @@ mod tokens_vocab;
 mod system_dynamic;
 mod sentence_dynamic;
 
-pub mod word_dynamics {
-    pub mod dynamics;
-}
+pub mod word_dynamics;
 
 pub use crate::translation_corpus::{CorpusAsString};
 pub use crate::sentence_pairs::{SentencesForTranslation
@@ -194,10 +192,6 @@ mod tests {
         find_and_replace_pair(&mut vector5,&pair,&new);
         assert_eq!(vec![71,63,66,66,73,91,55], vector5);
        
-
-
-
-
     }
 
     #[test]
