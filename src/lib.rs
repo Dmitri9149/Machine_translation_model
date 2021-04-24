@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::collections::BTreeMap;
 
 mod translation_corpus;
 mod sentence_pairs;
@@ -204,7 +205,26 @@ mod tests {
         find_and_replace_pair(&mut vector,&pair,&new);
     }
 
+    #[test]
+    fn find_and_replace_in_iter_mut() {
 
+        let pair = (3,100);
+        let new = 777;
+        let mut map:BTreeMap<Ixx,Vec<Ind>> = BTreeMap::new();
+        map.insert(0,vec![1,2,100,3,100,3,100,5,78,39,1,2,3,3,100]);
+        map.insert(1,vec![3]);
+        map.insert(2,vec![3,100,3,100,3,100,3,100,1,2,3,3,100]);
+        map.insert(3,vec![3,100]);
+
+        for (_index,vector) in map.iter_mut() {
+            find_and_replace_pair(vector,&pair,&new);
+        }
+
+        assert_eq!(vec![1,2,100,777,777,5,78,39,1,2,3,777], *map.get(&0).unwrap());
+        assert_eq!(vec![3], *map.get(&1).unwrap());
+        assert_eq!(vec![777,777,777,777,1,2,3,777], *map.get(&2).unwrap());
+        assert_eq!(vec![777], *map.get(&3).unwrap()); 
+    }
 }
 
 
