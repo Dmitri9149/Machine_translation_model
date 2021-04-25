@@ -318,6 +318,14 @@ impl MostFrequentPairLang {
 
 */
 
+impl MostFrequentPairN {
+    pub fn most_frequent_pair(candidates:&CandidatesForMergeN) -> MostFrequentPairN {
+        candidates.most_frequent_pair()
+    }
+}
+
+
+
 #[derive(Debug)]
 pub struct TokensAndWordsDynamicsN {
 // TODO is it possible to use &str instead of String ? with reference to token.flattened_to_string?

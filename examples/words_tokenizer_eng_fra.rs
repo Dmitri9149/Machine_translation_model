@@ -109,8 +109,8 @@ fn main() -> Result<(),Box<dyn std::error::Error>>{
 // calculate entropy 
         entropy = tokens_words_dynamic.tokens_vocab_and_entropy();
 
-        println!(" Eng entropy:   {:?} ; Tokens number: {:?}", entropy.0.1, entropy.0.0.keys().len());
-        println!(" Fra entropy:   {:?} ; Tokens number: {:?}", entropy.1.1, entropy.1.0.keys().len());
+        println!(" Eng entropy:   {:?} ; Tokens number: {:?}", entropy.eng_entropy, entropy.eng_dyn_tokens.keys().len());
+        println!(" Fra entropy:   {:?} ; Tokens number: {:?}", entropy.fra_entropy, entropy.fra_dyn_tokens.keys().len());
 
 
         println!(" Eng word indices:\n{:?}"
