@@ -535,7 +535,7 @@ impl TokensAndWordsDynamicsN {
     }
 
 
-    fn word_as_strings_collection(&self) -> WordsAsTokensN {
+     pub fn word_as_strings_collection(&self) -> WordsAsTokensN {
         let mut eng_map = BTreeMap::<Ixx,Vec<String>>::new();
         let mut fra_map = BTreeMap::<Ixx,Vec<String>>::new();
 
