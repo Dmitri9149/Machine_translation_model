@@ -763,13 +763,6 @@ pub struct SentencesAsIndicesDynamicsN {
 
 }
 
-/*
-#[derive(Serialize, Deserialize, Debug)]
-pub enum SentencesAsIndicesDynamicsLang {
-    Eng(SentencesAsIndicesDynamics),
-    Fra(SentencesAsIndicesDynamics)
-}
-*/
 
 impl SentencesAsIndicesDynamicsN {
     pub fn new() -> SentencesAsIndicesDynamicsN {
