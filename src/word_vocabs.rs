@@ -1,12 +1,14 @@
 // vocabulary for eng and fra corpus , on the level of words
-use std::collections::BTreeMap;
 use super::*;
+use std::collections::BTreeMap;
+use std::fmt::{self,Debug,Formatter};
+use serde::{Serialize, Deserialize};
 
-// is used for calculating quantity of words
+// the struct is used for calculating quantity of words
 //pub type Qxx = u32;
 // is used for the indexing (numbering) of words
 // pub type Ixx = u32;
-
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Vocab {
 // the list of all words (may with possible repeats) which we can get by splitting all 
 // sentences (usually we split on white space)

@@ -163,7 +163,9 @@ fn main() -> Result<(),Box<dyn std::error::Error>>{
     println!("deserialized = {:?}", deserialized);
 */
 
-    ::serde_json::to_writer(&File::create("data/data.json")?, &sentence_as_indices_dynamics)?;
+    ::serde_json::to_writer(&File::create("data/sentences_as_indices_dynamics.json")?, &sentence_as_indices_dynamics)?;
+    ::serde_json::to_writer(&File::create("data/vocab.json")?, &vocab)?;
+
 
     Ok(())
 }
