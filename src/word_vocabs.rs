@@ -102,7 +102,7 @@ impl Vocab {
 
         }
 
-        let mut index:Ixx = 1;
+        let mut index:Ixx = 0;
         for word in &self.fra_words {
             self.fra_word_index
                 .insert(word.0.to_owned(), index);
