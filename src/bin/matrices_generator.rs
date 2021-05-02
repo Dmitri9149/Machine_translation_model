@@ -103,9 +103,11 @@ let sentences_max_len = SentencesMaxLengths::from_sentences(&sentences);
 // translation pairs; j -> position of word in target sentence
     let mut array_target_words_in_order = Array::from_elem((NUMBER_PAIRS
                                                             ,sentences_max_len.target_sentence_max_len), 0);
+// i correnpond to target sentence
     for i in 0..NUMBER_PAIRS {
-// k is position index
+// k is position index in a target sentence
         for k in 0..sentences.fra_words_as_indices.get(&i).unwrap().len() {
+// save at position (i,k) new word index 
             array_target_words_in_order[[i,k]]=*words_renum.fra_renum_old_new.get(
                 &sentences.fra_words_as_indices
                 .get(&i)
