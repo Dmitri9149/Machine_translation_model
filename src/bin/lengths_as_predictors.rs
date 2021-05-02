@@ -45,6 +45,29 @@ fn main()  -> Result<(),Box<dyn std::error::Error>> {
         ::from_str(&json_file_str_max_length)
         .expect("error while reading json with sentences max lenght");
 
+    println!("Sentences max lengths fra: {}   and   eng: {}\n"
+             , sentences_max_length.target_sentence_max_len
+             ,sentences_max_length.source_sentence_max_len);
+
+// array (translation_pair,position_of_word_in target_sentence,lengths_of_sentences_in_source) 
+// of dimention:
+// NUMBER_PAIRS*sentences_max_length.target_sentence_max_len*sentences_max_length.source_sentence_max_len
+// we will keep number of sentences with length 'len' in last index of the array which is 'len-1'
+
+    let mut lengths_features = Array::from_elem((NUMBER_PAIRS
+                                                      ,sentences_max_length.target_sentence_max_len
+                                                      ,sentences_max_length.source_sentence_max_len),0);
+    for position in 0..words_as_lengths_collections.words_to_lengths.len() {
+        for (ixs,source_collection) in &words_as_lengths_collections.words_to_lengths[position].words {
+            for pos  in 0..source_collection.len() {
+//                println!("source_collection[pos] {:?}", &source_collection[pos]);
+                lengths_features[[*ixs,position,usize::from(source_collection[pos])-1]]+=1;
+            }
+            
+        }
+    }
+    
+    println!("Array of features last line {:?}", lengths_features.slice(s![185582,..,..]));
 /*
     let mut pairs_tokens_matrix_eng:Array1<f32> = Array::zeros(NUMBER_PAIRS*NUMBER_TOKENS_ENG);
     let mut p_t_matrix_eng:Array2<f32> = Array::zeros((NUMBER_PAIRS,NUMBER_TOKENS_ENG));
