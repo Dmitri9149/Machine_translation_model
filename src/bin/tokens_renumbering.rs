@@ -34,9 +34,9 @@ pub type Ixw=u16;
 
 
 fn main() -> Result<(),Box<dyn std::error::Error>> {
-    let json_file_path = Path::new("data/sentence_as_indices_dynamics.json");
+    let json_file_path = Path::new("data/matrices_generator/sentence_as_indices_dynamics.json");
     let json_file_str = read_to_string(json_file_path).expect("file ..sentences...not found");
-    let json_file_path_1 = Path::new("data/vocab.json");
+    let json_file_path_1 = Path::new("data/matrices_generator/vocab.json");
     let json_file_str_1 = read_to_string(json_file_path_1).expect("file ...vocab..not found");
 
     let start = Instant::now();
