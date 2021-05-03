@@ -87,11 +87,11 @@ pub type Ixw=u16;
 pub static NUMBER_TOKENS_ENG:Ind = 1966;
 pub static NUMBER_TOKENS_FRA:Ind = 2013;
 pub static NUMBER_PAIRS:usize = 185583;
-pub static NUMBER_WORDS_ENG:usize = 40000;
-pub static NUMBER_WORDS_FRA:usize = 40000;
+pub static NUMBER_WORDS_ENG:usize = 34656;
+pub static NUMBER_WORDS_FRA:usize = 66070;
 // represent special words token which designate NOWORD in some position
 //TODO change to Enum struct
-pub static NOWORD:usize = usize::MAX;
+pub static NOWORD:usize = 34656;
 
 //static SENTENCES_NUMBER:Ixs = 190000;
 // max quantity of words in a sentence
@@ -383,7 +383,7 @@ impl WordsInTargetToSentences {
 #[derive(Serialize,Deserialize,Debug)]
 pub struct Lengths {
 //    #[serde(serialize_with = "serialize_map_a")]
-    pub words:HashMap<Ixx,Vec<u8>>,
+    pub words:HashMap<Ixx,Vec<usize>>,
 }
 
 impl Lengths {
@@ -422,7 +422,7 @@ impl WordsToSentenceLengths {
                 for i in collection {
                     length = sentences.eng_words_as_indices
                         .get(i).unwrap().len();
-                    coll.push(length as u8);
+                    coll.push(length);
                 }
                 hsh.words.insert(word.to_owned(),coll);
             }

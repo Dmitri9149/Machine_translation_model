@@ -65,6 +65,7 @@ fn main()  -> Result<(),Box<dyn std::error::Error>> {
              ,words_vocab.eng_words_total
              ,words_vocab.fra_words_total);
 
+/*
 // array (translation_pair,position_of_word_in target_sentence,lengths_of_sentences_in_source) 
 // of dimention:
 // NUMBER_PAIRS*sentences_max_length.target_sentence_max_len*sentences_max_length.source_sentence_max_len
@@ -84,6 +85,7 @@ fn main()  -> Result<(),Box<dyn std::error::Error>> {
     }
     
     println!("Array of features last line {:?}", lengths_features.slice(s![185582,..,..]));
+*/
 /*
     let mut pairs_tokens_matrix_eng:Array1<f32> = Array::zeros(NUMBER_PAIRS*NUMBER_TOKENS_ENG);
     let mut p_t_matrix_eng:Array2<f32> = Array::zeros((NUMBER_PAIRS,NUMBER_TOKENS_ENG));
