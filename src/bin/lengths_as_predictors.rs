@@ -24,9 +24,15 @@ fn main()  -> Result<(),Box<dyn std::error::Error>> {
     let json_file_path_lengths = Path::new("data/matrices_generator/words_to_lengths.json");
     let json_file_str_lengths = read_to_string(json_file_path_lengths)
         .expect("file ..words_to_lengths..not found");
+    let json_file_path_words_vocab = Path::new("data/matrices_generator/vocab.json");
+    let json_file_str_words_vocab = read_to_string(json_file_path_words_vocab)
+        .expect("file ..vocab..not found");
+
+/*
     let json_file_path_words_renum = Path::new("data/renumbering/words_renumbering.json");
     let json_file_str_words_renum = read_to_string(json_file_path_words_renum)
         .expect("file ..words_renum..not found");
+*/
     let json_file_path_max_length = Path::new("data/matrices_generator/sentences_max_length.json");
     let json_file_str_max_length = read_to_string(json_file_path_max_length)
         .expect("file ..max_length.. not found");
@@ -37,10 +43,17 @@ fn main()  -> Result<(),Box<dyn std::error::Error>> {
     let words_as_lengths_collections:WordsToSentenceLengths = serde_json
         ::from_str(&json_file_str_lengths)
         .expect("error while reading json with lengths");
+
+    let words_vocab:Vocab = serde_json
+        ::from_str(&json_file_str_words_vocab)
+        .expect("error while reading json with words vocab");
+
 //    println!("The sentences in initial form: {:?}", sentences);
+/*
     let words_renum:GeneratedWordsCounting = serde_json
         ::from_str(&json_file_str_words_renum)
         .expect("error while reading json with words renumbering");
+*/
     let sentences_max_length:SentencesMaxLengths = serde_json
         ::from_str(&json_file_str_max_length)
         .expect("error while reading json with sentences max lenght");
@@ -48,6 +61,9 @@ fn main()  -> Result<(),Box<dyn std::error::Error>> {
     println!("Sentences max lengths fra: {}   and   eng: {}\n"
              , sentences_max_length.target_sentence_max_len
              ,sentences_max_length.source_sentence_max_len);
+    println!("Number of eng: {}  and  fra {} words"
+             ,words_vocab.eng_words_total
+             ,words_vocab.fra_words_total);
 
 // array (translation_pair,position_of_word_in target_sentence,lengths_of_sentences_in_source) 
 // of dimention:
