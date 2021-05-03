@@ -138,9 +138,14 @@ let sentences_max_len = SentencesMaxLengths::from_sentences(&sentences);
 // the array: how many sentences of length N in source language correspond to the target word ixx_t
 // at position in target sentence position pos_t
 // index for special 'NoWord' item in target sentence is NOWORD 
+/*
     let mut target_words_presence = Array::from_elem((sentences_max_len.target_sentence_max_len
                                                             ,NUMBER_WORDS_FRA
                                                             ,sentences_max_len.source_sentence_max_len), 0);
+*/            
+    let mut target_words_presence = Array3::<usize>::zeros((sentences_max_len.target_sentence_max_len
+                                                            ,NUMBER_WORDS_FRA
+                                                            ,sentences_max_len.source_sentence_max_len));
 
         let mut t =0;
         for map in &words_to_lengths.words_to_lengths {
@@ -152,6 +157,28 @@ let sentences_max_len = SentencesMaxLengths::from_sentences(&sentences);
             t+=1;
         }
 
+
+    for i in 0..sentences_max_len.target_sentence_max_len {
+        println!("Vector of features -> target word in first position:\n{:?}\n"
+                 ,&target_words_presence.slice(s![0,i,..]));
+    }
+    #[derive(Serialize, Deserialize)]
+    pub struct TargetWordsPresence {
+        words_to_lengths:Array3<usize>,
+    }
+
+    impl TargetWordsPresence {
+        pub fn from_array(array:&Array3<usize>)-> TargetWordsPresence {
+            TargetWordsPresence {
+                words_to_lengths:array.to_owned(),
+            }
+        }
+    }
+
+    let lengths_predictors = TargetWordsPresence::from_array(&target_words_presence);
+
+    ::serde_json::to_writer(&File::create("data/lengths_to_predictors/lengths_to_predictors.json")?
+                            ,&lengths_predictors)?;
 
     let elapsed = start.elapsed();
     println!("Elapsed: {:.2?}", elapsed);
