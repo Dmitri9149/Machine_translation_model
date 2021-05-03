@@ -19,20 +19,6 @@ use std::collections::BTreeMap;
 use std::fmt::{self,Debug,Formatter};
 use serde::{Serialize, Deserialize};
 
-// the index for sentences numbering
-pub type Ixs = usize;
-// indexation of tokens 
-pub type Ind = usize;
-//  tokens quantity
-pub type Quant = u32;
-// indexation of words
-pub type Ixx= usize;
-// for words quantity
-pub type Qxx = u32; 
-// for word length 
-pub type Ixw=u16;
-
-
 fn main() -> Result<(),Box<dyn std::error::Error>> {
     let json_file_path = Path::new("data/matrices_generator/sentence_as_indices_dynamics.json");
     let json_file_str = read_to_string(json_file_path).expect("file ..sentences...not found");
@@ -51,14 +37,18 @@ fn main() -> Result<(),Box<dyn std::error::Error>> {
     
 //    println!("The sentences in initial form: {:?}", sentences);
     let tokens_renumbering = GeneratedTokensCounting::from_sentences_as_indices_dynamics(&sentences);
+/*
     let mut words_renumbering = GeneratedWordsCounting::new();
     words_renumbering.from_initial_vocab(&vocab);
+*/
 
     println!("The number of eng tokens: {}\n", &tokens_renumbering.eng_number_of_tokens);
     println!("The number of fra tokens: {}\n", &tokens_renumbering.fra_number_of_tokens);
 
     ::serde_json::to_writer(&File::create("data/renumbering/tokens_renumbering.json")?, &tokens_renumbering)?;
+/*
     ::serde_json::to_writer(&File::create("data/renumbering/words_renumbering.json")?, &words_renumbering)?;
+*/
 
     let elapsed = start.elapsed();
     println!("Elapsed: {:.2?}", elapsed);

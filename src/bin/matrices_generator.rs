@@ -33,8 +33,10 @@ fn main()  -> Result<(),Box<dyn std::error::Error>> {
     let json_file_str_sentences = read_to_string(json_file_path_sentences).expect("file not found");
     let json_file_path_renumbering = Path::new("data/renumbering/tokens_renumbering.json");
     let json_file_str_renumbering = read_to_string(json_file_path_renumbering).expect("file not found");
+/*
     let json_file_path_words_renum = Path::new("data/renumbering/words_renumbering.json");
     let json_file_str_words_renum = read_to_string(json_file_path_words_renum).expect("file not found");
+*/
 
 
     let start = Instant::now();
@@ -46,9 +48,11 @@ fn main()  -> Result<(),Box<dyn std::error::Error>> {
     let renumbering:GeneratedTokensCounting = serde_json
         ::from_str(&json_file_str_renumbering)
         .expect("error while reading json with renumbering");
+/*
     let words_renum:GeneratedWordsCounting = serde_json
         ::from_str(&json_file_str_words_renum)
         .expect("error while reading json with renumbering");
+*/
 
     let mut pairs_tokens_matrix_eng:Array1<f32> = Array::zeros(NUMBER_PAIRS*NUMBER_TOKENS_ENG);
     let mut p_t_matrix_eng:Array2<f32> = Array::zeros((NUMBER_PAIRS,NUMBER_TOKENS_ENG));
@@ -102,19 +106,16 @@ let sentences_max_len = SentencesMaxLengths::from_sentences(&sentences);
 // position in target sentence, so index (i,j) of the arrays is i-> index of sentence in
 // translation pairs; j -> position of word in target sentence
     let mut array_target_words_in_order = Array::from_elem((NUMBER_PAIRS
-                                                            ,sentences_max_len.target_sentence_max_len), 0);
+                                                            ,sentences_max_len.target_sentence_max_len), NOWORD);
 // i correnpond to target sentence
     for i in 0..NUMBER_PAIRS {
 // k is position index in a target sentence
         for k in 0..sentences.fra_words_as_indices.get(&i).unwrap().len() {
 // save at position (i,k) new word index 
-            array_target_words_in_order[[i,k]]=*words_renum.fra_renum_old_new.get(
-                &sentences.fra_words_as_indices
+            array_target_words_in_order[[i,k]]=sentences.fra_words_as_indices
                 .get(&i)
                 .unwrap()[k]
-                .to_owned()
-                )
-                .unwrap();
+                .to_owned();
         }
     }
 
