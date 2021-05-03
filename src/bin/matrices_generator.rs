@@ -102,6 +102,9 @@ fn main()  -> Result<(),Box<dyn std::error::Error>> {
 
 
 let sentences_max_len = SentencesMaxLengths::from_sentences(&sentences);
+println!("Target sentence max length: {}\n", sentences_max_len.target_sentence_max_len);
+println!("Source sentence max length: {}\n", sentences_max_len.source_sentence_max_len);
+
 // array which keeps index of word for every sentence in translation pairs and every ordered 
 // position in target sentence, so index (i,j) of the arrays is i-> index of sentence in
 // translation pairs; j -> position of word in target sentence

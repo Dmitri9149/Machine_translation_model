@@ -22,7 +22,7 @@ mod system_dynamic;
 mod sentence_dynamic;
 
 pub mod word_dynamics;
-pub mod targets_to_sentences;
+//pub mod targets_to_sentences;
 
 pub use crate::translation_corpus::{CorpusAsString};
 pub use crate::sentence_pairs::{SentencesForTranslation
@@ -87,6 +87,8 @@ pub type Ixw=u16;
 //   src/bin/renumbering.rs
 pub static NUMBER_TOKENS_ENG:Ind = 1966;
 pub static NUMBER_TOKENS_FRA:Ind = 2013;
+pub static TARGET_SENTENCE_MAX_LEN = 59;
+pub static SOURCE_SENTENCE_MAX_LEN = 48;
 pub static NUMBER_PAIRS:usize = 185583;
 pub static NUMBER_WORDS_ENG:usize = 34656;
 pub static NUMBER_WORDS_FRA:usize = 66070;
