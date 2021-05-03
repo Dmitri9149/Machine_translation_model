@@ -384,12 +384,14 @@ impl WordsInTargetToSentences {
 pub struct Lengths {
 //    #[serde(serialize_with = "serialize_map_a")]
     pub words:HashMap<Ixx,Vec<usize>>,
+    pub counts:HashMap<Ixx,HashMap<Ixx,Qxx>>,
 }
 
 impl Lengths {
     pub fn new() -> Lengths{
         Lengths {
             words:HashMap::new(),
+            counts:HashMap::new(),
         }
     }
 }
@@ -410,7 +412,7 @@ impl WordsToSentenceLengths {
             words_to_lengths:Vec::new(),
         }
     }
-
+/*
     pub fn from_words_to_sentences(words:&WordsInTargetToSentences
                                    ,sentences:&SentencesAsIndicesDynamicsN) -> WordsToSentenceLengths {
         let mut vectr = Vec::new();
@@ -431,8 +433,37 @@ impl WordsToSentenceLengths {
 
         WordsToSentenceLengths {
             words_to_lengths:vectr,
+
         }
     }
+*/
+    pub fn from_words_to_sentences(words:&WordsInTargetToSentences
+                                   ,sentences:&SentencesAsIndicesDynamicsN) -> WordsToSentenceLengths {
+        let mut vectr = Vec::new();
+        for position in words.words_sentences_collections.iter() {
+        let mut hsh = Lengths::new();
+            for (word,collection) in &position.words {
+                let mut coll = Vec::new();
+                let mut map = HashMap::new();
+                let mut length;
+                for i in collection {
+                    length = sentences.eng_words_as_indices
+                        .get(i).unwrap().len();
+                    coll.push(length);
+                    *map.entry(length).or_insert(1)+=1;
+                }
+                hsh.words.insert(word.to_owned(),coll);
+                hsh.counts.insert(word.to_owned(),map);
+            }
+        vectr.push(hsh);
+        }
+
+        WordsToSentenceLengths {
+            words_to_lengths:vectr,
+
+        }
+    }
+
 }
 
 #[derive(Serialize, Deserialize, Debug)]
