@@ -89,6 +89,9 @@ pub static NUMBER_TOKENS_FRA:Ind = 2013;
 pub static NUMBER_PAIRS:usize = 185583;
 pub static NUMBER_WORDS_ENG:usize = 40000;
 pub static NUMBER_WORDS_FRA:usize = 40000;
+// represent special words token which designate NOWORD in some position
+//TODO change to Enum struct
+pub static NOWORD:usize = usize::MAX;
 
 //static SENTENCES_NUMBER:Ixs = 190000;
 // max quantity of words in a sentence
