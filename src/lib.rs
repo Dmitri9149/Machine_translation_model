@@ -22,6 +22,7 @@ mod system_dynamic;
 mod sentence_dynamic;
 
 pub mod word_dynamics;
+pub mod targets_to_sentences;
 
 pub use crate::translation_corpus::{CorpusAsString};
 pub use crate::sentence_pairs::{SentencesForTranslation
