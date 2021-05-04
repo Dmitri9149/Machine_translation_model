@@ -25,19 +25,6 @@ use std::fmt::{self,Display,Debug,Formatter};
 use std::fmt::{Debug};
 use serde::{Serialize,Deserialize};
 
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct SentencesAsIndicesDynamicsN {
-    pub eng_words_as_indices:BTreeMap<Ixs,Vec<Ixx>>,
-    pub eng_words_as_token_indices:BTreeMap<Ixs,Vec<Vec<Ind>>>,
-    pub eng_sentence_flattened_to_token_indices:BTreeMap<Ixs,Vec<Ind>>,
-    pub fra_words_as_indices:BTreeMap<Ixs,Vec<Ixx>>,
-    pub fra_words_as_token_indices:BTreeMap<Ixs,Vec<Vec<Ind>>>,
-    pub fra_sentence_flattened_to_token_indices:BTreeMap<Ixs,Vec<Ind>>
-
-}
-
-
 // map word in target sentence to the list of sentences (in source) which correspond to the 
 // word
 #[derive(Serialize,Deserialize,Debug)]
