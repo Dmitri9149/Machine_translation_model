@@ -12,12 +12,6 @@ use std::fs::File;
 use std::time::Instant;
 use std::fs::read_to_string; // use instead of std::fs::File
 use std::path::Path;
-use ndarray::*;
-use ndarray_linalg::*;
-use std::collections::HashMap;
-use std::collections::BTreeMap;
-use std::fmt::{self,Debug,Formatter};
-use serde::{Serialize, Deserialize};
 
 fn main() -> Result<(),Box<dyn std::error::Error>> {
     let json_file_path = Path::new("data/matrices_generator/sentence_as_indices_dynamics.json");

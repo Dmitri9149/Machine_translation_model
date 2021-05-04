@@ -1,11 +1,14 @@
+//use super::super::*;
+//use super::super::translationlib::*;
+use crate::{Ixx,Ixs,Ind,Qxx};
 use std::collections::HashMap;
 use std::collections::BTreeMap;
 use std::fs::File;
 use std::time::Instant;
 use std::fs::read_to_string; // use instead of std::fs::File
 use std::path::Path;
-use ndarray::*;
-use ndarray_linalg::*;
+//use ndarray::*;
+//use ndarray_linalg::*;
 use std::fmt::{self,Display,Debug,Formatter};
 //use serde::{Serialize, Deserialize};
 use serde::{Serialize,Deserialize};
@@ -43,9 +46,10 @@ impl Position {
     }
 }
 // a first word in target sentence is linked with collection of sentences in source language : 
-// that sentences which translate with the word as first word
+// that sentences iwhich translate with the word as first word
+//
 #[derive(Serialize, Deserialize,Debug)]
-pub struct WordsInTargetToSentences {
+pub struct TargetWordsToSentences {
 //position in the vector correspond to the order of words in sentences 0, 1, 2, --nd word...
 //the hash map is mapping from concrete words in the positions to the vector of indices of 
 //sentences which correspond to the word
@@ -82,15 +86,80 @@ impl TargetWordsToSentences {
                                    ,sentences:&SentencesAsIndicesDynamicsN
                                    ,no_word:&usize
                                    ,max_target_sentence_len:&usize) {
-        let mut hsh = HashMap::new();
-        for (ixs,collection) in sentences.fra_words_as_indices {
-            for i in &collection.len() {
-                hsh.insert()
+        for len in 0..*max_target_sentence_len {
+        let mut hsh = Position::new(); 
+        for (ixs,collection) in sentences.fra_words_as_indices.iter() {
+            if len <= collection.len() {
+                hsh.words_to_sentences
+                    .entry(collection[len])
+                    .or_insert(vec![*ixs])
+                    .push(*ixs);
+            } else {
+                hsh.words_to_sentences
+                    .entry(*no_word)
+                    .or_insert(vec![*ixs])
+                    .push(*ixs);
             }
+        }
+        self.words_sentences_collections.insert(len,hsh);
         }
     }
 
 
+    pub fn max_and_min(&mut self) {
+        for (ixx,position) in self.words_sentences_collections.iter_mut() {
+            let mut max = 0;
+            let mut min = usize::MAX;
+            position.words_to_sentences
+                .iter()
+                .map(|(ixs,collection)| {
+                    let size = collection.len();
+                    if size > max {
+                        max=size;
+                    }
+                    if min > size {
+                        min = size;
+                    }
+                });
+            position.min_length=min;
+        }
+    }
+
+
+/*
+    pub fn max_and_min(&mut self) {
+        for (ixx,position) in self.words_sentences_collections.iter_mut() {
+            let mut max = 0;
+            let mut min = usize::MAX;
+            self.words_sentences_collections
+                .get(&ixx)
+                .unwrap()
+                .words_to_sentences
+                .iter()
+                .map(|(ixs,collection)| {
+                    let size = collection.len();
+                    if size > max {
+                        max=size;
+                    }
+                    if min > size {
+                        min = size;
+                    }
+                })
+            .for_each(drop);
+            self.words_sentences_collections
+                .get(&ixx)
+                .unwrap()
+                .min_length=min;
+            self.words_sentences_collections
+                .get(&ixx)
+                .unwrap()
+                .max_length=max;
+        }
+    }
+*/
+}
+
+/*
     pub fn max_and_min(&mut self) {
         for i in 0..self.words_sentences_collections.len() {
             let mut max = 0;
@@ -114,7 +183,9 @@ impl TargetWordsToSentences {
         }   
     }
 }
+*/
 
+/*
 #[derive(Serialize,Deserialize,Debug)]
 pub struct Lengths {
 //    #[serde(serialize_with = "serialize_map_a")]
@@ -211,77 +282,8 @@ impl SentencesMaxLengths {
         
     }
 }
+*/
 
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn simple() {
-        assert_eq!(0,0);
-    }
-
-    #[test]
-    fn find_and_replace_pair_b() {
-        println!("In test function!");
-        let pair = (3,100);
-        let new = 777; 
-        let mut vector1 = vec![1,2,100,3,100,3,100,5,78,39,1,2,3,3,100];
-        let mut vector2 = vec![3];
-        let mut vector3 = vec![3,100,3,100,3,100,3,100,1,2,3,3,100];
-        let mut vector4 = vec![3,100];
-
-        find_and_replace_pair(&mut vector1,&pair,&new);
-        find_and_replace_pair(&mut vector2,&pair,&new);
-        find_and_replace_pair(&mut vector3,&pair,&new);
-        find_and_replace_pair(&mut vector4,&pair,&new);
-
-        assert_eq!(vec![1,2,100,777,777,5,78,39,1,2,3,777], vector1);
-        assert_eq!(vec![3], vector2);
-        assert_eq!(vec![777,777,777,777,1,2,3,777], vector3);
-        assert_eq!(vec![777], vector4);
-
-
-        let pair = (57,62);
-        let new = 91;
-        let mut vector5 = vec![71, 63, 66, 66, 73, 57, 62, 55];
-        find_and_replace_pair(&mut vector5,&pair,&new);
-        assert_eq!(vec![71,63,66,66,73,91,55], vector5);
-       
-    }
-
-    #[test]
-    #[should_panic]
-    fn find_and_change_pairs_in_vector_with_panic() {
-        println!("In test function!");
-        let pair = (3,100);
-        let new = 777; 
-        let mut vector = vec![];
-        find_and_replace_pair(&mut vector,&pair,&new);
-    }
-
-    #[test]
-    fn find_and_replace_in_iter_mut() {
-
-        let pair = (3,100);
-        let new = 777;
-        let mut map:BTreeMap<Ixx,Vec<Ind>> = BTreeMap::new();
-        map.insert(0,vec![1,2,100,3,100,3,100,5,78,39,1,2,3,3,100]);
-        map.insert(1,vec![3]);
-        map.insert(2,vec![3,100,3,100,3,100,3,100,1,2,3,3,100]);
-        map.insert(3,vec![3,100]);
-
-        for (_index,vector) in map.iter_mut() {
-            find_and_replace_pair(vector,&pair,&new);
-        }
-
-        assert_eq!(vec![1,2,100,777,777,5,78,39,1,2,3,777], *map.get(&0).unwrap());
-        assert_eq!(vec![3], *map.get(&1).unwrap());
-        assert_eq!(vec![777,777,777,777,1,2,3,777], *map.get(&2).unwrap());
-        assert_eq!(vec![777], *map.get(&3).unwrap()); 
-    }
-}
 
 
 
