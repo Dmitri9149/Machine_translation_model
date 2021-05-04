@@ -477,9 +477,7 @@ impl WordsToSentenceLengths {
 pub struct SentencesMaxLengths {
     pub target_sentence_max_len:usize,
     pub source_sentence_max_len:usize,
-
 }
-
 impl SentencesMaxLengths {
     pub fn from_sentences(sentences:&SentencesAsIndicesDynamicsN) 
         -> SentencesMaxLengths {
@@ -497,14 +495,10 @@ impl SentencesMaxLengths {
                 source_sentence_max_len=vec.len();
             }
         }
-
         SentencesMaxLengths {
             target_sentence_max_len:target_sentence_max_len,
             source_sentence_max_len:source_sentence_max_len,
-
-
         }
-        
     }
 }
 

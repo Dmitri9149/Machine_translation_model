@@ -485,9 +485,11 @@ pub struct SentencesAsIndicesDynamicsN {
     pub eng_words_as_indices:BTreeMap<Ixs,Vec<Ixx>>,
     pub eng_words_as_token_indices:BTreeMap<Ixs,Vec<Vec<Ind>>>,
     pub eng_sentence_flattened_to_token_indices:BTreeMap<Ixs,Vec<Ind>>,
+    pub source_sentence_max_len:usize,
     pub fra_words_as_indices:BTreeMap<Ixs,Vec<Ixx>>,
     pub fra_words_as_token_indices:BTreeMap<Ixs,Vec<Vec<Ind>>>,
-    pub fra_sentence_flattened_to_token_indices:BTreeMap<Ixs,Vec<Ind>>
+    pub fra_sentence_flattened_to_token_indices:BTreeMap<Ixs,Vec<Ind>>,
+    pub target_sentence_max_len:usize, 
 
 }
 
@@ -498,9 +500,11 @@ impl SentencesAsIndicesDynamicsN {
         eng_words_as_indices:BTreeMap::new(),
         eng_words_as_token_indices:BTreeMap::new(),
         eng_sentence_flattened_to_token_indices:BTreeMap::new(),
+        source_sentence_max_len:0,
         fra_words_as_indices:BTreeMap::new(),
         fra_words_as_token_indices:BTreeMap::new(),
         fra_sentence_flattened_to_token_indices:BTreeMap::new(),
+        target_sentence_max_len:0,
         }
     }
 
@@ -523,10 +527,11 @@ impl SentencesAsIndicesDynamicsN {
         eng_words_as_indices:sentences.eng_word_as_index.to_owned(),
         eng_words_as_token_indices:sentences.eng_word_as_tokens_n.to_owned(),
         eng_sentence_flattened_to_token_indices:eng_sents_flatten,
+        source_sentence_max_len:0,
         fra_words_as_indices:sentences.fra_word_as_index.to_owned(),
         fra_words_as_token_indices:sentences.fra_word_as_tokens_n.to_owned(),
         fra_sentence_flattened_to_token_indices:fra_sents_flatten,
-
+        target_sentence_max_len:0,
         }
     }  
 
@@ -566,5 +571,17 @@ impl SentencesAsIndicesDynamicsN {
             self.fra_sentence_flattened_to_token_indices.insert(ixs,wdd.to_owned());
         }
     }
-}
 
+    pub fn sentence_max_len(&mut self) {
+        for (_ixs, vec) in &self.fra_words_as_indices {
+            if vec.len() > self.target_sentence_max_len {
+                self.target_sentence_max_len=vec.len();
+            }
+        }
+        for (_ixs, vec) in &self.eng_words_as_indices {
+            if vec.len() > self.source_sentence_max_len {
+                self.source_sentence_max_len=vec.len();
+            }
+        }
+    }
+}
