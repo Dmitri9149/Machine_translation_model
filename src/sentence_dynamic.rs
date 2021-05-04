@@ -178,7 +178,7 @@ impl WordsAndSentenceDynamics {
     }
 
     pub fn initial_from_sentences(index_word:&BTreeMap<Ixx,String>
-                                  ,word_index:&BTreeMap<String,Ixx>
+//                                  ,word_index:&BTreeMap<String,Ixx>
                                   ,sentence_as_indices:&BTreeMap<Ixs,Vec<Ixx>>) -> WordsAndSentenceDynamics {
         let mut hsh_index_idiom:BTreeMap<Ixx,Idiom> = BTreeMap::new();
         let mut hsh_idiom_index:BTreeMap<Vec<String>,Ind> = BTreeMap::new();
@@ -274,11 +274,11 @@ impl WordsAndSentenceDynamicsLang {
         match lang {
             Lang::Eng  => WordsAndSentenceDynamicsLang
                 ::Eng(WordsAndSentenceDynamics::initial_from_sentences(&vocab.eng_index_word
-                                                            ,&vocab.eng_word_index
+//                                                            ,&vocab.eng_word_index
                                                             ,&sentences.eng_word_as_index)),
             Lang::Fra  => WordsAndSentenceDynamicsLang
                 ::Fra(WordsAndSentenceDynamics::initial_from_sentences(&vocab.fra_index_word
-                                                            ,&vocab.fra_word_index
+//                                                            ,&vocab.fra_word_index
                                                             ,&sentences.fra_word_as_index)),
         }
     }

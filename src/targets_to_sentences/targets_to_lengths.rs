@@ -1,19 +1,23 @@
 //use super::super::*;
 //use super::super::translationlib::*;
-use crate::{Ixx,Ixs,Ind,Qxx};
+use crate::{Ixx,Ixs,Qxx,Ind};
 use std::collections::HashMap;
 use std::collections::BTreeMap;
+use std::convert::TryInto;
+
+/*
 use std::fs::File;
 use std::time::Instant;
 use std::fs::read_to_string; // use instead of std::fs::File
 use std::path::Path;
 //use ndarray::*;
 //use ndarray_linalg::*;
-use std::fmt::{self,Display,Debug,Formatter};
-//use serde::{Serialize, Deserialize};
-use serde::{Serialize,Deserialize};
 use serde::ser::{Serializer,SerializeSeq, SerializeMap, SerializeStruct};
-use std::convert::TryInto;
+use std::fmt::{self,Display,Debug,Formatter};
+*/
+use std::fmt::{Debug};
+use serde::{Serialize,Deserialize};
+
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct SentencesAsIndicesDynamicsN {
@@ -107,36 +111,12 @@ impl TargetWordsToSentences {
 
 
     pub fn max_and_min(&mut self) {
-        for (ixx,position) in self.words_sentences_collections.iter_mut() {
+        for (_ixx,position) in self.words_sentences_collections.iter_mut() {
             let mut max = 0;
             let mut min = usize::MAX;
             position.words_to_sentences
                 .iter()
-                .map(|(ixs,collection)| {
-                    let size = collection.len();
-                    if size > max {
-                        max=size;
-                    }
-                    if min > size {
-                        min = size;
-                    }
-                });
-            position.min_length=min;
-        }
-    }
-
-
-/*
-    pub fn max_and_min(&mut self) {
-        for (ixx,position) in self.words_sentences_collections.iter_mut() {
-            let mut max = 0;
-            let mut min = usize::MAX;
-            self.words_sentences_collections
-                .get(&ixx)
-                .unwrap()
-                .words_to_sentences
-                .iter()
-                .map(|(ixs,collection)| {
+                .map(|(_ixs,collection)| {
                     let size = collection.len();
                     if size > max {
                         max=size;
@@ -145,18 +125,14 @@ impl TargetWordsToSentences {
                         min = size;
                     }
                 })
-            .for_each(drop);
-            self.words_sentences_collections
-                .get(&ixx)
-                .unwrap()
-                .min_length=min;
-            self.words_sentences_collections
-                .get(&ixx)
-                .unwrap()
-                .max_length=max;
+                .for_each(drop);
+            position.min_length=min;
+            position.min_length=min;
+
         }
     }
-*/
+
+
 }
 
 /*
@@ -185,19 +161,20 @@ impl TargetWordsToSentences {
 }
 */
 
-/*
+// for a position in target sentence 
+// hash map (words index, vector of sentences lenghts which correspond to the word)
 #[derive(Serialize,Deserialize,Debug)]
-pub struct Lengths {
+pub struct TargetLengths {
 //    #[serde(serialize_with = "serialize_map_a")]
-    pub words:HashMap<Ixx,Vec<usize>>,
-    pub counts:HashMap<Ixx,HashMap<Ixx,Qxx>>,
+    pub words_to_lengths:HashMap<Qxx,Vec<usize>>,
+    pub lengths_counts:HashMap<Qxx,HashMap<Ixx,Qxx>>,
 }
 
-impl Lengths {
-    pub fn new() -> Lengths{
-        Lengths {
-            words:HashMap::new(),
-            counts:HashMap::new(),
+impl TargetLengths {
+    pub fn new() -> TargetLengths{
+        TargetLengths {
+            words_to_lengths:HashMap::new(),
+            lengths_counts:HashMap::new(),
         }
     }
 }
@@ -207,47 +184,50 @@ impl Lengths {
 //first word) , we will have a list like this [2,3,6,3,2,.....] where the numbers are the sentence
 //length
 //we do the same for second, third....words 
+//
 #[derive(Serialize, Deserialize,Debug)]
-pub struct WordsToSentenceLengths {
-    pub words_to_lengths:Vec<Lengths>,
+pub struct TargetWordsToSentenceLengths {
+    pub words_to_lengths_collections:HashMap<Qxx,TargetLengths>,
 }
 
-impl WordsToSentenceLengths {
-    pub fn new() -> WordsToSentenceLengths {
-        WordsToSentenceLengths {
-            words_to_lengths:Vec::new(),
+impl TargetWordsToSentenceLengths {
+    pub fn new() -> TargetWordsToSentenceLengths {
+        TargetWordsToSentenceLengths {
+            words_to_lengths_collections:HashMap::new(),
         }
     }
 
-    pub fn from_words_to_sentences(words:&WordsInTargetToSentences
-                                   ,sentences:&SentencesAsIndicesDynamicsN) -> WordsToSentenceLengths {
-        let mut vectr = Vec::new();
-        for position in words.words_sentences_collections.iter() {
-        let mut hsh = Lengths::new();
-            for (word,collection) in &position.words {
+    pub fn from_words_to_sentences(words:&TargetWordsToSentences
+                                   ,sentences:&SentencesAsIndicesDynamicsN) -> TargetWordsToSentenceLengths {
+        let mut vectr = HashMap::new();
+        for (ind,position) in words.words_sentences_collections.iter() {
+        let mut hsh = TargetLengths::new();
+            for (word,collection) in &position.words_to_sentences {
                 let mut coll = Vec::new();
                 let mut map = HashMap::new();
                 let mut length;
-                for i in collection {
+                for ixs in collection {
                     length = sentences.eng_words_as_indices
-                        .get(i).unwrap().len();
+                        .get(ixs).unwrap().len();
                     coll.push(length);
                     *map.entry(length).or_insert(1)+=1;
                 }
-                hsh.words.insert(word.to_owned(),coll);
-                hsh.counts.insert(word.to_owned(),map);
+                hsh.words_to_lengths.insert(word.to_owned().try_into().unwrap(),coll);
+                hsh.lengths_counts.insert(word.to_owned().try_into().unwrap(),map);
             }
-        vectr.push(hsh);
+//        vectr.insert(*ind as u32,hsh);
+        vectr.insert((*ind).try_into().unwrap(),hsh);
+
         }
 
-        WordsToSentenceLengths {
-            words_to_lengths:vectr,
+        TargetWordsToSentenceLengths {
+            words_to_lengths_collections:vectr,
 
         }
     }
 
 }
-
+/*
 #[derive(Serialize, Deserialize, Debug)]
 pub struct SentencesMaxLengths {
     pub target_sentence_max_len:usize,
@@ -283,7 +263,6 @@ impl SentencesMaxLengths {
     }
 }
 */
-
 
 
 

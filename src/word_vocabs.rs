@@ -1,7 +1,9 @@
 // vocabulary for eng and fra corpus , on the level of words
 use super::*;
 use std::collections::BTreeMap;
-use std::fmt::{self,Debug,Formatter};
+//use std::fmt::{self,Debug,Formatter};
+use std::fmt::{Debug};
+
 use serde::{Serialize, Deserialize};
 
 // the struct is used for calculating quantity of words

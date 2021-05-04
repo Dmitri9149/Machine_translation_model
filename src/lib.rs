@@ -1,16 +1,20 @@
 use std::collections::HashMap;
-use std::collections::BTreeMap;
+//use std::collections::BTreeMap;
+/*
 use std::fs::File;
 use std::time::Instant;
 use std::fs::read_to_string; // use instead of std::fs::File
 use std::path::Path;
-use ndarray::*;
 use ndarray_linalg::*;
 use std::fmt::{self,Display,Debug,Formatter};
-//use serde::{Serialize, Deserialize};
+*/
 use serde::{Serialize,Deserialize};
+use ndarray::*;
+
+/*
 use serde::ser::{Serializer,SerializeSeq, SerializeMap, SerializeStruct};
 use std::convert::TryInto;
+*/
 
 
 
@@ -204,7 +208,7 @@ impl GeneratedTokensCounting {
         let mut eng_map_old_new:HashMap<Ind,Ind> = HashMap::new();
         let mut fra_map_old_new:HashMap<Ind,Ind> = HashMap::new();
         let mut new_index=0;
-        for (ixs,vec) in &sentences.eng_sentence_flattened_to_token_indices {
+        for (_ixs,vec) in &sentences.eng_sentence_flattened_to_token_indices {
             for ind in vec.iter() {
                 if !eng_map_old_new.contains_key(&ind) {
                 eng_map_old_new.insert(*ind,new_index);
@@ -220,7 +224,7 @@ impl GeneratedTokensCounting {
         let eng_number = eng_map_new_old.keys().len();
 
         let mut new_index=0;
-        for (ixs,vec) in &sentences.fra_sentence_flattened_to_token_indices {
+        for (_ixs,vec) in &sentences.fra_sentence_flattened_to_token_indices {
             for ind in vec.iter() {
                 if !fra_map_old_new.contains_key(&ind) {
                 fra_map_old_new.insert(*ind,new_index);
@@ -365,7 +369,7 @@ impl WordsInTargetToSentences {
             let mut min = usize::MAX;
             self.words_sentences_collections[i].words
                 .iter()
-                .map(|(ixs,collection)| {
+                .map(|(_ixs,collection)| {
                     let size = collection.len();
                     if size > max {
                         max=size;
@@ -482,13 +486,13 @@ impl SentencesMaxLengths {
     //TODO move the max length calc to struct
     //max lengh of sentences (target and sourse) in word tokens
         let mut target_sentence_max_len = 0;
-        for (ixs, vec) in &sentences.fra_words_as_indices {
+        for (_ixs, vec) in &sentences.fra_words_as_indices {
             if vec.len() >= target_sentence_max_len {
                 target_sentence_max_len=vec.len();
             }
         }
         let mut source_sentence_max_len = 0;
-        for (ixs, vec) in &sentences.eng_words_as_indices {
+        for (_ixs, vec) in &sentences.eng_words_as_indices {
             if vec.len() >= source_sentence_max_len {
                 source_sentence_max_len=vec.len();
             }
