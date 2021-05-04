@@ -4,7 +4,14 @@ use crate::{Ixx,Ixs,Qxx,Ind};
 use std::collections::HashMap;
 use std::collections::BTreeMap;
 use std::convert::TryInto;
+use std::path::Path;
+use std::fs::read_to_string; // use instead of std::fs::File
 
+/*
+use std::fmt::{self,Display,Debug,Formatter};
+use serde::{Serialize, Deserialize};
+use serde::ser::{Serializer,SerializeSeq, SerializeMap, SerializeStruct};
+*/
 /*
 use std::fs::File;
 use std::time::Instant;
@@ -227,6 +234,59 @@ impl TargetWordsToSentenceLengths {
     }
 
 }
+
+/*
+
+// use to build TargetWordsToSentences structure
+pub struct Config {
+    path_to_sentences_as_indices_dynamics:Option<String>,
+    sentences_as_indices_dynamics:Option<SentencesAsIndicesDynamicsN>,
+}
+
+pub struct TargetWordsToSentencesBuilder {
+    config: Config,
+}
+
+impl Default for TargetWordsToSentencesBuilder {
+    fn default() -> Self {
+        Self {
+            config: Config {
+                path_to_sentences_as_indices_dynamics:None,
+                sentences_as_indices_dynamics:None,
+            },
+        }
+    }
+}
+
+impl TargetWordsToSentencesBuilder {
+    // Constructs a new `TargetWordsToSentencesBuilder`.
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    // Set path to file with sentence dynamics.
+    pub fn path(mut self, path:&str) -> Self {
+        self.config.path_to_sentences_as_indices_dynamics = Some(path.to_string());
+        self
+    }
+
+    pub fn sentences_from_jason(mut self) -> Result<Self,Box<dyn std::error::Error>> {
+        let json_file_path_sentences = Path::new(&self.config.path_to_sentences_as_indices_dynamics
+                                                 .unwrap().to_owned());
+        let json_file_str_sentences = read_to_string(json_file_path_sentences).expect("file not found");
+
+        self.config.sentences_as_indices_dynamics= serde_json
+        ::from_str(&json_file_str_sentences)
+        .expect("error while reading json with sentences");
+
+        Ok(self)
+
+
+
+
+    }
+}
+*/
 /*
 #[derive(Serialize, Deserialize, Debug)]
 pub struct SentencesMaxLengths {
