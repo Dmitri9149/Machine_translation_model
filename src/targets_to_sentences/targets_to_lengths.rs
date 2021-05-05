@@ -119,7 +119,7 @@ impl TargetWordsToSentences {
                     }
                 })
                 .for_each(drop);
-            position.min_length=min;
+            position.max_length=max;
             position.min_length=min;
         }
     }
