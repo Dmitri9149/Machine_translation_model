@@ -129,31 +129,6 @@ impl TargetWordsToSentences {
 
 }
 
-/*
-    pub fn max_and_min(&mut self) {
-        for i in 0..self.words_sentences_collections.len() {
-            let mut max = 0;
-            let mut min = usize::MAX;
-            self.words_sentences_collections[i].words
-                .iter()
-                .map(|(ixs,collection)| {
-                    let size = collection.len();
-                    if size > max {
-                        max=size;
-                    }
-                    if min > size {
-                        min = size;
-                    }
-
-                })
-            .for_each(drop);
-
-            self.words_sentences_collections[i].min_length=min;
-            self.words_sentences_collections[i].max_length=max;
-        }   
-    }
-}
-*/
 
 // for a position in target sentence 
 // hash map (words index, vector of sentences lenghts which correspond to the word)
@@ -209,7 +184,6 @@ impl TargetWordsToSentenceLengths {
                 hsh.words_to_lengths.insert(word.to_owned().try_into().unwrap(),coll);
                 hsh.lengths_counts.insert(word.to_owned().try_into().unwrap(),map);
             }
-//        vectr.insert(*ind as u32,hsh);
         vectr.insert((*ind).try_into().unwrap(),hsh);
 
         }
@@ -222,12 +196,11 @@ impl TargetWordsToSentenceLengths {
 
 }
 
-/*
-
 // use to build TargetWordsToSentences structure
+// 'no_word' is used to pad the sentences which are shorter 
+// than target_max_length 
 pub struct Config {
-    path_to_sentences_as_indices_dynamics:Option<String>,
-    sentences_as_indices_dynamics:Option<SentencesAsIndicesDynamicsN>,
+    no_word:Option<usize>,
 }
 
 pub struct TargetWordsToSentencesBuilder {
@@ -238,8 +211,7 @@ impl Default for TargetWordsToSentencesBuilder {
     fn default() -> Self {
         Self {
             config: Config {
-                path_to_sentences_as_indices_dynamics:None,
-                sentences_as_indices_dynamics:None,
+                no_word:None,
             },
         }
     }
@@ -251,65 +223,21 @@ impl TargetWordsToSentencesBuilder {
         Self::default()
     }
 
-    // Set path to file with sentence dynamics.
-    pub fn path(mut self, path:&str) -> Self {
-        self.config.path_to_sentences_as_indices_dynamics = Some(path.to_string());
+    // Add an 'no_word' 
+    pub fn no_word<'a>(&'a mut self, no_word:&usize) -> &'a mut TargetWordsToSentencesBuilder {
+        self.config.no_word = Some(*no_word);
         self
     }
 
-    pub fn sentences_from_jason(mut self) -> Result<Self,Box<dyn std::error::Error>> {
-        let json_file_path_sentences = Path::new(&self.config.path_to_sentences_as_indices_dynamics
-                                                 .unwrap().to_owned());
-        let json_file_str_sentences = read_to_string(json_file_path_sentences).expect("file not found");
+    pub fn build(&self,sentences:&SentencesAsIndicesDynamicsN) -> Result<TargetWordsToSentences
+        ,Box<dyn std::error::Error>> {
+        let mut targets_to_sentences = TargetWordsToSentences::new();
+        targets_to_sentences.from_sentences_dynamics(sentences,&self.config.no_word.unwrap());
+        targets_to_sentences.max_and_min();
 
-        self.config.sentences_as_indices_dynamics= serde_json
-        ::from_str(&json_file_str_sentences)
-        .expect("error while reading json with sentences");
-
-        Ok(self)
-
-
-
-
+        Ok(targets_to_sentences)
     }
 }
-*/
-/*
-#[derive(Serialize, Deserialize, Debug)]
-pub struct SentencesMaxLengths {
-    pub target_sentence_max_len:usize,
-    pub source_sentence_max_len:usize,
-
-}
-
-impl SentencesMaxLengths {
-    pub fn from_sentences(sentences:&SentencesAsIndicesDynamicsN) 
-        -> SentencesMaxLengths {
-    //TODO move the max length calc to struct
-    //max lengh of sentences (target and sourse) in word tokens
-        let mut target_sentence_max_len = 0;
-        for (ixs, vec) in &sentences.fra_words_as_indices {
-            if vec.len() >= target_sentence_max_len {
-                target_sentence_max_len=vec.len();
-            }
-        }
-        let mut source_sentence_max_len = 0;
-        for (ixs, vec) in &sentences.eng_words_as_indices {
-            if vec.len() >= source_sentence_max_len {
-                source_sentence_max_len=vec.len();
-            }
-        }
-
-        SentencesMaxLengths {
-            target_sentence_max_len:target_sentence_max_len,
-            source_sentence_max_len:source_sentence_max_len,
-
-
-        }
-        
-    }
-}
-*/
 
 
 
