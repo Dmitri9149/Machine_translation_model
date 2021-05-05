@@ -89,20 +89,19 @@ impl TargetWordsToSentences {
         for (ixs,collection) in sentences.fra_words_as_indices.iter() {
             if len_index < collection.len() {
                 hsh.words_to_sentences
-                    .entry(collection[len])
-                    .or_insert(vec![*ixs])
+                    .entry(collection[len_index])
+                    .or_insert(vec![])
                     .push(*ixs);
             } else {
                 hsh.words_to_sentences
                     .entry(*no_word)
-                    .or_insert(vec![*ixs])
+                    .or_insert(vec![])
                     .push(*ixs);
             }
         }
-        self.words_sentences_collections.insert(len,hsh);
+        self.words_sentences_collections.insert(len_index,hsh);
         }
     }
-
 
     pub fn max_and_min(&mut self) {
         for (_ixx,position) in self.words_sentences_collections.iter_mut() {
@@ -122,14 +121,9 @@ impl TargetWordsToSentences {
                 .for_each(drop);
             position.min_length=min;
             position.min_length=min;
-
         }
     }
-
-
 }
-
-
 // for a position in target sentence 
 // hash map (words index, vector of sentences lenghts which correspond to the word)
 #[derive(Serialize,Deserialize,Debug)]

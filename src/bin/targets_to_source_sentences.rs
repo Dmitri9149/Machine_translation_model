@@ -56,12 +56,24 @@ fn main()  -> Result<(),Box<dyn std::error::Error>> {
         ::from_words_to_sentences(&target_words_to_sentences,&sentences);
 
 // print sentences 
-    println!("The sentences in initial form: {:?}", &sentences);
+//    println!("The sentences in initial form: {:?}", &sentences);
 
 // print max lengths of sentences
 println!("Target sentence max length: {}\n", &sentences.target_sentence_max_len);
 println!("Source sentence max length: {}\n", &sentences.source_sentence_max_len);
 
+//print targets...to sentences   and targets...to lengths
+
+println!("The targets_words_to_sentences: {:?}\n",&target_words_to_sentences
+         .words_sentences_collections
+         .get(&0)
+         .unwrap());
+/*
+println!("The targets_words_to_sentence_lengths {:?}\n",&target_words_to_sentence_lengths
+         .words_to_lengths_collections
+         .get(&0)
+         .unwrap());
+*/
 
 /*
     ::serde_json::to_writer(&File::create("data/matrices_generator/words_to_sentences.json")?, &words_to_sentences)?;
