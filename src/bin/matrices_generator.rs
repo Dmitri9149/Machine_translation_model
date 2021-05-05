@@ -101,15 +101,16 @@ fn main()  -> Result<(),Box<dyn std::error::Error>> {
 */
 
 
-let sentences_max_len = SentencesMaxLengths::from_sentences(&sentences);
-println!("Target sentence max length: {}\n", sentences_max_len.target_sentence_max_len);
-println!("Source sentence max length: {}\n", sentences_max_len.source_sentence_max_len);
+// print max lengths of sentences
+println!("Target sentence max length: {}\n", &sentences.target_sentence_max_len);
+println!("Source sentence max length: {}\n", &sentences.source_sentence_max_len);
 
 // array which keeps index of word for every sentence in translation pairs and every ordered 
 // position in target sentence, so index (i,j) of the arrays is i-> index of sentence in
 // translation pairs; j -> position of word in target sentence
     let mut array_target_words_in_order = Array::from_elem((NUMBER_PAIRS
-                                                            ,sentences_max_len.target_sentence_max_len), NOWORD);
+                                                            ,sentences.target_sentence_max_len)
+                                                            ,NOWORD);
 // i correnpond to target sentence
     for i in 0..NUMBER_PAIRS {
 // k is position index in a target sentence
@@ -140,7 +141,6 @@ println!("Source sentence max length: {}\n", sentences_max_len.source_sentence_m
 
     ::serde_json::to_writer(&File::create("data/matrices_generator/words_to_sentences.json")?, &words_to_sentences)?;
     ::serde_json::to_writer(&File::create("data/matrices_generator/words_to_lengths.json")?, &words_to_lengths)?;
-    ::serde_json::to_writer(&File::create("data/matrices_generator/sentences_max_length.json")?, &sentences_max_len)?;
 
 
     let elapsed = start.elapsed();
