@@ -84,10 +84,10 @@ impl TargetWordsToSentences {
     pub fn from_sentences_dynamics(&mut self
                                    ,sentences:&SentencesAsIndicesDynamicsN
                                    ,no_word:&usize) {
-        for len in 0..sentences.target_sentence_max_len {
+        for len_index in 0..sentences.target_sentence_max_len {
         let mut hsh = TargetsPosition::new(); 
         for (ixs,collection) in sentences.fra_words_as_indices.iter() {
-            if len <= collection.len() {
+            if len_index < collection.len() {
                 hsh.words_to_sentences
                     .entry(collection[len])
                     .or_insert(vec![*ixs])

@@ -140,7 +140,9 @@ fn main() -> Result<(),Box<dyn std::error::Error>>{
     sentence_as_indices_dynamics.from_tokens_words_dynamic(&tokens_words_dynamic);
     sentence_as_indices_dynamics.sentence_max_len();
 
-    println!("MAX LENGTH !!!!!!!!!! {:?}\n", &sentence_as_indices_dynamics.source_sentence_max_len);
+    println!("SENTENCE MAX LENGTH source{:?}\n", &sentence_as_indices_dynamics.source_sentence_max_len);
+    println!("SENTENCE MAX LENGTH target{:?}\n", &sentence_as_indices_dynamics.target_sentence_max_len);
+
 
     println!("Eng sentences as words(in token indices):\n{:?}"
                                      ,&sentence_as_indices_dynamics.eng_words_as_token_indices
