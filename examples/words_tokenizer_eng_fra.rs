@@ -138,6 +138,9 @@ fn main() -> Result<(),Box<dyn std::error::Error>>{
     let mut sentence_as_indices_dynamics = SentencesAsIndicesDynamicsN
         ::initial_from_sentences_and_indices(&sentences_indices);
     sentence_as_indices_dynamics.from_tokens_words_dynamic(&tokens_words_dynamic);
+    sentence_as_indices_dynamics.sentence_max_len();
+
+    println!("MAX LENGTH !!!!!!!!!! {:?}\n", &sentence_as_indices_dynamics.source_sentence_max_len);
 
     println!("Eng sentences as words(in token indices):\n{:?}"
                                      ,&sentence_as_indices_dynamics.eng_words_as_token_indices
@@ -163,8 +166,8 @@ fn main() -> Result<(),Box<dyn std::error::Error>>{
     println!("deserialized = {:?}", deserialized);
 */
 
-    ::serde_json::to_writer(&File::create("data/sentences_as_indices_dynamics.json")?, &sentence_as_indices_dynamics)?;
-    ::serde_json::to_writer(&File::create("data/vocab.json")?, &vocab)?;
+    ::serde_json::to_writer(&File::create("data/matrices_generator/sentences_as_indices_dynamics.json")?, &sentence_as_indices_dynamics)?;
+    ::serde_json::to_writer(&File::create("data/matrices_generator/vocab.json")?, &vocab)?;
 
 
     Ok(())

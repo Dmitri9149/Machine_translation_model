@@ -67,7 +67,12 @@ pub use word_dynamics::dynamics::{CandidatesForMergeN
     ,WordsAsTokensN
     ,SentencesAsIndicesDynamicsN
 };
-
+pub use targets_to_sentences::targets_to_lengths::{TargetsPosition
+    ,TargetWordsToSentences
+    ,TargetLengths
+    ,TargetWordsToSentenceLengths
+    ,TargetWordsToSentencesBuilder
+    ,Config};
 
 // the index for sentences numbering
 pub type Ixs = usize;

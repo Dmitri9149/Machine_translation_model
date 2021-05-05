@@ -29,15 +29,15 @@ use serde::{Serialize,Deserialize};
 // map word in target sentence to the list of sentences (in source) which correspond to the 
 // word
 #[derive(Serialize,Deserialize,Debug)]
-pub struct Position {
+pub struct TargetsPosition {
     pub words_to_sentences:HashMap<Ixx,Vec<Ixs>>,
     pub max_length:usize,
     pub min_length:usize
 }
 
-impl Position {
-    pub fn new() -> Position{
-        Position {
+impl TargetsPosition {
+    pub fn new() -> TargetsPosition{
+        TargetsPosition {
             words_to_sentences:HashMap::new(),
             max_length:0,
             min_length:usize::MAX
@@ -53,7 +53,7 @@ pub struct TargetWordsToSentences {
 //the hash map is mapping from concrete words in the positions to the vector of indices of 
 //sentences which correspond to the word
 //second position is the tuple: min lengs of collection, third: max length
-    pub words_sentences_collections:HashMap<Ixx,Position>,
+    pub words_sentences_collections:HashMap<Ixx,TargetsPosition>,
 }
 
 impl TargetWordsToSentences {
@@ -85,7 +85,7 @@ impl TargetWordsToSentences {
                                    ,sentences:&SentencesAsIndicesDynamicsN
                                    ,no_word:&usize) {
         for len in 0..sentences.target_sentence_max_len {
-        let mut hsh = Position::new(); 
+        let mut hsh = TargetsPosition::new(); 
         for (ixs,collection) in sentences.fra_words_as_indices.iter() {
             if len <= collection.len() {
                 hsh.words_to_sentences
