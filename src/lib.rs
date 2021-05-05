@@ -472,7 +472,7 @@ impl WordsToSentenceLengths {
     }
 
 }
-
+/*
 #[derive(Serialize, Deserialize, Debug)]
 pub struct SentencesMaxLengths {
     pub target_sentence_max_len:usize,
@@ -501,7 +501,7 @@ impl SentencesMaxLengths {
         }
     }
 }
-
+*/
 
 #[cfg(test)]
 mod tests {

@@ -1,10 +1,10 @@
 use std::collections::HashMap;
-use std::collections::BTreeMap;
+//use std::collections::BTreeMap;
 use std::convert::TryInto;
-use std::path::Path;
-use std::fs::read_to_string; // use instead of std::fs::File
+//use std::path::Path;
+//use std::fs::read_to_string; // use instead of std::fs::File
 
-use crate::{Ixx,Ixs,Qxx,Ind};
+use crate::{Ixx,Ixs,Qxx};
 use crate::word_dynamics::dynamics::{SentencesAsIndicesDynamicsN};
 
 
@@ -83,9 +83,8 @@ impl TargetWordsToSentences {
 */
     pub fn from_sentences_dynamics(&mut self
                                    ,sentences:&SentencesAsIndicesDynamicsN
-                                   ,no_word:&usize
-                                   ,max_target_sentence_len:&usize) {
-        for len in 0..*max_target_sentence_len {
+                                   ,no_word:&usize) {
+        for len in 0..sentences.target_sentence_max_len {
         let mut hsh = Position::new(); 
         for (ixs,collection) in sentences.fra_words_as_indices.iter() {
             if len <= collection.len() {
