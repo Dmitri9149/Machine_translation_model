@@ -29,7 +29,7 @@ pub static NUMBER_WORDS_FRA:usize = 40000;
 
 
 fn main()  -> Result<(),Box<dyn std::error::Error>> {
-    let json_file_path_sentences = Path::new("data/matrices_generator/sentence_as_indices_dynamics.json");
+    let json_file_path_sentences = Path::new("data/matrices_generator/sentences_as_indices_dynamics.json");
     let json_file_str_sentences = read_to_string(json_file_path_sentences).expect("file not found");
     let json_file_path_renumbering = Path::new("data/renumbering/tokens_renumbering.json");
     let json_file_str_renumbering = read_to_string(json_file_path_renumbering).expect("file not found");
