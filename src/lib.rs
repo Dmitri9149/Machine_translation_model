@@ -33,7 +33,8 @@ pub use crate::translation_corpus::{CorpusAsString};
 pub use crate::sentence_pairs::{SentencesForTranslation
     ,SentencesAsIndices
     ,TranslationPair
-    ,TranslationPairs};
+    ,TranslationPairs
+};
 pub use crate::word_vocabs::{Vocab,WordToIndexCollection};
 pub use tokens_vocab::{VocabOfTokens};
 pub use system_dynamic::{CandidatesForMerge
@@ -70,11 +71,14 @@ pub use word_dynamics::dynamics::{CandidatesForMergeN
 };
 pub use targets_to_sentences::targets_to_lengths::{TargetsPosition
     ,TargetWordsToSentences
-    ,TargetLengths
-    ,TargetWordsToSentenceLengths
     ,TargetWordsToSentencesBuilder
-    ,Config};
-pub use probability::length_likelihood::*;
+    ,Config
+};
+pub use probability::length_likelihood::{TargetLengths
+    ,TargetWordsToSentenceLengths
+    ,TargetWordsCount
+    ,PositionalTargetWordsCount
+};
 
 
 // the index for sentences numbering
