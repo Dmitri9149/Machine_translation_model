@@ -27,6 +27,7 @@ mod sentence_dynamic;
 
 pub mod word_dynamics;
 pub mod targets_to_sentences;
+pub mod probability;
 
 pub use crate::translation_corpus::{CorpusAsString};
 pub use crate::sentence_pairs::{SentencesForTranslation
@@ -73,6 +74,8 @@ pub use targets_to_sentences::targets_to_lengths::{TargetsPosition
     ,TargetWordsToSentenceLengths
     ,TargetWordsToSentencesBuilder
     ,Config};
+pub use probability::length_likelihood::*;
+
 
 // the index for sentences numbering
 pub type Ixs = usize;
