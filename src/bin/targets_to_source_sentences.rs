@@ -25,10 +25,13 @@ use translationlib::{NOWORD, word_dynamics::dynamics::SentencesAsIndicesDynamics
 
 use translationlib::targets_to_sentences::targets_to_lengths::{TargetsPosition
     ,TargetWordsToSentences
-    ,TargetLengths
-    ,TargetWordsToSentenceLengths
     ,TargetWordsToSentencesBuilder
     ,Config};
+use translationlib::probability::length_likelihood::{
+    TargetLengths
+    ,TargetWordsToSentenceLengths
+    ,PositionalTargetWordsCount
+};
 
 
 
@@ -54,6 +57,11 @@ fn main()  -> Result<(),Box<dyn std::error::Error>> {
 
     let target_words_to_sentence_lengths = TargetWordsToSentenceLengths
         ::from_words_to_sentences(&target_words_to_sentences,&sentences);
+
+    let target_words_count = PositionalTargetWordsCount::new()
+        .from_target_words_to_sentence_lengths(&target_words_to_sentence_lengths);
+
+
 
 // print sentences 
 //    println!("The sentences in initial form: {:?}", &sentences);
