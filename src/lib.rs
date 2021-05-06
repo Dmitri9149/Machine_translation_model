@@ -142,19 +142,6 @@ pub fn separate_punctuation(strng:&str, st:&str) -> String{
     res
 }
 
-/*
-// the function return the key with biggest value for HashMap
-fn max_key<K, V>(a_hash_map: &HashMap<K, V>) -> Option<&K>
-where
-    V: Ord,
-{
-    a_hash_map
-        .iter()
-        .max_by(|a, b| a.1.cmp(&b.1))
-        .map(|(k, _v)| k)
-}
-*/
-
 // the function return the key with biggest value
 pub fn max_key<K, V>(a_hash_map: &HashMap<K, V>) -> Option<(&K,&V)>
 where
