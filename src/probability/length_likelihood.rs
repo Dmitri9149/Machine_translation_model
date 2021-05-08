@@ -98,25 +98,30 @@ impl TargetWordsToSentenceLengths {
         }
     }
 
-    pub fn lengths_likelihood(&mut self) {
-        for (position, mut targ_lengths) in self.words_to_lengths_collections.iter_mut() {
-//            let mut map:HashMap<Qxx,HashMap<u16,f64>> = HashMap::new();
+    pub fn lengths_likelihood(&mut self, sentences_max_len:&u16) {
+        for (position,  targ_lengths) in self.words_to_lengths_collections.iter_mut() {
             for (qxx,collection) in targ_lengths.lengths_counts.iter() {
                 let qxx_total = targ_lengths.words_counts
                     .get(qxx)
                     .unwrap();
                 let mut likely:HashMap<u16,f64>=HashMap::new();
+// Laplace smoothening is below
                 for (len,count) in collection.iter() {
-                    *likely.entry(*len).or_insert(0.0)+=f64::from(*count)/f64::from(*qxx_total);
+                    *likely
+                        .entry(*len)
+                        .or_insert(0.0)
+                        +=(f64::from(*count)+1.0)/(f64::from(*qxx_total) + f64::from(*sentences_max_len));
                 }
-//                map.insert(*qxx,likely);
-                targ_lengths
-                    .lengths_likelihood
+                for i in 0..*sentences_max_len {
+                    likely
+                        .entry(i+1)
+                        .or_insert(1.0/(f64::from(*qxx_total) + f64::from(*sentences_max_len)));
+                }
+                targ_lengths.lengths_likelihood
                     .insert(*qxx,likely);
             }
         }
     }
-
 }
 
 #[derive(Serialize,Deserialize,Debug)]
