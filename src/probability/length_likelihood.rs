@@ -95,24 +95,26 @@ impl TargetWordsToSentenceLengths {
 #[derive(Serialize,Deserialize,Debug)]
 pub struct TargetWordsCount {
     pub words_counts:HashMap<Ixx,Qxx>,
+    pub words_total:Qxx
 }
 
 impl TargetWordsCount {
     pub fn new() -> TargetWordsCount{
         TargetWordsCount {
             words_counts:HashMap::new(),
+            words_total:0,
         }
     }
 }
 
 pub struct PositionalTargetWordsCount {
-    targets_words_and_lengths:HashMap<Ixx,TargetWordsCount>,
+    target_words_and_lengths:HashMap<Ixx,TargetWordsCount>,
 }
 
 impl PositionalTargetWordsCount {
     pub fn new() -> PositionalTargetWordsCount {
         PositionalTargetWordsCount {
-            targets_words_and_lengths:HashMap::new()
+            target_words_and_lengths:HashMap::new()
         }
     }
 
@@ -123,10 +125,55 @@ impl PositionalTargetWordsCount {
             for (ixx,vec) in collection.words_to_lengths.iter() {
                 map.words_counts
                     .insert((*ixx).try_into().unwrap(),(vec.len()).try_into().unwrap());
+                map.words_total = map.words_total + vec.len() as u32;
             }
-            self.targets_words_and_lengths
+            self.target_words_and_lengths
                 .insert((*position).try_into().unwrap(),map);
         }
+    }
+}
+
+// same as above but integer counts are converted to probabilities
+pub struct TargetWordsProbability {
+    words_probability:HashMap<Ixx,f64>,
+    words_total:Qxx,
+}
+
+impl TargetWordsProbability {
+    pub fn new() -> TargetWordsProbability {
+        TargetWordsProbability  {
+        words_probability:HashMap::new(),
+        words_total:0,
+        }
+    }
+}
+
+pub struct PositionalTargetWordsProbability {
+    positional_words_probability:HashMap<u16,TargetWordsProbability>,
+}
+
+impl PositionalTargetWordsProbability {
+    pub fn new(counts:&PositionalTargetWordsCount) -> PositionalTargetWordsProbability {
+        let mut maps = HashMap::new();
+
+        for (position,collection) in counts.target_words_and_lengths.iter() {
+            let mut hsh = TargetWordsProbability::new();
+            let total = counts.target_words_and_lengths
+                .get(position)
+                .unwrap()
+                .words_total;
+                if total == 0 {
+                    panic!("Words total at position:{} is 0",&position);
+                }
+            for (ixx, quantity) in collection.words_counts.iter() {
+                hsh.words_probability.insert(*ixx,f64::from(*quantity)/f64::from(total));
+                hsh.words_total=total;
+            }
+        maps.insert((*position).try_into().unwrap(),hsh);
+        }
+        PositionalTargetWordsProbability {
+            positional_words_probability:maps,
+        }   
     }
 }
 
