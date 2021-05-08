@@ -34,6 +34,8 @@ pub struct TargetLengths {
 //    #[serde(serialize_with = "serialize_map_a")]
     pub words_to_lengths:HashMap<Qxx,Vec<u16>>,
     pub lengths_counts:HashMap<Qxx,HashMap<u16,u32>>,
+    pub words_counts:HashMap<Qxx,Qxx>,
+    pub lengths_likelihood:HashMap<Qxx,HashMap<u16,f64>>,
 }
 
 impl TargetLengths {
@@ -41,6 +43,8 @@ impl TargetLengths {
         TargetLengths {
             words_to_lengths:HashMap::new(),
             lengths_counts:HashMap::new(),
+            words_counts:HashMap::new(),
+            lengths_likelihood:HashMap::new(),
         }
     }
 }
@@ -52,7 +56,7 @@ impl TargetLengths {
 //
 #[derive(Serialize, Deserialize,Debug)]
 pub struct TargetWordsToSentenceLengths {
-    pub words_to_lengths_collections:HashMap<Qxx,TargetLengths>,
+    pub words_to_lengths_collections:HashMap<u16,TargetLengths>,
 }
 
 impl TargetWordsToSentenceLengths {
@@ -71,22 +75,45 @@ impl TargetWordsToSentenceLengths {
                 let mut coll = Vec::new();
                 let mut map = HashMap::new();
                 let mut length;
+                if collection.len() == 0 {
+                    panic!("A target word has 0 lengths collection of entences!");
+                }
                 for ixs in collection {
                     length = sentences.eng_words_as_indices
                         .get(ixs).unwrap().len();
                     coll.push(length.try_into().unwrap());
-                    *map.entry(length.try_into().unwrap()).or_insert(1)+=1;
+                    *map.entry(length.try_into().unwrap()).or_insert(0)+=1;
                 }
                 hsh.words_to_lengths.insert(word.to_owned().try_into().unwrap(),coll);
                 hsh.lengths_counts.insert(word.to_owned().try_into().unwrap(),map);
+                hsh.words_counts.insert(word.to_owned().try_into().unwrap()
+                                        ,collection.len().try_into().unwrap());
+
             }
         vectr.insert((*ind).try_into().unwrap(),hsh);
 
         }
-
         TargetWordsToSentenceLengths {
             words_to_lengths_collections:vectr,
+        }
+    }
 
+    pub fn lengths_likelihood(&mut self) {
+        for (position, mut targ_lengths) in self.words_to_lengths_collections.iter_mut() {
+//            let mut map:HashMap<Qxx,HashMap<u16,f64>> = HashMap::new();
+            for (qxx,collection) in targ_lengths.lengths_counts.iter() {
+                let qxx_total = targ_lengths.words_counts
+                    .get(qxx)
+                    .unwrap();
+                let mut likely:HashMap<u16,f64>=HashMap::new();
+                for (len,count) in collection.iter() {
+                    *likely.entry(*len).or_insert(0.0)+=f64::from(*count)/f64::from(*qxx_total);
+                }
+//                map.insert(*qxx,likely);
+                targ_lengths
+                    .lengths_likelihood
+                    .insert(*qxx,likely);
+            }
         }
     }
 
@@ -108,7 +135,7 @@ impl TargetWordsCount {
 }
 
 pub struct PositionalTargetWordsCount {
-    target_words_and_lengths:HashMap<Ixx,TargetWordsCount>,
+    target_words_and_lengths:HashMap<u16,TargetWordsCount>,
 }
 
 impl PositionalTargetWordsCount {
