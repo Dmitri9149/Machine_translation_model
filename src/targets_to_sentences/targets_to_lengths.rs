@@ -1,5 +1,5 @@
 use std::collections::HashMap;
-//use std::collections::BTreeMap;
+use std::collections::BTreeMap;
 use std::convert::TryInto;
 //use std::path::Path;
 //use std::fs::read_to_string; // use instead of std::fs::File
@@ -53,13 +53,13 @@ pub struct TargetWordsToSentences {
 //the hash map is mapping from concrete words in the positions to the vector of indices of 
 //sentences which correspond to the word
 //second position is the tuple: min lengs of collection, third: max length
-    pub words_sentences_collections:HashMap<Ixx,TargetsPosition>,
+    pub words_sentences_collections:BTreeMap<u16,TargetsPosition>,
 }
 
 impl TargetWordsToSentences {
     pub fn new() -> TargetWordsToSentences {
         TargetWordsToSentences {
-            words_sentences_collections:HashMap::new(),
+            words_sentences_collections:BTreeMap::new(),
         }
     }
 /*
@@ -99,7 +99,7 @@ impl TargetWordsToSentences {
                     .push(*ixs);
             }
         }
-        self.words_sentences_collections.insert(len_index,hsh);
+        self.words_sentences_collections.insert(len_index.try_into().unwrap(),hsh);
         }
     }
 
