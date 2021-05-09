@@ -80,7 +80,7 @@ println!("The targets_words_to_sentences: {:?}\n",&target_words_to_sentences
          .unwrap());
 
 println!("The targets_words_to_sentence_lengths {:?}\n",&target_words_to_sentence_lengths
-         .length_likelihood
+         .lengths_likelihood
 //         .words_to_lengths_collections
          .get(&0)
          .unwrap());
