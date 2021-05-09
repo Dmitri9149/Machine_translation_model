@@ -17,6 +17,8 @@ c. we are very close to 'language' intuition in the case.
 d. it is relatively easy to combine differen features together. for 
 example in the first part of the work I try to unsver the question: how good it is possible to predict the first (second, ...third...) word in target sentence 
 by using just the 'length' of source sentence as predictor ? The 'length' of source sentence is a metadata , and we can easily combine such meta-features with token-features.
+7. Words embedding. It will be need to write words embedding from scratch to 
+have possibiity to use more words than there are in the translation pairs. 
 
 The code is organized as a pipeline of crates, the pipelines are quite natural in NLP. The results of crates computations are serialized and saved in .json files (using serde in Rust) and deserialized as the initial data in the next crate. There is also fuctionality to save the intermediate computations in Postgres DB.  
 
