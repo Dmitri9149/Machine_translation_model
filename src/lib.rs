@@ -78,6 +78,7 @@ pub use probability::length_likelihood::{TargetLengths
     ,TargetWordsToSentenceLengths
     ,TargetWordsCount
     ,PositionalTargetWordsCount
+    ,PositionalTargetWordsProbability
 };
 
 
