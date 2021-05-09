@@ -21,7 +21,9 @@ use std::time::Instant;
 use std::path::Path;
 use std::fs::read_to_string;
 
-use translationlib::{NOWORD, word_dynamics::dynamics::SentencesAsIndicesDynamicsN};
+use translationlib::{NOWORD
+    ,word_dynamics::dynamics::SentencesAsIndicesDynamicsN
+    ,TARGET_SENTENCE_MAX_LEN};
 
 use translationlib::targets_to_sentences::targets_to_lengths::{TargetsPosition
     ,TargetWordsToSentences
@@ -74,16 +76,19 @@ println!("Source sentence max length: {}\n", &sentences.source_sentence_max_len)
 
 //print targets...to sentences   and targets...to lengths
 
+
+/*
 println!("The targets_words_to_sentences: {:?}\n",&target_words_to_sentences
          .words_sentences_collections
          .get(&0)
          .unwrap());
-
+*/
 println!("The targets_words_to_sentence_lengths {:?}\n",&target_words_to_sentence_lengths
-         .lengths_likelihood
-//         .words_to_lengths_collections
+         .words_to_lengths_collections
          .get(&0)
-         .unwrap());
+         .unwrap()
+         .lengths_likelihood
+         );
 
 
 /*
