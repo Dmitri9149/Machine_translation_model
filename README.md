@@ -1,7 +1,7 @@
-Transformer 'like' architecture is written in Rust. The project is in progress, only preliminary results are ready.
+Transformer 'like' architecture is written in Rust. The project is in progress, only preliminary results are ready. 
+I use bilingual (French English and Finnish English sets at the moment) sentence pairs from the Tatoeba Project: http://www.manythings.org/anki/ to develop and to test the architecture. There are 185583 pairs in French English set, and 63562 pairs in Finnish English set. 
 
-Some main ideas: 
-
+Some main ideas:
 1. Firstly tokenizers are running to generate 'basic vectors' -> tokens. 
 The tokenizers are running at the level of words and at the level of sentences. That is why the final tokens are the mixture of charactar like tokens like 'ing' , full words like 'her' , 'idioms' like 'of the' , 'her head'. 
 All the tokens are out 'features' for classification ('basic vectors').
