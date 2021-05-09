@@ -104,8 +104,8 @@ pub type Ixw=u16;
 //   src/bin/renumbering.rs
 pub static NUMBER_TOKENS_ENG:Ind = 1966;
 pub static NUMBER_TOKENS_FRA:Ind = 2013;
-pub static TARGET_SENTENCE_MAX_LEN:Ixx = 59;
-pub static SOURCE_SENTENCE_MAX_LEN:Ixx = 48;
+pub static TARGET_SENTENCE_MAX_LEN:u16 = 59;
+pub static SOURCE_SENTENCE_MAX_LEN:u16 = 48;
 pub static NUMBER_PAIRS:Ixs = 185583;
 pub static NUMBER_WORDS_ENG:usize = 34656;
 pub static NUMBER_WORDS_FRA:usize = 66070;
