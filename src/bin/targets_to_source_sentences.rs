@@ -58,7 +58,7 @@ fn main()  -> Result<(),Box<dyn std::error::Error>> {
 
     let mut target_words_to_sentence_lengths = TargetWordsToSentenceLengths
         ::from_words_to_sentences(&target_words_to_sentences,&sentences);
-    target_words_to_sentence_lengths.length_likelihood(&TARGET_SENTENCE_MAX_LEN);
+    target_words_to_sentence_lengths.lengths_likelihood(&TARGET_SENTENCE_MAX_LEN);
 
     let target_words_count = PositionalTargetWordsCount::new()
         .from_target_words_to_sentence_lengths(&target_words_to_sentence_lengths);
