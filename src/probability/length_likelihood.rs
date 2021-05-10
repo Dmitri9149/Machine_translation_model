@@ -223,6 +223,23 @@ impl PositionalTargetWordsProbability {
 }
 
 
+pub struct WordsPredictor {
+    words_scores:HashMap<Ixx,f64>,    
+} 
+
+impl WordsPredictor {
+    pub fn new() -> WordsPredictor {
+    words_scores:HashMap::new();
+    }
+}
+
+pub struct PositionalWordsPredictor {
+    pub fn from_frequency_and_likelihood(frequency:&PositionalTargetWordsProbability 
+                                         ,likelihood:&TargetWordsToSentenceLengths) 
+        -> PositionalTargetWordsProbability {
+
+        }
+}
 
 
 
