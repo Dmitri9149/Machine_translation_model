@@ -1,5 +1,5 @@
 use std::collections::HashMap;
-//use std::collections::BTreeMap;
+use std::collections::BTreeMap;
 use std::convert::TryInto;
 use std::fmt::{Debug};
 use serde::{Serialize,Deserialize};
@@ -33,9 +33,9 @@ use std::fmt::{self,Display,Debug,Formatter};
 pub struct TargetLengths {
 //    #[serde(serialize_with = "serialize_map_a")]
     pub words_to_lengths:HashMap<Qxx,Vec<u16>>,
-    pub lengths_counts:HashMap<Qxx,HashMap<u16,u32>>,
+    pub lengths_counts:HashMap<Qxx,BTreeMap<u16,u32>>,
     pub words_counts:HashMap<Qxx,Qxx>,
-    pub lengths_likelihood:HashMap<Qxx,HashMap<u16,f64>>,
+    pub lengths_likelihood:HashMap<Qxx,BTreeMap<u16,f64>>,
 }
 
 impl TargetLengths {
@@ -56,24 +56,24 @@ impl TargetLengths {
 //
 #[derive(Serialize, Deserialize,Debug)]
 pub struct TargetWordsToSentenceLengths {
-    pub words_to_lengths_collections:HashMap<u16,TargetLengths>,
+    pub words_to_lengths_collections:BTreeMap<u16,TargetLengths>,
 }
 
 impl TargetWordsToSentenceLengths {
     pub fn new() -> TargetWordsToSentenceLengths {
         TargetWordsToSentenceLengths {
-            words_to_lengths_collections:HashMap::new(),
+            words_to_lengths_collections:BTreeMap::new(),
         }
     }
 
     pub fn from_words_to_sentences(words:&TargetWordsToSentences
                                    ,sentences:&SentencesAsIndicesDynamicsN) -> TargetWordsToSentenceLengths {
-        let mut vectr = HashMap::new();
+        let mut vectr = BTreeMap::new();
         for (ind,position) in words.words_sentences_collections.iter() {
         let mut hsh = TargetLengths::new();
             for (word,collection) in &position.words_to_sentences {
                 let mut coll = Vec::new();
-                let mut map = HashMap::new();
+                let mut map = BTreeMap::new();
                 let mut length;
                 if collection.len() == 0 {
                     panic!("A target word has 0 lengths collection of entences!");
@@ -104,7 +104,7 @@ impl TargetWordsToSentenceLengths {
                 let qxx_total = targ_lengths.words_counts
                     .get(qxx)
                     .unwrap();
-                let mut likely:HashMap<u16,f64>=HashMap::new();
+                let mut likely:BTreeMap<u16,f64>=BTreeMap::new();
 // Laplace smoothening is below
                 for (len,count) in collection.iter() {
                     *likely
@@ -140,13 +140,13 @@ impl TargetWordsCount {
 }
 
 pub struct PositionalTargetWordsCount {
-    target_words_and_lengths:HashMap<u16,TargetWordsCount>,
+    target_words_and_lengths:BTreeMap<u16,TargetWordsCount>,
 }
 
 impl PositionalTargetWordsCount {
     pub fn new() -> PositionalTargetWordsCount {
         PositionalTargetWordsCount {
-            target_words_and_lengths:HashMap::new()
+            target_words_and_lengths:BTreeMap::new()
         }
     }
 
@@ -181,12 +181,12 @@ impl TargetWordsProbability {
 }
 
 pub struct PositionalTargetWordsProbability {
-    positional_words_probability:HashMap<u16,TargetWordsProbability>,
+    positional_words_probability:BTreeMap<u16,TargetWordsProbability>,
 }
 
 impl PositionalTargetWordsProbability {
     pub fn new(counts:&PositionalTargetWordsCount) -> PositionalTargetWordsProbability {
-        let mut maps = HashMap::new();
+        let mut maps = BTreeMap::new();
 
         for (position,collection) in counts.target_words_and_lengths.iter() {
             let mut hsh = TargetWordsProbability::new();
