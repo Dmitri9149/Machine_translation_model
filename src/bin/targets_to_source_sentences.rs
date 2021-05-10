@@ -83,12 +83,14 @@ println!("The targets_words_to_sentences: {:?}\n",&target_words_to_sentences
          .get(&0)
          .unwrap());
 */
+/*
 println!("The targets_words_to_sentence_lengths {:?}\n",&target_words_to_sentence_lengths
          .words_to_lengths_collections
          .get(&0)
          .unwrap()
          .lengths_likelihood
          );
+*/
 
 
 /*

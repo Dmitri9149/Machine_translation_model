@@ -107,16 +107,28 @@ impl TargetWordsToSentenceLengths {
                 let mut likely:BTreeMap<u16,f64>=BTreeMap::new();
 // Laplace smoothening is below
                 for (len,count) in collection.iter() {
+// try to inderstand are there lengths 0 or 1
+                    if (*len == 0) {
+                        println!("lenght of sentence is 0");
+                    } else if (*len == 1) {
+                        println!("lenght is 1");
+                    } else if (*len==2) {
+                        println!("lengths is 2");
+                    }
+//
                     *likely
                         .entry(*len)
                         .or_insert(0.0)
-                        +=(f64::from(*count)+1.0)/(f64::from(*qxx_total) + f64::from(*sentences_max_len));
+                        +=(f64::from(*count))/(f64::from(*qxx_total));
+//                        +=(f64::from(*count)+1.0)/(f64::from(*qxx_total) + f64::from(*sentences_max_len));
                 }
+/*
                 for i in 0..*sentences_max_len {
                     likely
                         .entry(i+1)
                         .or_insert(1.0/(f64::from(*qxx_total) + f64::from(*sentences_max_len)));
                 }
+*/
                 targ_lengths.lengths_likelihood
                     .insert(*qxx,likely);
             }
