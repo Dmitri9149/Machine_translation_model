@@ -224,12 +224,14 @@ impl PositionalTargetWordsProbability {
 
 pub struct WordsPredictor {
     pub words_scores:BTreeMap<u16,HashMap<Ixx,f64>>,    
+    pub best_word:BTreeMap<u16,Ixx>
 } 
 
 impl WordsPredictor {
     pub fn new() -> WordsPredictor {
         WordsPredictor {
             words_scores:BTreeMap::new(),
+            best_word:BTreeMap::new(),
         }
     }
 }
@@ -270,8 +272,26 @@ impl PositionalWordsPredictor {
                 words_from_lengths_predictions:maps,
             }
         }
+
+    pub fn predict(&mut self) {
+        for (position, words_predictor) in self.words_from_lengths_predictions.iter() {
+            for (length, scores) in words_predictor.iter() {
+
+            }
+        }
+    }
 }
 
+
+fn find_max_key<K, V>(hsh_map: &Map<K, V>) -> Option<&K>
+where
+    V: Ord,
+{
+    hsh_map
+        .iter()
+        .max_by(|a, b| a.1.cmp(&b.1))
+        .map(|(k, _v)| k)
+}
 
 
 
