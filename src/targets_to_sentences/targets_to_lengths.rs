@@ -82,7 +82,7 @@ impl TargetWordsToSentences {
     }
 */
 
-    pub fn from_sentences_dynamics_(&mut self
+    pub fn from_sentences_dynamics(&mut self
                                    ,sentences:&SentencesAsIndicesDynamicsN
                                    ,no_word:&usize) {
 // min size of sentence is 2 words, max is included in index, 
@@ -114,7 +114,7 @@ impl TargetWordsToSentences {
             }
         }    
     }
-
+/*
     pub fn from_sentences_dynamics(&mut self
                                    ,sentences:&SentencesAsIndicesDynamicsN
                                    ,no_word:&usize) {
@@ -136,6 +136,7 @@ impl TargetWordsToSentences {
         self.words_sentences_collections.insert(len_index.try_into().unwrap(),hsh);
         }
     }
+*/
 
     pub fn max_and_min(&mut self) {
         for (_ixx,position) in self.words_sentences_collections.iter_mut() {
