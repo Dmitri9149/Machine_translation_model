@@ -107,6 +107,8 @@ println!("The targets_words_to_sentence_lengths {:?}\n",&words_predictor
          .get(&0)
          .unwrap()
          .words_scores
+         .get(&2)
+         .unwrap()
          );
 
 /*
