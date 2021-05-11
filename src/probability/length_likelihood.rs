@@ -223,7 +223,7 @@ impl PositionalTargetWordsProbability {
 }
 
 pub struct WordsPredictor {
-    words_scores:BTreeMap<u16,HashMap<Ixx,f64>>,    
+    pub words_scores:BTreeMap<u16,HashMap<Ixx,f64>>,    
 } 
 
 impl WordsPredictor {
@@ -245,7 +245,6 @@ impl PositionalWordsPredictor {
             let mut maps = BTreeMap::new();
             for (position,collection) in likelihood.words_to_lengths_collections.iter() {
                 let mut hsh = WordsPredictor::new();
-//                let mut scores = HashMap::new(); 
                 for (word, btree) in collection.lengths_likelihood.iter() {
                     let mut prob;
                     for (length, score) in btree.iter() {
@@ -261,8 +260,8 @@ impl PositionalWordsPredictor {
                             .entry(*length)
                             .or_insert(HashMap::new())
                             .entry((*word).try_into().unwrap())
-//                            .or_insert(prob.ln()) += score.ln();
-                            .or_insert(prob) *= score;              
+                            .or_insert(prob.ln()) += score.ln();
+//                            .or_insert(prob) *= score;              
                     }
                 }
                 maps.insert(*position,hsh);
