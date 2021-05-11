@@ -111,7 +111,7 @@ println!("The targets_words_to_sentence_lengths {:?}\n",&words_predictor
          .unwrap()
          );
 
-for i in 2..= words_predictor.words_from_lengths_predictions.len() {
+for i in 2..= SOURCE_SENTENCE_MAX_LEN {
     println!("The targets_words_to_sentence_lengths {:?}\n",&words_predictor
              .words_from_lengths_predictions
              .get(&(i as u16))

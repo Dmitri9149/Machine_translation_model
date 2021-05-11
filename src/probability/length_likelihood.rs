@@ -281,7 +281,6 @@ impl PositionalWordsPredictor {
                 best_word = scores.iter().max_by_key(|entry | OrderedFloat(*entry.1)).unwrap();
                 words_predictor.best_word
                     .insert(*length,(*(best_word.0),*(best_word.1)));
-                println!("length {} , best word {}, score {}\n", length, best_word.0, best_word.1);
             }
         }
     }
