@@ -222,7 +222,6 @@ impl PositionalTargetWordsProbability {
     }
 }
 
-
 pub struct WordsPredictor {
     words_scores:BTreeMap<u16,HashMap<Ixx,f64>>,    
 } 
@@ -236,7 +235,7 @@ impl WordsPredictor {
 }
 
 pub struct PositionalWordsPredictor {
-    words_from_lengths_predictions:BTreeMap<u16,WordsPredictor>,
+    pub words_from_lengths_predictions:BTreeMap<u16,WordsPredictor>,
 }
 
 impl PositionalWordsPredictor {
@@ -263,19 +262,14 @@ impl PositionalWordsPredictor {
                             .or_insert(HashMap::new())
                             .entry((*word).try_into().unwrap())
 //                            .or_insert(prob.ln()) += score.ln();
-                            .or_insert(prob) *= score;
-
-                            
+                            .or_insert(prob) *= score;              
                     }
                 }
                 maps.insert(*position,hsh);
             } 
-
             PositionalWordsPredictor {
                 words_from_lengths_predictions:maps,
             }
-
-
         }
 }
 
