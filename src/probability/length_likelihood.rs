@@ -281,22 +281,12 @@ impl PositionalWordsPredictor {
                 best_word = scores.iter().max_by_key(|entry | OrderedFloat(*entry.1)).unwrap();
                 words_predictor.best_word
                     .insert(*length,(*(best_word.0),*(best_word.1)));
+                println!("length {} , best word {}, score {}\n", length, best_word.0, best_word.1);
             }
         }
     }
 }
 
-/*
-fn find_max_key<K, V>(hsh_map: &HashMap<K, V>) -> Option<&K>
-where
-    V: Ord,
-{
-    hsh_map
-        .iter()
-        .max_by(|a, b| a.1.cmp(&b.1))
-        .map(|(k, _v)| k)
-}
-*/
 
 
 
