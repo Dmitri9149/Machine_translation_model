@@ -64,12 +64,17 @@ fn main()  -> Result<(),Box<dyn std::error::Error>> {
         ::from_words_to_sentences(&target_words_to_sentences,&sentences);
     target_words_to_sentence_lengths.lengths_likelihood(&SOURCE_SENTENCE_MAX_LEN);
 
-    let target_words_count = PositionalTargetWordsCount::new()
-        .from_target_words_to_sentence_lengths(&target_words_to_sentence_lengths);
+    let mut target_words_count = PositionalTargetWordsCount::new();
+    target_words_count.from_target_words_to_sentence_lengths(&target_words_to_sentence_lengths);
+
+    let target_words_probability = PositionalTargetWordsProbability
+        ::new(&target_words_count);
 
     let words_predictor = PositionalWordsPredictor
-        ::from_frequency_and_likelihood(&target_words_count
+        ::from_frequency_and_likelihood(&target_words_probability
                                          ,&target_words_to_sentence_lengths);
+
+
 
 
 // print sentences 
@@ -101,7 +106,7 @@ println!("The targets_words_to_sentence_lengths {:?}\n",&words_predictor
          .words_from_lengths_predictions
          .get(&0)
          .unwrap()
-         .word_scores
+         .words_scores
          );
 
 /*
