@@ -81,6 +81,40 @@ impl TargetWordsToSentences {
         }   
     }
 */
+
+    pub fn from_sentences_dynamics_(&mut self
+                                   ,sentences:&SentencesAsIndicesDynamicsN
+                                   ,no_word:&usize) {
+// min size of sentence is 2 words, max is included in index, 
+// lengths index is coming without a shift
+        let mut size;
+        for (ixs,collection) in sentences.fra_words_as_indices.iter() {
+            size = collection.len();
+            let mut position=0;
+
+            for ixx in collection.iter() {
+                self.words_sentences_collections
+                    .entry(position)
+                    .or_insert(TargetsPosition::new())
+                    .words_to_sentences
+                    .entry(*ixx)
+                    .or_insert(vec![])
+                    .push(*ixs);
+                position+=1;
+            }
+
+            for position in size .. sentences.target_sentence_max_len {
+                self.words_sentences_collections
+                    .entry(position.try_into().unwrap())
+                    .or_insert(TargetsPosition::new())
+                    .words_to_sentences
+                    .entry(*no_word)
+                    .or_insert(vec![])
+                    .push(*ixs);
+            }
+        }    
+    }
+
     pub fn from_sentences_dynamics(&mut self
                                    ,sentences:&SentencesAsIndicesDynamicsN
                                    ,no_word:&usize) {
