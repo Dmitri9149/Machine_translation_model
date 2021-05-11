@@ -70,10 +70,10 @@ fn main()  -> Result<(),Box<dyn std::error::Error>> {
     let target_words_probability = PositionalTargetWordsProbability
         ::new(&target_words_count);
 
-    let words_predictor = PositionalWordsPredictor
+    let mut words_predictor = PositionalWordsPredictor
         ::from_frequency_and_likelihood(&target_words_probability
                                          ,&target_words_to_sentence_lengths);
-
+    words_predictor.predict();
 
 
 
@@ -110,6 +110,15 @@ println!("The targets_words_to_sentence_lengths {:?}\n",&words_predictor
          .get(&2)
          .unwrap()
          );
+
+for i in 2..= words_predictor.words_from_lengths_predictions.len() {
+    println!("The targets_words_to_sentence_lengths {:?}\n",&words_predictor
+             .words_from_lengths_predictions
+             .get(&(i as u16))
+             .unwrap()
+             .best_word
+             );
+}
 
 /*
     ::serde_json::to_writer(&File::create("data/matrices_generator/words_to_sentences.json")?, &words_to_sentences)?;
