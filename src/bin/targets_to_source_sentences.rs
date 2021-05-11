@@ -111,7 +111,7 @@ println!("The targets_words_to_sentence_lengths {:?}\n",&words_predictor
          .unwrap()
          );
 
-for i in 0..= SOURCE_SENTENCE_MAX_LEN {
+for i in 0..TARGET_SENTENCE_MAX_LEN {
     println!("Predicted word position in target sentence (0 index is for first word): {}\n", &i);
     println!("The targets_words_to_sentence_lengths {:?}\n",&words_predictor
              .words_from_lengths_predictions
