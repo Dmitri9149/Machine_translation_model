@@ -35,6 +35,7 @@ use translationlib::probability::length_likelihood::{
     ,TargetWordsToSentenceLengths
     ,PositionalTargetWordsCount
     ,PositionalTargetWordsProbability
+    ,PositionalWordsPredictor
 };
 
 
@@ -67,7 +68,7 @@ fn main()  -> Result<(),Box<dyn std::error::Error>> {
         .from_target_words_to_sentence_lengths(&target_words_to_sentence_lengths);
 
     let words_predictor = PositionalWordsPredictor
-        :from_frequency_and_likelihood(&target_words_count
+        ::from_frequency_and_likelihood(&target_words_count
                                          ,&target_words_to_sentence_lengths);
 
 
