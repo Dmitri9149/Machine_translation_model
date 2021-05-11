@@ -15,3 +15,4 @@ serde = { version = " 1.0", features = ["derive"] }
 serde_json = "1.0"
 ndarray = { version = "0.14", features = ["serde"] }
 ndarray-linalg = { version = "0.13", features = ["openblas-static"] }
+ordered-float = "2.0"

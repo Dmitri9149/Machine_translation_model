@@ -3,6 +3,7 @@ use std::collections::BTreeMap;
 use std::convert::TryInto;
 use std::fmt::{Debug};
 use serde::{Serialize,Deserialize};
+use ordered_float::OrderedFloat;
 
 //use std::path::Path;
 //use std::fs::read_to_string; // use instead of std::fs::File
@@ -224,7 +225,7 @@ impl PositionalTargetWordsProbability {
 
 pub struct WordsPredictor {
     pub words_scores:BTreeMap<u16,HashMap<Ixx,f64>>,    
-    pub best_word:BTreeMap<u16,Ixx>
+    pub best_word:BTreeMap<u16,(Ixx,f64)>
 } 
 
 impl WordsPredictor {
@@ -274,16 +275,19 @@ impl PositionalWordsPredictor {
         }
 
     pub fn predict(&mut self) {
-        for (position, words_predictor) in self.words_from_lengths_predictions.iter() {
-            for (length, scores) in words_predictor.iter() {
-
+        for (position, words_predictor) in self.words_from_lengths_predictions.iter_mut() {
+            let mut best_word;
+            for (length, scores) in words_predictor.words_scores.iter_mut() {
+                best_word = scores.iter().max_by_key(|entry | OrderedFloat(*entry.1)).unwrap();
+                words_predictor.best_word
+                    .insert(*length,(*(best_word.0),*(best_word.1)));
             }
         }
     }
 }
 
-
-fn find_max_key<K, V>(hsh_map: &Map<K, V>) -> Option<&K>
+/*
+fn find_max_key<K, V>(hsh_map: &HashMap<K, V>) -> Option<&K>
 where
     V: Ord,
 {
@@ -292,7 +296,7 @@ where
         .max_by(|a, b| a.1.cmp(&b.1))
         .map(|(k, _v)| k)
 }
-
+*/
 
 
 
